@@ -1,0 +1,192 @@
+{
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5123,
+            "count" : 1056,
+            "max" : [
+                703
+            ],
+            "min" : [
+                0
+            ],
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 704,
+            "max" : [
+                1.4209916591644287,
+                1.5303975343704224,
+                0.021345127373933792
+            ],
+            "min" : [
+                -1.3734493255615234,
+                -0.49348676204681396,
+                -0.018655143678188324
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 704,
+            "max" : [
+                0.9238831996917725,
+                0.9190760254859924,
+                0.9999990463256836
+            ],
+            "min" : [
+                -0.9238777160644531,
+                -0.925349771976471,
+                -0.9999990463256836
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5126,
+            "count" : 704,
+            "max" : [
+                0.995547354221344,
+                0.9988198280334473,
+                0.45323896408081055,
+                1.0
+            ],
+            "min" : [
+                -0.943207859992981,
+                -0.8062414526939392,
+                -0.45418623089790344,
+                1.0
+            ],
+            "type" : "VEC4"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 704,
+            "max" : [
+                1.0057305097579956,
+                0.9998551539465552
+            ],
+            "min" : [
+                0.00014558641123585403,
+                0.5632238984107971
+            ],
+            "type" : "VEC2"
+        }
+    ],
+    "asset" : {
+        "generator" : "Khronos Blender glTF 2.0 exporter",
+        "version" : "2.0"
+    },
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 2112,
+            "byteOffset" : 0,
+            "target" : 34963
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 8448,
+            "byteOffset" : 2112,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 8448,
+            "byteOffset" : 10560,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 11264,
+            "byteOffset" : 19008,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 5632,
+            "byteOffset" : 30272,
+            "target" : 34962
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 35904,
+            "uri" : "gate.bin"
+        }
+    ],
+    "images" : [
+        {
+            "name" : "gate_uv",
+            "uri" : "gate_uv.png"
+        }
+    ],
+    "materials" : [
+        {
+            "name" : "Material.002",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0
+                },
+                "metallicFactor" : 0.009756088256835938,
+                "roughnessFactor" : 0.6000000238418579
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Cylinder.001",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "NORMAL" : 2,
+                        "POSITION" : 1,
+                        "TANGENT" : 3,
+                        "TEXCOORD_0" : 4
+                    },
+                    "indices" : 0,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "Cylinder",
+            "rotation" : [
+                -1.1263299913919075e-15,
+                2.2641133412548697e-08,
+                -0.16851241886615753,
+                0.9856995940208435
+            ],
+            "translation" : [
+                -0.004718959331512451,
+                0.0034488439559936523,
+                -0.0013449190882965922
+            ]
+        }
+    ],
+    "samplers" : [
+        {}
+    ],
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "sampler" : 0,
+            "source" : 0
+        }
+    ]
+}

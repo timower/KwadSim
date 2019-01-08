@@ -1,0 +1,87 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Script/PauseMenu.gd" type="Script" id=1]
+
+[node name="PauseMenu" type="Panel"]
+pause_mode = 2
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -95.0
+margin_top = -112.0
+margin_right = 95.0
+margin_bottom = 120.0
+script = ExtResource( 1 )
+
+[node name="Title" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -23.0
+margin_top = 8.0
+margin_right = 23.0
+margin_bottom = 22.0
+text = "Paused"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -44.5
+margin_top = 32.0
+margin_right = 44.5
+margin_bottom = 202.0
+custom_constants/separation = 5
+
+[node name="ResumeButton" type="Button" parent="VBoxContainer"]
+margin_right = 89.0
+margin_bottom = 20.0
+text = "Resume"
+
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+margin_top = 25.0
+margin_right = 89.0
+margin_bottom = 45.0
+rect_min_size = Vector2( 0, 20 )
+
+[node name="KConfigButton" type="Button" parent="VBoxContainer"]
+margin_top = 50.0
+margin_right = 89.0
+margin_bottom = 70.0
+text = "Kwad Config"
+
+[node name="IConfigButton" type="Button" parent="VBoxContainer"]
+margin_top = 75.0
+margin_right = 89.0
+margin_bottom = 95.0
+text = "Input Config"
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+margin_top = 100.0
+margin_right = 89.0
+margin_bottom = 120.0
+text = "Settings"
+
+[node name="Spacer2" type="Control" parent="VBoxContainer"]
+margin_top = 125.0
+margin_right = 89.0
+margin_bottom = 135.0
+rect_min_size = Vector2( 0, 10 )
+
+[node name="MenuButton" type="Button" parent="VBoxContainer"]
+margin_top = 140.0
+margin_right = 89.0
+margin_bottom = 160.0
+text = "Main Menu"
+
+[node name="QuitButton" type="Button" parent="VBoxContainer"]
+margin_top = 165.0
+margin_right = 89.0
+margin_bottom = 185.0
+text = "Quit"
+
+[connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_ResumeButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/KConfigButton" to="." method="_on_KConfigButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/IConfigButton" to="." method="_on_IConfigButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/SettingsButton" to="." method="_on_SettingsButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/MenuButton" to="." method="_on_MenuButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_QuitButton_pressed"]

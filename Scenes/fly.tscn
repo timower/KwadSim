@@ -1,0 +1,400 @@
+[gd_scene load_steps=32 format=2]
+
+[ext_resource path="res://Script/Viewport.gd" type="Script" id=1]
+[ext_resource path="res://Textures/mossy-ground1-albedo.png" type="Texture" id=2]
+[ext_resource path="res://Textures/mossy-ground1-ao.png" type="Texture" id=3]
+[ext_resource path="res://Textures/mossy-ground1-metal.png" type="Texture" id=4]
+[ext_resource path="res://Textures/mossy-ground1-preview.png" type="Texture" id=5]
+[ext_resource path="res://Textures/mossy-ground1-roughness.png" type="Texture" id=6]
+[ext_resource path="res://Models/discCone/discCone.gltf" type="PackedScene" id=7]
+[ext_resource path="res://Models/GateTest.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Models/SquareGate.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Models/SquareGateFull.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Models/FlagTest.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Script/Kwad.gd" type="Script" id=12]
+[ext_resource path="res://Models/kwad/kwad.gltf" type="PackedScene" id=13]
+[ext_resource path="res://Sound/prop.wav" type="AudioStream" id=14]
+[ext_resource path="res://Script/Sun.gd" type="Script" id=15]
+[ext_resource path="res://Script/Area.gd" type="Script" id=16]
+[ext_resource path="res://Shaders/main.shader" type="Shader" id=17]
+[ext_resource path="res://Script/StickView.gd" type="Script" id=18]
+[ext_resource path="res://Scenes/KwadConfig.tscn" type="PackedScene" id=19]
+[ext_resource path="res://Scenes/JoyConf.tscn" type="PackedScene" id=20]
+[ext_resource path="res://Scenes/PauseMenu.tscn" type="PackedScene" id=21]
+[ext_resource path="res://Scenes/Settings.tscn" type="PackedScene" id=22]
+
+[sub_resource type="PhysicsMaterial" id=1]
+
+absorbent = true
+
+[sub_resource type="SpatialMaterial" id=2]
+
+albedo_texture = ExtResource( 2 )
+metallic_specular = 0.0
+metallic_texture = ExtResource( 4 )
+roughness_texture = ExtResource( 6 )
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource( 5 )
+ao_enabled = true
+ao_light_affect = 0.0
+ao_texture = ExtResource( 3 )
+ao_on_uv2 = false
+ao_texture_channel = 0
+uv1_scale = Vector3( 1000, 1000, 0.1 )
+
+[sub_resource type="CubeMesh" id=3]
+
+material = SubResource( 2 )
+size = Vector3( 1000, 1, 1000 )
+
+[sub_resource type="BoxShape" id=4]
+
+extents = Vector3( 500, 0.5, 500 )
+
+[sub_resource type="PhysicsMaterial" id=5]
+
+
+[sub_resource type="BoxShape" id=6]
+
+extents = Vector3( 0.0804825, 0.0337435, 0.0801742 )
+
+[sub_resource type="BoxShape" id=7]
+
+extents = Vector3( 0.123065, 1, 1 )
+
+[sub_resource type="ShaderMaterial" id=8]
+
+shader = ExtResource( 17 )
+shader_param/distortion = 0.3
+
+[sub_resource type="ViewportTexture" id=9]
+
+viewport_path = NodePath("Viewport")
+
+[node name="Root" type="Spatial"]
+
+[node name="Viewport" type="Viewport" parent="."]
+editor/display_folded = true
+size = Vector2( 720, 576 )
+handle_input_locally = false
+render_target_update_mode = 3
+audio_listener_enable_3d = true
+shadow_atlas_size = 1024
+script = ExtResource( 1 )
+
+[node name="Ground" type="StaticBody" parent="Viewport"]
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0 )
+physics_material_override = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Viewport/Ground"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0271738, -0.0136067, 0.00147343 )
+mesh = SubResource( 3 )
+material/0 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="Viewport/Ground"]
+shape = SubResource( 4 )
+
+[node name="Cones" type="Spatial" parent="Viewport"]
+editor/display_folded = true
+
+[node name="Cone" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.19334, -0.0117457, 2.1169 )
+
+[node name="Cone25" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.6126, -0.0117457, 19.8345 )
+
+[node name="Cone12" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -8.73147, -2.38419e-07, 9.24554 )
+
+[node name="Cone21" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 10.8449, -2.38419e-07, 6.49091 )
+
+[node name="Cone2" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.22561, 0, -0.293642 )
+
+[node name="Cone26" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 9.64486, 0, 22.2451 )
+
+[node name="Cone13" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -8.97105, 0, 13.5346 )
+
+[node name="Cone23" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 10.7386, 4.76837e-07, 13.2124 )
+
+[node name="Cone3" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.65889, 0, -2.73008 )
+
+[node name="Cone11" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -8.99428, 0, 5.57582 )
+
+[node name="Cone22" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 10.9367, 9.53674e-07, 9.56969 )
+
+[node name="Cone4" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.939824, 0, -2.62681 )
+
+[node name="Cone14" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -9.05218, 0, 16.8521 )
+
+[node name="Cone24" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 10.5547, 0, 16.1556 )
+
+[node name="Cone5" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.91954, 0, -2.18139 )
+
+[node name="Cone27" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 7.33879, 0, 24.1328 )
+
+[node name="Cone15" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.92059, 0, 23.9295 )
+
+[node name="Cone6" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3476, 0, -2.42832 )
+
+[node name="Cone16" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.01935, 0, 22.0537 )
+
+[node name="Cone7" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.84355, 0, -1.82543 )
+
+[node name="Cone17" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.01455, 0, 24.0278 )
+
+[node name="Cone8" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9394, 0, -1.93058 )
+
+[node name="Cone19" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.08505, 4.76837e-07, 24.1717 )
+
+[node name="Cone9" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.2643, 0, -0.613111 )
+
+[node name="Cone20" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.12036, 0, 24.2425 )
+
+[node name="Cone10" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.6563, -4.76837e-07, 2.51848 )
+
+[node name="Cone18" parent="Viewport/Cones" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.37966, 0, 23.9295 )
+
+[node name="Gates" type="Spatial" parent="Viewport"]
+editor/display_folded = true
+
+[node name="Scene Root" parent="Viewport/Gates" instance=ExtResource( 8 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 7.28291, -0.00474125, -2.05502 )
+
+[node name="Scene Root2" parent="Viewport/Gates" instance=ExtResource( 8 )]
+transform = Transform( 0.140186, 0, 0.990125, 0, 1, 0, -0.990125, 0, 0.140186, -3.05799, -0.0151265, -2.44807 )
+
+[node name="SquareGate" parent="Viewport/Gates" instance=ExtResource( 9 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.21154, 0, 5.69136 )
+
+[node name="SquareGate2" parent="Viewport/Gates" instance=ExtResource( 9 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.41874, 0, 17.5242 )
+
+[node name="SquareGate3" parent="Viewport/Gates" instance=ExtResource( 9 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -3.99796, 0, 24.0189 )
+
+[node name="SquareGate4" parent="Viewport/Gates" instance=ExtResource( 9 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 4.57544, 0, 24.0189 )
+
+[node name="SquareGate5" parent="Viewport/Gates" instance=ExtResource( 9 )]
+transform = Transform( -1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 10.4849, 0, 17.6868 )
+
+[node name="SquareGate6" parent="Viewport/Gates" instance=ExtResource( 9 )]
+transform = Transform( -1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 10.9617, 0, 4.84201 )
+
+[node name="SquareGate7" parent="Viewport/Gates" instance=ExtResource( 9 )]
+transform = Transform( -1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 10.9617, 1.83398, 4.84201 )
+
+[node name="SquareGateFull" parent="Viewport/Gates" instance=ExtResource( 10 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.139633, 2.2907, 24.1749 )
+
+[node name="SquareGateFull2" parent="Viewport/Gates" instance=ExtResource( 10 )]
+transform = Transform( 1.91069e-15, -1, 4.37114e-08, -4.37114e-08, -4.37114e-08, -1, 1, 0, -4.37114e-08, -15.9188, 5.64793, 24.1749 )
+
+[node name="SquareGateFull3" parent="Viewport/Gates" instance=ExtResource( 10 )]
+transform = Transform( 1.91069e-15, -1, 4.37114e-08, -4.37114e-08, -4.37114e-08, -1, 1, 0, -4.37114e-08, -15.9188, 11.5019, 24.1749 )
+
+[node name="SquareGateFull4" parent="Viewport/Gates" instance=ExtResource( 10 )]
+transform = Transform( 1.91069e-15, -1, 4.37114e-08, -4.37114e-08, -4.37114e-08, -1, 1, 0, -4.37114e-08, -15.9188, 16.993, 24.1749 )
+
+[node name="Flags" type="Spatial" parent="Viewport"]
+editor/display_folded = true
+
+[node name="Scene Root" parent="Viewport/Flags" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8016, -0.00310028, 6.27041e-05 )
+
+[node name="Scene Root2" parent="Viewport/Flags" instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.96749, -0.00310028, 17.5406 )
+
+[node name="Scene Root3" parent="Viewport/Flags" instance=ExtResource( 11 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -10.8469, -0.00310028, 17.5406 )
+
+[node name="Kwad" type="RigidBody" parent="Viewport"]
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.101568, 0.303815 )
+input_capture_on_drag = true
+mass = 0.6
+physics_material_override = SubResource( 5 )
+continuous_cd = true
+angular_damp = 0.5
+script = ExtResource( 12 )
+
+[node name="Scene Root" parent="Viewport/Kwad" instance=ExtResource( 13 )]
+transform = Transform( -1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, -0.0118569, 0 )
+
+[node name="Camera" type="Camera" parent="Viewport/Kwad"]
+transform = Transform( 1, 0, 0, 0, 0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0.0299904, -0.0155147 )
+current = true
+fov = 120.0
+near = 0.01
+far = 500.0
+
+[node name="CollisionShape" type="CollisionShape" parent="Viewport/Kwad"]
+shape = SubResource( 6 )
+
+[node name="motor1" type="Spatial" parent="Viewport/Kwad"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.068, 0, 0.068 )
+
+[node name="MotorSound" type="AudioStreamPlayer3D" parent="Viewport/Kwad/motor1"]
+stream = ExtResource( 14 )
+bus = "SFX"
+
+[node name="motor2" type="Spatial" parent="Viewport/Kwad"]
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.068, 0, 0.068 )
+
+[node name="MotorSound" type="AudioStreamPlayer3D" parent="Viewport/Kwad/motor2"]
+stream = ExtResource( 14 )
+bus = "SFX"
+
+[node name="motor3" type="Spatial" parent="Viewport/Kwad"]
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.068, 0, -0.068 )
+
+[node name="MotorSound" type="AudioStreamPlayer3D" parent="Viewport/Kwad/motor3"]
+stream = ExtResource( 14 )
+bus = "SFX"
+
+[node name="motor4" type="Spatial" parent="Viewport/Kwad"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.068, 0, -0.068 )
+
+[node name="MotorSound" type="AudioStreamPlayer3D" parent="Viewport/Kwad/motor4"]
+stream = ExtResource( 14 )
+bus = "SFX"
+
+[node name="Listener" type="Listener" parent="Viewport/Kwad"]
+current = true
+
+[node name="Sun" type="DirectionalLight" parent="Viewport"]
+transform = Transform( -0.00208495, 0.99998, -0.00599228, 0.741538, 0.00556633, 0.670888, 0.670908, -0.00304474, -0.741534, -8.69013, 24.8089, -8.21172 )
+shadow_enabled = true
+shadow_bias = 0.04
+script = ExtResource( 15 )
+
+[node name="Area" type="Area" parent="Viewport"]
+editor/display_folded = true
+script = ExtResource( 16 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Viewport/Area"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.05707, 0.399477, -2.43643 )
+shape = SubResource( 7 )
+
+[node name="MainView" type="TextureRect" parent="."]
+material = SubResource( 8 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource( 9 )
+expand = true
+
+[node name="KwadInfo" type="Control" parent="."]
+editor/display_folded = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="SpeedLabel" type="Label" parent="KwadInfo"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -110.0
+margin_top = 10.0
+margin_right = -20.0
+margin_bottom = 50.0
+
+[node name="ProgressBar1" type="ProgressBar" parent="KwadInfo"]
+margin_left = 210.0
+margin_top = 70.0
+margin_right = 400.0
+margin_bottom = 100.0
+
+[node name="ProgressBar2" type="ProgressBar" parent="KwadInfo"]
+margin_left = 20.0
+margin_top = 70.0
+margin_right = 210.0
+margin_bottom = 100.0
+
+[node name="ProgressBar3" type="ProgressBar" parent="KwadInfo"]
+margin_left = 210.0
+margin_top = 40.0
+margin_right = 400.0
+margin_bottom = 70.0
+
+[node name="ProgressBar4" type="ProgressBar" parent="KwadInfo"]
+margin_left = 20.0
+margin_top = 40.0
+margin_right = 210.0
+margin_bottom = 70.0
+
+[node name="Sticks" type="Control" parent="."]
+pause_mode = 2
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -115.0
+margin_top = -110.0
+margin_right = 115.0
+margin_bottom = -10.0
+
+[node name="LeftStick" type="Control" parent="Sticks"]
+anchor_bottom = 1.0
+margin_right = 100.0
+script = ExtResource( 18 )
+axis2 = 2
+
+[node name="RightStick" type="Control" parent="Sticks"]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -100.0
+script = ExtResource( 18 )
+axis1 = 1
+axis2 = 3
+
+[node name="Label" type="Label" parent="Sticks"]
+margin_right = 40.0
+margin_bottom = 14.0
+
+[node name="KwadConfig" parent="." instance=ExtResource( 19 )]
+visible = false
+
+[node name="JoyConf" parent="." instance=ExtResource( 20 )]
+visible = false
+
+[node name="PauseMenu" parent="." instance=ExtResource( 21 )]
+visible = false
+
+[node name="Settings" parent="." instance=ExtResource( 22 )]
+visible = false
+
+[node name="Button" type="Button" parent="."]
+margin_right = 50.0
+margin_bottom = 20.0
+text = "Pause"
+
+[connection signal="body_entered" from="Viewport/Area" to="Viewport/Area" method="_on_Area_body_entered"]
+[connection signal="pressed" from="Button" to="Viewport" method="_on_Button_pressed"]
