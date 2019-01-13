@@ -59,7 +59,7 @@ extents = Vector3( 500, 0.5, 500 )
 
 extents = Vector3( 0.0804825, 0.0337435, 0.0801742 )
 
-[sub_resource type="CylinderMesh" id=9]
+[sub_resource type="CylinderMesh" id=7]
 
 material = ExtResource( 14 )
 top_radius = 0.062
@@ -332,7 +332,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.027, 0 )
 
 [node name="movingProp" type="MeshInstance" parent="Viewport/Kwad/motor1"]
 visible = false
-mesh = SubResource( 9 )
+mesh = SubResource( 7 )
 material/0 = null
 
 [node name="Prop" parent="Viewport/Kwad/motor1" instance=ExtResource( 15 )]
@@ -351,7 +351,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.027, 0 )
 
 [node name="movingProp" type="MeshInstance" parent="Viewport/Kwad/motor2"]
 visible = false
-mesh = SubResource( 9 )
+mesh = SubResource( 7 )
 material/0 = null
 
 [node name="Prop" parent="Viewport/Kwad/motor2" instance=ExtResource( 15 )]
@@ -373,7 +373,7 @@ transform = Transform( -0.501838, 0, 0.864962, 0, 1, 0, 0.864962, 0, 0.501838, 0
 
 [node name="movingProp" type="MeshInstance" parent="Viewport/Kwad/motor3"]
 visible = false
-mesh = SubResource( 9 )
+mesh = SubResource( 7 )
 material/0 = null
 
 [node name="motor4" type="Spatial" parent="Viewport/Kwad"]
@@ -392,7 +392,7 @@ transform = Transform( 0.587029, 0, -0.809566, 0, 1, 0, 0.809566, 0, 0.587029, 0
 
 [node name="movingProp" type="MeshInstance" parent="Viewport/Kwad/motor4"]
 visible = false
-mesh = SubResource( 9 )
+mesh = SubResource( 7 )
 material/0 = null
 
 [node name="Listener" type="Listener" parent="Viewport/Kwad"]

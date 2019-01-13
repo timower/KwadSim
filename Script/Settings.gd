@@ -147,6 +147,7 @@ func _on_ApplyButton_pressed():
 func _on_CloseButton_pressed():
 	load_settings()
 	visible = false
+	get_tree().paused = false
 
 var popup_key = null
 

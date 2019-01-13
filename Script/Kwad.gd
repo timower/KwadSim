@@ -52,7 +52,10 @@ var inertia = null
 var prop_radius = null
 var prop_chord = null
 
+#./qprop ../runs/GF5x4.6 ../runs/s400-6v-dd  0.1,50/11 0,26000/11 0 -9 | sed '/#\|GVCALC\|\*\*/d' | awk -v RS= '{printf("[%s, [\n %s\n]],\n", $2, $0)}' | awk '{if (NF > 4) { printf("\t[%s, %s, %s],\n", $1, $4, $5) } else { print($0)}}' | sed 's/NaN/0/g' | sed 's/E/e/g
 var prop_curve = null
+var prop_curve_drpm = null
+var prop_curve_dv0 = null
 
 # State:
 
@@ -103,15 +106,24 @@ func load_prop(prop_name):
 	prop_chord = params["chord"]
 	inertia = params["inertia"]
 	prop_curve = params["curve"]
+	prop_curve_drpm = prop_curve[1][0] - prop_curve[0][0]
+	prop_curve_dv0 = prop_curve[0][1][1][0] - prop_curve[0][1][0][0]
 
 func load_frame(frame_name):
 	var params = read_json("res://Data/Frames/" + frame_name + ".json")
 	drag_c = params["drag_c"]
+	
 	var area = params["area"]
 	drag_area.x = area[0]
 	drag_area.y = area[1]
 	drag_area.z = area[2]
-	Vin = params["Vbat"]
+	
+	for i in range(4):
+		var pos = params["motors"][i]
+		motors[i].transform.origin = Vector3(pos[0], pos[1], pos[2])
+	
+	var size = params["size"]
+	$CollisionShape.shape.extents = Vector3(size[0], size[1], size[2])
 
 func load_params():
 	var quads = read_json("res://Data/quads.json")
@@ -119,6 +131,7 @@ func load_params():
 	load_motor(quad["motor"])
 	load_prop(quad["prop"])
 	load_frame(quad["frame"])
+	Vin = quad["Vbat"]
 
 func _ready():
 	load_params()
@@ -209,19 +222,55 @@ func motor_torque(volts, rpm):
 		current = min(0, current + motor_I0)
 	return current * motor_Kq
 
-func prop_thrust_torque(rpm):
-	var idx = rpm / 2600.0
-	var lidx = int(floor(idx))
-	var uidx = int(ceil(idx))
+func get_thrust(idx_rpm, idx_v0):
+	return max(0, prop_curve[idx_rpm][1][idx_v0][1])
+
+func prop_thrust(rpm, v0):
+	var rpm_idx = (rpm - prop_curve[0][0]) / prop_curve_drpm
+	var rpm_lidx = min(int(floor(rpm_idx)), prop_curve.size()-1)
+	var rpm_uidx = min(int(ceil(rpm_idx)), prop_curve.size()-1)
 	
-	var a = idx - lidx
-	var thrust = prop_curve[lidx][1] * (1 - a) + prop_curve[uidx][1] * a
-	var torque = prop_curve[lidx][2] * (1 - a) + prop_curve[uidx][2] * a
+	var a = rpm_idx - rpm_lidx
 	
-	return Vector2(thrust, torque)
+	var v0_idx = (v0 - prop_curve[0][1][0][0]) / prop_curve_dv0
+	var v0_lidx = clamp(int(floor(v0_idx)), 0, prop_curve[0][1].size()-1)
+	var v0_uidx = clamp(int(floor(v0_idx)), 0, prop_curve[0][1].size()-1)
+	
+	var b = v0_idx - v0_lidx
+	
+	var thrust_1 = get_thrust(rpm_lidx, v0_lidx) * (1 - b) + get_thrust(rpm_lidx, v0_uidx) * b
+	var thrust_2 = get_thrust(rpm_uidx, v0_lidx) * (1 - b) + get_thrust(rpm_uidx, v0_uidx) * b
+	
+	var thrust = thrust_1 * (1 - a) + thrust_2 * a
+	
+	return thrust
+
+func get_torque(idx_rpm, idx_v0):
+	return max(0, prop_curve[idx_rpm][1][idx_v0][2])
+
+func prop_torque(rpm, v0):
+	var rpm_idx = (rpm - prop_curve[0][0]) / prop_curve_drpm
+	var rpm_lidx = min(int(floor(rpm_idx)), prop_curve.size() - 1)
+	var rpm_uidx = min(int(ceil(rpm_idx)), prop_curve.size()-1)
+	
+	var a = rpm_idx - rpm_lidx
+	
+	var v0_idx = (v0 - prop_curve[0][1][0][0]) / prop_curve_dv0
+	var v0_lidx = clamp(int(floor(v0_idx)), 0, prop_curve[0][1].size()-1)
+	var v0_uidx = clamp(int(floor(v0_idx)), 0, prop_curve[0][1].size()-1)
+	
+	var b = v0_idx - v0_lidx
+	
+	var torque_1 = get_torque(rpm_lidx, v0_lidx) * (1 - b) + get_torque(rpm_lidx, v0_uidx) * b
+	var torque_2 = get_torque(rpm_uidx, v0_lidx) * (1 - b) + get_torque(rpm_uidx, v0_uidx) * b
+	var torque = torque_1 * (1 - a) + torque_2 * a
+	
+	return torque
 
 func calc_motor(delta):
 	var up = global_transform.basis.y
+	
+	var v0 = max(0, up.dot(linear_velocity))
 	
 	var torque_sum = 0
 	for midx in range(4):
@@ -236,9 +285,7 @@ func calc_motor(delta):
 		var torque = motor_torque(volts, rpm)
 
 		# calc prop torque and trhust
-		var prop = prop_thrust_torque(rpm)
-		var prop_torque = prop.y
-		var thrust = prop.x
+		var prop_torque = prop_torque(rpm, v0)
 
 		# calc new rpm
 		var net_torque = torque - prop_torque
@@ -248,8 +295,7 @@ func calc_motor(delta):
 		var maxdrpm = abs(volts * motor_Kv - rpm)
 		rpm += clamp(drpm, -maxdrpm, maxdrpm)
 		
-		prop = prop_thrust_torque(rpm)
-		thrust = prop.x
+		var thrust = prop_thrust(rpm, v0)
 
 		motor_state[midx][0] = volts
 		motor_state[midx][1] = rpm

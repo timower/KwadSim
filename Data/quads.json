@@ -2,6 +2,7 @@
 	"QQ190": {
 		"motor": "rx2205",
 		"frame": "QQ190",
-		"prop": "GF5x46"
+		"prop": "GF5x46",
+		"Vbat": 16.0
 	}	
 }
