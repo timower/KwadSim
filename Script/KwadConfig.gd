@@ -47,8 +47,6 @@ onready var fovLabel = $FOV/FOVLabel
 
 onready var mainView = $"/root/Root/MainView"
 
-onready var kwad = $"/root/Root/Viewport/Kwad"
-
 const RC_RATE_INCREMENTAL = 14.54
 
 func apply_rates(axis, rcCommandf):
@@ -112,7 +110,7 @@ func _on_CloseButton_pressed():
 	
 
 func _on_CamAngle_value_changed(value):
-	var camera = kwad.get_node("Camera")
+	var camera = Globals.kwad.get_node("Camera")
 	cam_angle = value
 	angleLabel.get_parent().value = value
 	camera.transform.basis = Basis(Vector3(deg2rad(value), 0, 0))
@@ -127,7 +125,7 @@ func _on_Distortion_value_changed(value):
 
 
 func _on_FOV_value_changed(value):
-	var camera = kwad.get_node("Camera")
+	var camera = Globals.kwad.get_node("Camera")
 	fov = value
 	fovLabel.get_parent().value = value
 	camera.fov = value

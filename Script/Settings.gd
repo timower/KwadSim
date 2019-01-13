@@ -2,25 +2,35 @@ extends Panel
 
 const SETTINGS_FILE = "user://settings.conf"
 
-onready var s3d_width = $TabContainer/Graphics/GContainer/Resolution/Width
-onready var s3d_height = $TabContainer/Graphics/GContainer/Resolution/Height
+var limits = {
+	"3D resolution": {"width": OS.get_screen_size().x, "height": OS.get_screen_size().y},
+	"2D resolution": {"width": OS.get_screen_size().x, "height": OS.get_screen_size().y},
+}
 
-onready var s2d_enabled = $"TabContainer/Graphics/GContainer/2DResolution/CheckBox"
-onready var s2d_width = $"TabContainer/Graphics/GContainer/2DResolution/Width"
-onready var s2d_height = $"TabContainer/Graphics/GContainer/2DResolution/Height"
+var settings = {
+	"3D resolution": {
+		"width": 1280,
+		"height": 720
+	},
+	"2D resolution": {
+		"enabled": false,
+		"width": 1280,
+		"height": 720
+	},
+	"Graphics": {
+		"Fullscreen": true,
+		"V-Sync": true,
+		"Shadows": true,
+	},
+	"Volume": 25,
 
-onready var fullscreen = $TabContainer/Graphics/GContainer/Fullscreen/Check
-onready var vsync = $"TabContainer/Graphics/GContainer/V-Sync/Check"
-onready var shadows =  $TabContainer/Graphics/GContainer/Shadows/Check
+	"Keys":  [
+		["reset", "Reset Quad", 82],
+		["kwad_config", "Open Kwad Config", 75],
+	]
+}
 
-onready var sfx_volume = $"TabContainer/Sound/VBoxContainer/SFX volume/HSlider"
-
-onready var key_tree = $TabContainer/Keyboard/Tree
-
-var keys = [
-	["reset", "Reset Quad", 82],
-	["kwad_config", "Open Kwad Config", 75],
-]
+onready var settings_tree = $Tree
 
 var tree_item_map = {}
 
@@ -30,101 +40,105 @@ func load_settings():
 	if not file.file_exists(SETTINGS_FILE):
 		var size = OS.get_screen_size()
 		
-		s3d_width.value = size.x #Globals.s3d_width
-		s3d_height.value = size.y #Globals.s3d_height
+		settings["3D resolution"]["width"] = size.x
+		settings["3D resolution"]["height"] = size.y
 		
-		s2d_width.value = size.x #get_viewport_rect().size.x
-		s2d_height.value = size.y #get_viewport_rect().size.y
-		show_keys()
+		settings["2D resolution"]["width"] = size.x
+		settings["2D resolution"]["height"]= size.y
+		
+		show_settings()
 		return
 
 	file.open(SETTINGS_FILE, file.READ)
-	var contents = parse_json(file.get_as_text())
-	
-	fullscreen.pressed = contents["fullscreen"]
-	
-	s3d_width.value = contents["s3d_width"]
-	s3d_height.value = contents["s3d_height"]
-	
-	s2d_enabled.pressed = contents["s2d_enabled"]
-	_on_CheckBox_toggled(s2d_enabled.pressed)
-	s2d_width.value = contents["s2d_width"]
-	s2d_height.value = contents["s2d_height"]
-	
-	vsync.pressed = contents["vsync"]
-	shadows.pressed = contents["shadows"]
-	
-	sfx_volume.value = contents["sfx_volume"]
-	
-	keys = contents["keys"]
+	settings = file.get_var()
 	file.close()
-	
-	show_keys()
+	show_settings()
 	
 func save_settings():
 	var file = File.new()
 	file.open(SETTINGS_FILE, file.WRITE)
-	var contents = {
-		"fullscreen": fullscreen.pressed,
-		"s3d_width": s3d_width.value,
-		"s3d_height": s3d_height.value,
-		"s2d_enabled": s2d_enabled.pressed,
-		"s2d_width": s2d_width.value,
-		"s2d_height": s2d_height.value,
-		"vsync": vsync.pressed,
-		"shadows": shadows.pressed,
-		"sfx_volume": sfx_volume.value
-	}
-	
-	contents["keys"] = keys
-	file.store_string(to_json(contents))
+	file.store_var(settings)
 	file.close()
 	
 func apply_settings():
-	OS.window_fullscreen = fullscreen.pressed
-	Globals.s3d_width = s3d_width.value
-	Globals.s3d_height = s3d_height.value
-	Globals.shadows = shadows.pressed
+	Globals.s3d_width = settings["3D resolution"]["width"]
+	Globals.s3d_height = settings["3D resolution"]["height"]
+	OS.window_fullscreen = settings["Graphics"]["Fullscreen"]
+	Globals.shadows = settings["Graphics"]["Shadows"]
+	OS.vsync_enabled = settings["Graphics"]["V-Sync"]
 	
 	var size = Vector2(ProjectSettings.get_setting("display/window/size/width"), ProjectSettings.get_setting("display/window/size/height"))
 	var mode = SceneTree.STRETCH_MODE_2D
-	if s2d_enabled.pressed:
+	if settings["2D resolution"]["enabled"]:
 		mode = SceneTree.STRETCH_MODE_VIEWPORT
-		size = Vector2(s2d_width.value, s2d_height.value)
-		if not fullscreen.pressed:
+		size = Vector2(settings["2D resolution"]["width"], settings["2D resolution"]["height"])
+		if not settings["Graphics"]["Fullscreen"]:
 			OS.window_size = size
 	
-	get_tree().set_screen_stretch(mode, SceneTree.STRETCH_ASPECT_KEEP, size)
+	get_tree().set_screen_stretch(mode, SceneTree.STRETCH_ASPECT_EXPAND, size)
 
-	OS.vsync_enabled = vsync.pressed
 	
-	for key in keys:
+	for key in settings["Keys"]:
 		InputMap.get_action_list(key[0])[0].scancode = key[2]
 	
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), linear2db(sfx_volume.value / 100.0))
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), linear2db(settings["Volume"] / 100.0))
 	
 	Globals.update_settings()
 
-func show_keys():
-	key_tree.clear()
-	var root = key_tree.create_item()
-	key_tree.hide_root = true
+func show_setting(parent: TreeItem, set_name: String, map, limit):
+	var setting = map[set_name]
+	var item = settings_tree.create_item(parent)
+	tree_item_map[item] = [map, set_name]
+	
+	item.set_text(0, set_name)
+	item.set_editable(1, true)
+	
+	if setting is Dictionary:
+		item.set_editable(1, false)
+		var sub_limit = null
+		if limit.has(set_name):
+			sub_limit = limit[set_name]
+		for sub in setting:
+			show_setting(item, sub, setting, sub_limit)
+	elif setting is int or setting is float:
+		item.set_cell_mode(1, TreeItem.CELL_MODE_RANGE)
+		if limit.has(set_name):
+			item.set_range_config(1, 0, limit[set_name], 1)
+		item.set_range(1, setting)
+	elif setting is bool:
+		item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
+		item.set_checked(1, setting)
+	elif set_name == "Keys":
+		item.set_editable(1, false)
+		for key in setting:
+			var key_item = settings_tree.create_item(item)
+			key_item.set_text(0, key[1])
+	
+			var code =  key[2]
+			key_item.set_text(1, OS.get_scancode_string(code))
+	
+			tree_item_map[key_item] = key
+			
 
-	for key in keys:
-		var item = key_tree.create_item(root)
-		item.set_text(0, key[1])
-		
-		var code =  key[2]
-		item.set_text(1, OS.get_scancode_string(code))
-		
-		tree_item_map[item] = key
+func show_settings():
+	tree_item_map.clear()
+	settings_tree.clear()
+	
+	var root = settings_tree.create_item()
+	settings_tree.hide_root = true
+	
+	for set_name in settings:
+		show_setting(root, set_name, settings, limits)
+
 
 func _ready():
 	load_settings()
 	apply_settings()
 
 func _process(delta):
-	pass
+	if Input.is_action_just_pressed("ui_cancel"):
+		load_settings()
+		visible = false
 
 func _on_ApplyButton_pressed():
 	apply_settings()
@@ -134,14 +148,12 @@ func _on_CloseButton_pressed():
 	load_settings()
 	visible = false
 
-func _on_CheckBox_toggled(button_pressed):
-	s2d_width.editable = button_pressed
-	s2d_height.editable = button_pressed
-
 var popup_key = null
 
 func _on_Tree_item_activated():
-	var item = key_tree.get_selected()
+	var item = settings_tree.get_selected()
+	if item.get_parent().get_text(0) != "Keys":
+		return
 	var key = tree_item_map[item]
 	popup_key = key
 	$KeyPopup.popup()
@@ -151,9 +163,33 @@ func _unhandled_input(event):
 		return
 	if not event is InputEventKey:
 		return
-		
+
 	popup_key[2] = event.scancode
 	popup_key = null
-	
+
 	$KeyPopup.hide()
-	show_keys()
+	show_settings()
+
+func _on_Tree_item_edited():
+	var item = settings_tree.get_selected()
+	
+	var s = tree_item_map[item]
+	var map = s[0]
+	var set_name = s[1]
+	var setting = map[set_name]
+	
+	if set_name == "width":
+		for res in ["3D resolution", "2D resolution"]:
+			if map == settings[res]:
+				var aspect = OS.window_size.x / OS.window_size.y
+				var height = round(item.get_range(1) / aspect)
+				settings[res]["height"] = height
+				item.get_next().set_range(1, height)
+			
+	if setting is Dictionary:
+		print("Shouldn't happend?")
+	elif setting is int or setting is float:
+		map[set_name] = item.get_range(1)
+	elif setting is bool:
+		map[set_name] = item.is_checked(1)
+	

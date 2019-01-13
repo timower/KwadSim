@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://Shaders/vr.shader" type="Shader" id=1]
+
+[resource]
+
+shader = ExtResource( 1 )
+shader_param/distortion = 0.3
+shader_param/aspect = 0.889
+

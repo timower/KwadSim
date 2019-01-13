@@ -34,7 +34,6 @@ func list_joys():
 			
 		idx += 1
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	for i in range(JOY_AXIS_MAX):
 		var a = axisView.instance()
@@ -46,6 +45,10 @@ func _ready():
 	get_tree().paused = self.visible
 	loadConf()
 	list_joys()
+	Globals.joyConf = self
+	
+func _exit_tree():
+	Globals.joyConf = null
 
 func _process(delta):
 	if Input.is_action_just_pressed("ui_cancel") and self.visible:

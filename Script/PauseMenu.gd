@@ -1,6 +1,5 @@
 extends Panel
 
-onready var joyConf = $"/root/Root/JoyConf"
 onready var kwadConf = $"/root/Root/KwadConfig"
 
 func _ready():
@@ -21,12 +20,13 @@ func _on_KConfigButton_pressed():
 	self.visible = false
 
 func _on_IConfigButton_pressed():
-	joyConf.visible = true
+	Globals.joyConf.visible = true
 	self.visible = false
 
 
 func _on_SettingsButton_pressed():
 	$"/root/Root/Settings".visible = true
+	self.visible = false
 
 
 func _on_QuitButton_pressed():

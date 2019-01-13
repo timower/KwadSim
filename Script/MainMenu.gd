@@ -1,6 +1,5 @@
 extends Control
 
-onready var joyConf = $"/root/Root/JoyConf"
 onready var trackPopup = $"/root/Root/TrackDialog"
 onready var settings = $"/root/Root/Settings"
 
@@ -17,7 +16,7 @@ func _on_QuitButton_pressed():
 
 
 func _on_InputButton_pressed():
-	joyConf.visible = true
+	Globals.joyConf.visible = true
 
 
 func _on_TrackButton_pressed():

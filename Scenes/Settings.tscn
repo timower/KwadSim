@@ -1,6 +1,15 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Script/Settings.gd" type="Script" id=1]
+
+[sub_resource type="DynamicFontData" id=1]
+
+font_path = "res://arial.ttf"
+
+[sub_resource type="DynamicFont" id=2]
+
+size = 20
+font_data = SubResource( 1 )
 
 [node name="Settings" type="Panel"]
 pause_mode = 2
@@ -8,216 +17,23 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -350.0
+margin_left = -324.0
 margin_top = -160.0
-margin_right = 354.0
+margin_right = 324.0
 margin_bottom = 160.0
 script = ExtResource( 1 )
 
-[node name="TabContainer" type="TabContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_bottom = -40.0
-
-[node name="Graphics" type="Tabs" parent="TabContainer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
-
-[node name="GContainer" type="VBoxContainer" parent="TabContainer/Graphics"]
+[node name="Tree" type="Tree" parent="."]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -265.0
-margin_top = -99.0
-margin_right = 265.0
-margin_bottom = 99.0
-
-[node name="Resolution" type="HBoxContainer" parent="TabContainer/Graphics/GContainer"]
-editor/display_folded = true
-margin_right = 530.0
-margin_bottom = 24.0
-custom_constants/separation = 10
-alignment = 1
-
-[node name="Label" type="Label" parent="TabContainer/Graphics/GContainer/Resolution"]
-margin_left = 125.0
-margin_top = 5.0
-margin_right = 219.0
-margin_bottom = 19.0
-text = "3D Resolution:"
-
-[node name="Width" type="SpinBox" parent="TabContainer/Graphics/GContainer/Resolution"]
-margin_left = 229.0
-margin_right = 303.0
-margin_bottom = 24.0
-allow_greater = true
-
-[node name="Label2" type="Label" parent="TabContainer/Graphics/GContainer/Resolution"]
-margin_left = 313.0
-margin_top = 5.0
-margin_right = 320.0
-margin_bottom = 19.0
-text = "x"
-
-[node name="Height" type="SpinBox" parent="TabContainer/Graphics/GContainer/Resolution"]
-margin_left = 330.0
-margin_right = 404.0
-margin_bottom = 24.0
-allow_greater = true
-
-[node name="2DResolution" type="HBoxContainer" parent="TabContainer/Graphics/GContainer"]
-editor/display_folded = true
-margin_top = 28.0
-margin_right = 530.0
-margin_bottom = 52.0
-custom_constants/separation = 10
-alignment = 1
-
-[node name="CheckBox" type="CheckBox" parent="TabContainer/Graphics/GContainer/2DResolution"]
-margin_left = 115.0
-margin_right = 230.0
-margin_bottom = 24.0
-text = "2D resolution"
-
-[node name="Width" type="SpinBox" parent="TabContainer/Graphics/GContainer/2DResolution"]
-margin_left = 240.0
-margin_right = 314.0
-margin_bottom = 24.0
-allow_greater = true
-editable = false
-
-[node name="Label2" type="Label" parent="TabContainer/Graphics/GContainer/2DResolution"]
-margin_left = 324.0
-margin_top = 5.0
-margin_right = 331.0
-margin_bottom = 19.0
-text = "x"
-
-[node name="Height" type="SpinBox" parent="TabContainer/Graphics/GContainer/2DResolution"]
-margin_left = 341.0
-margin_right = 415.0
-margin_bottom = 24.0
-allow_greater = true
-editable = false
-
-[node name="Fullscreen" type="HBoxContainer" parent="TabContainer/Graphics/GContainer"]
-editor/display_folded = true
-margin_top = 56.0
-margin_right = 530.0
-margin_bottom = 96.0
-custom_constants/separation = 10
-alignment = 1
-
-[node name="Label" type="Label" parent="TabContainer/Graphics/GContainer/Fullscreen"]
-margin_left = 185.0
-margin_top = 13.0
-margin_right = 259.0
-margin_bottom = 27.0
-text = "Fullscreen: "
-
-[node name="Check" type="CheckButton" parent="TabContainer/Graphics/GContainer/Fullscreen"]
-margin_left = 269.0
-margin_right = 345.0
-margin_bottom = 40.0
-pressed = true
-
-[node name="V-Sync" type="HBoxContainer" parent="TabContainer/Graphics/GContainer"]
-editor/display_folded = true
-margin_top = 100.0
-margin_right = 530.0
-margin_bottom = 140.0
-custom_constants/separation = 10
-alignment = 1
-
-[node name="Label" type="Label" parent="TabContainer/Graphics/GContainer/V-Sync"]
-margin_left = 201.0
-margin_top = 13.0
-margin_right = 243.0
-margin_bottom = 27.0
-text = "V-Sync"
-
-[node name="Check" type="CheckButton" parent="TabContainer/Graphics/GContainer/V-Sync"]
-margin_left = 253.0
-margin_right = 329.0
-margin_bottom = 40.0
-pressed = true
-
-[node name="Shadows" type="HBoxContainer" parent="TabContainer/Graphics/GContainer"]
-margin_top = 144.0
-margin_right = 530.0
-margin_bottom = 184.0
-custom_constants/separation = 10
-alignment = 1
-
-[node name="Label" type="Label" parent="TabContainer/Graphics/GContainer/Shadows"]
-margin_left = 194.0
-margin_top = 13.0
-margin_right = 249.0
-margin_bottom = 27.0
-text = "Shadows"
-
-[node name="Check" type="CheckButton" parent="TabContainer/Graphics/GContainer/Shadows"]
-margin_left = 259.0
-margin_right = 335.0
-margin_bottom = 40.0
-pressed = true
-
-[node name="Keyboard" type="Tabs" parent="TabContainer"]
-editor/display_folded = true
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
-
-[node name="Tree" type="Tree" parent="TabContainer/Keyboard"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-columns = 2
-select_mode = 1
-
-[node name="Sound" type="Tabs" parent="TabContainer"]
-editor/display_folded = true
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Sound"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-alignment = 1
-
-[node name="SFX volume" type="HBoxContainer" parent="TabContainer/Sound/VBoxContainer"]
-margin_top = 114.0
-margin_right = 696.0
-margin_bottom = 130.0
-alignment = 1
-
-[node name="Label" type="Label" parent="TabContainer/Sound/VBoxContainer/SFX volume"]
-margin_left = 207.0
-margin_top = 1.0
+margin_left = -285.0
+margin_top = -140.0
 margin_right = 285.0
-margin_bottom = 15.0
-text = "SFX volume:"
-
-[node name="HSlider" type="HSlider" parent="TabContainer/Sound/VBoxContainer/SFX volume"]
-margin_left = 289.0
-margin_right = 489.0
-margin_bottom = 16.0
-rect_min_size = Vector2( 200, 0 )
-value = 50.0
-ticks_on_borders = false
+margin_bottom = 116.0
+custom_fonts/font = SubResource( 2 )
+columns = 2
 
 [node name="CloseButton" type="Button" parent="."]
 anchor_left = 1.0
@@ -258,7 +74,7 @@ margin_right = 43.5
 margin_bottom = 25.5
 text = "Press any key"
 
-[connection signal="toggled" from="TabContainer/Graphics/GContainer/2DResolution/CheckBox" to="." method="_on_CheckBox_toggled"]
-[connection signal="item_activated" from="TabContainer/Keyboard/Tree" to="." method="_on_Tree_item_activated"]
+[connection signal="item_activated" from="Tree" to="." method="_on_Tree_item_activated"]
+[connection signal="item_edited" from="Tree" to="." method="_on_Tree_item_edited"]
 [connection signal="pressed" from="CloseButton" to="." method="_on_CloseButton_pressed"]
 [connection signal="pressed" from="ApplyButton" to="." method="_on_ApplyButton_pressed"]

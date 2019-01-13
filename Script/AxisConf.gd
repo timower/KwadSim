@@ -1,12 +1,12 @@
 extends HBoxContainer
 
-export(String) var axis_name = "axis n"
+export(String) var axis_name = "axis N"
 
-onready var joyConf = self.get_parent()
+onready var joyConf = get_parent()
 onready var axisSel = $AxisBox
 onready var progress = $ProgressBar
 
-var value = -1
+var value = 0
 
 var axis = 0
 
@@ -20,27 +20,28 @@ func _ready():
 	for i in range(JOY_AXIS_MAX):
 		axisSel.add_item("axis " + str(i), i)
 
-func _process(delta):
-	if joyConf.visible:
-		axis = axisSel.get_selected_id()
-		progress.value = value
-
-#func _physics_process(delta):
 func _input(event):
-	if event is InputEventJoypadMotion and event.axis == axis:
-		var val = Input.get_joy_axis(joyConf.selected_dev, axis)
-		has_moved = has_moved or val != 0.0
+	if event is InputEventJoypadMotion and event.axis == axis \
+			and event.device == joyConf.selected_dev:
+		has_moved = true
+
+		var val = event.axis_value
+
 		var vrange = max_val - min_val
-		if vrange == 0:
-			vrange = 1
-		value = clamp(2 * (val - min_val) / vrange - 1, -1, 1)
+		value = 2 * (val - min_val) / vrange - 1
+		value = clamp(value, -1, 1)
+		progress.value = value
 	
 func _on_MaxButton_pressed():
 	max_val = Input.get_joy_axis(joyConf.selected_dev, axis)
+	if max_val == min_val:
+		max_val += 0.001
 
 
 func _on_MinButton_pressed():
 	min_val = Input.get_joy_axis(joyConf.selected_dev, axis)
+	if min_val == max_val:
+		min_val += 0.001
 
 
 func _on_ResetButton_pressed():
@@ -57,3 +58,6 @@ func loadConf(file):
 	axisSel.select(axis)
 	min_val = file.get_var()
 	max_val = file.get_var()
+
+func _on_AxisBox_item_selected(ID):
+	axis = ID
