@@ -3,6 +3,15 @@
 		"motor": "rx2205",
 		"frame": "QQ190",
 		"prop": "GF5x46",
-		"Vbat": 16.0
-	}	
+		"Vbat": 16.0,
+		"weight": 0.6
+	},
+	
+	"F330": {
+		"motor": "dst1200",
+		"frame": "F330",
+		"prop": "apc8x38",
+		"Vbat": 12.0,
+		"weight": 0.8,
+	}
 }

@@ -84,16 +84,8 @@ var motor_state = [
 
 var ground_effect = 0
 
-
-func read_json(name):
-	var file = File.new()
-	file.open(name, file.READ)
-	var conts = parse_json(file.get_as_text())
-	file.close()
-	return conts
-
 func load_motor(motor_name):
-	var params = read_json("res://Data/Motors/" + motor_name + ".json")
+	var params = Globals.read_json("res://Data/Motors/" + motor_name + ".json")
 	motor_I0 = params["I0"]
 	motor_Kv = params["Kv"]
 	motor_R = params["R"]
@@ -101,7 +93,7 @@ func load_motor(motor_name):
 	min_throttle = params["min_throttle"]
 
 func load_prop(prop_name):
-	var params = read_json("res://Data/Props/" + prop_name + ".json")
+	var params = Globals.read_json("res://Data/Props/" + prop_name + ".json")
 	prop_radius = params["radius"]
 	prop_chord = params["chord"]
 	inertia = params["inertia"]
@@ -109,8 +101,10 @@ func load_prop(prop_name):
 	prop_curve_drpm = prop_curve[1][0] - prop_curve[0][0]
 	prop_curve_dv0 = prop_curve[0][1][1][0] - prop_curve[0][1][0][0]
 
+const DEF_PROP_RAD = 0.062
+
 func load_frame(frame_name):
-	var params = read_json("res://Data/Frames/" + frame_name + ".json")
+	var params = Globals.read_json("res://Data/Frames/" + frame_name + ".json")
 	drag_c = params["drag_c"]
 	
 	var area = params["area"]
@@ -118,20 +112,26 @@ func load_frame(frame_name):
 	drag_area.y = area[1]
 	drag_area.z = area[2]
 	
+	var prop_scale = prop_radius / DEF_PROP_RAD
+	var prop_scale_vec = Vector3(prop_scale, 1, prop_scale)
 	for i in range(4):
 		var pos = params["motors"][i]
 		motors[i].transform.origin = Vector3(pos[0], pos[1], pos[2])
-	
+		motors[i].get_node("movingProp").scale = prop_scale_vec
+		motors[i].get_node("Prop").scale = prop_scale_vec
+		
 	var size = params["size"]
 	$CollisionShape.shape.extents = Vector3(size[0], size[1], size[2])
+	var cam = params["cam"]
+	$Camera.transform.origin = Vector3(cam[0], cam[1], cam[2]) 
 
 func load_params():
-	var quads = read_json("res://Data/quads.json")
-	var quad = quads[Globals.selected_quad]
+	var quad = Globals.quads[Globals.selected_quad]
 	load_motor(quad["motor"])
 	load_prop(quad["prop"])
 	load_frame(quad["frame"])
 	Vin = quad["Vbat"]
+	mass = quad["weight"]
 
 func _ready():
 	load_params()
@@ -314,6 +314,9 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("reset"):
 		transform.basis = Basis(Vector3())
 	
+	if Globals.joyConf == null:
+		return
+	
 	if not Globals.joyConf.throttle.has_moved:
 		return
 		
@@ -343,7 +346,8 @@ func _physics_process(delta):
 	
 	var vel2_rot = angular_velocity.length_squared()
 	var dir_rot = angular_velocity.normalized()
-	var drag_torque = 0.125 * AIR_RHO * vel2_rot * drag_c * 0.00000280252
+	# TODO: CORRECT the size parameter to be dependent on axis and on quad frame
+	var drag_torque = 0.125 * AIR_RHO * vel2_rot * drag_c * 0.000003
 	apply_torque_impulse(dir_rot * -drag_torque * delta)
 
 
@@ -353,16 +357,15 @@ func _process(delta):
 		motors[i].get_node("MotorSound").pitch_scale = 0.8 +  0.7 * p
 		
 		var speed = motor_state[i][1] 
-		#motors[i].rotate_y(speed * delta)
-		
 		var rotating = motor_state[i][1] > 10
 		motors[i].get_node("movingProp").visible = rotating
 		motors[i].get_node("Prop").rotate_y(MOTOR_DIR[i] * speed / (Vin * motor_Kv) * 50  * delta)
-	
+
 	var vel = linear_velocity.length()
 	var height = global_transform.origin.y
 	var fps = 1 / max(delta, 0.0001)
 	speedLabel.text = str(int(vel * 3.6)) + " km/h\n" + \
 					  str(round(height * 10)/10) + " m\n" + \
-					  str(ground_effect) + "\n" + \
+					  str(round(motor_state[0][1])) + " rpm\n" + \
+					  str(motor_state[0][3]) + " N\n" + \
 					  str(int(fps)) + " fps"

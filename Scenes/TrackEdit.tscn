@@ -1,0 +1,410 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Script/TrackEdit.gd" type="Script" id=1]
+[ext_resource path="res://Nodes/Track.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Nodes/DefaultGround.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Script/EditCamera.gd" type="Script" id=4]
+
+[sub_resource type="CubeMesh" id=1]
+
+
+[node name="Root" type="Spatial"]
+script = ExtResource( 1 )
+
+[node name="Track" parent="." instance=ExtResource( 2 )]
+
+[node name="Ground" parent="." instance=ExtResource( 3 )]
+
+[node name="CamPos" type="Spatial" parent="."]
+editor/display_folded = true
+script = ExtResource( 4 )
+
+[node name="Camera" type="Camera" parent="CamPos"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6 )
+
+[node name="MeshInstance" type="MeshInstance" parent="CamPos"]
+visible = false
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="UI" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="LoadPanel" type="PanelContainer" parent="UI"]
+editor/display_folded = true
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 149.0
+margin_bottom = 44.0
+
+[node name="LoadContainer" type="HBoxContainer" parent="UI/LoadPanel"]
+editor/display_folded = true
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 229.0
+margin_bottom = 31.0
+
+[node name="TrackName" type="LineEdit" parent="UI/LoadPanel/LoadContainer"]
+margin_right = 58.0
+margin_bottom = 24.0
+
+[node name="LoadButton" type="Button" parent="UI/LoadPanel/LoadContainer"]
+margin_left = 62.0
+margin_right = 104.0
+margin_bottom = 24.0
+text = "Load"
+
+[node name="SaveButton" type="Button" parent="UI/LoadPanel/LoadContainer"]
+margin_left = 108.0
+margin_right = 149.0
+margin_bottom = 24.0
+text = "Save"
+
+[node name="FlyButton" type="Button" parent="UI/LoadPanel/LoadContainer"]
+margin_left = 153.0
+margin_right = 183.0
+margin_bottom = 24.0
+text = "Fly"
+
+[node name="ExitButton" type="Button" parent="UI/LoadPanel/LoadContainer"]
+margin_left = 187.0
+margin_right = 222.0
+margin_bottom = 24.0
+text = "Exit"
+
+[node name="ToolPanel" type="Panel" parent="UI"]
+editor/display_folded = true
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_top = -165.0
+margin_right = 190.0
+margin_bottom = 165.0
+
+[node name="ToolContainer" type="VBoxContainer" parent="UI/ToolPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="OptionButton" type="OptionButton" parent="UI/ToolPanel/ToolContainer"]
+margin_right = 190.0
+margin_bottom = 20.0
+text = "Tool"
+align = 1
+
+[node name="GateToolContainer" type="VBoxContainer" parent="UI/ToolPanel/ToolContainer"]
+margin_top = 24.0
+margin_right = 190.0
+margin_bottom = 51.0
+
+[node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/GateToolContainer"]
+margin_right = 190.0
+margin_bottom = 14.0
+text = "Choose Type:"
+
+[node name="ItemList" type="ItemList" parent="UI/ToolPanel/ToolContainer/GateToolContainer"]
+margin_top = 18.0
+margin_right = 190.0
+margin_bottom = 27.0
+auto_height = true
+
+[node name="MoveToolContainer" type="VBoxContainer" parent="UI/ToolPanel/ToolContainer"]
+visible = false
+margin_top = 37.0
+margin_right = 190.0
+margin_bottom = 135.0
+
+[node name="PosLabel" type="Label" parent="UI/ToolPanel/ToolContainer/MoveToolContainer"]
+margin_right = 190.0
+margin_bottom = 14.0
+text = "pos:"
+
+[node name="XPos" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/MoveToolContainer"]
+editor/display_folded = true
+margin_top = 18.0
+margin_right = 190.0
+margin_bottom = 42.0
+
+[node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/MoveToolContainer/XPos"]
+margin_top = 5.0
+margin_right = 12.0
+margin_bottom = 19.0
+text = "X:"
+
+[node name="SpinBox" type="SpinBox" parent="UI/ToolPanel/ToolContainer/MoveToolContainer/XPos"]
+margin_left = 16.0
+margin_right = 90.0
+margin_bottom = 24.0
+step = 0.1
+allow_greater = true
+allow_lesser = true
+
+[node name="YPos" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/MoveToolContainer"]
+editor/display_folded = true
+margin_top = 46.0
+margin_right = 190.0
+margin_bottom = 70.0
+
+[node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/MoveToolContainer/YPos"]
+margin_top = 5.0
+margin_right = 11.0
+margin_bottom = 19.0
+text = "Y:"
+
+[node name="SpinBox" type="SpinBox" parent="UI/ToolPanel/ToolContainer/MoveToolContainer/YPos"]
+margin_left = 15.0
+margin_right = 89.0
+margin_bottom = 24.0
+step = 0.1
+allow_greater = true
+allow_lesser = true
+
+[node name="ZPos" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/MoveToolContainer"]
+editor/display_folded = true
+margin_top = 74.0
+margin_right = 190.0
+margin_bottom = 98.0
+
+[node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/MoveToolContainer/ZPos"]
+margin_top = 5.0
+margin_right = 12.0
+margin_bottom = 19.0
+text = "Z:"
+
+[node name="SpinBox" type="SpinBox" parent="UI/ToolPanel/ToolContainer/MoveToolContainer/ZPos"]
+margin_left = 16.0
+margin_right = 90.0
+margin_bottom = 24.0
+step = 0.1
+allow_greater = true
+allow_lesser = true
+
+[node name="RotateToolContainer" type="VBoxContainer" parent="UI/ToolPanel/ToolContainer"]
+visible = false
+margin_top = 24.0
+margin_right = 190.0
+margin_bottom = 38.0
+
+[node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/RotateToolContainer"]
+margin_right = 190.0
+margin_bottom = 14.0
+text = "rot:"
+
+[node name="XPos" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/RotateToolContainer"]
+margin_top = 31.0
+margin_right = 190.0
+margin_bottom = 55.0
+
+[node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/RotateToolContainer/XPos"]
+margin_top = 5.0
+margin_right = 12.0
+margin_bottom = 19.0
+text = "X:"
+
+[node name="SpinBox" type="SpinBox" parent="UI/ToolPanel/ToolContainer/RotateToolContainer/XPos"]
+margin_left = 16.0
+margin_right = 90.0
+margin_bottom = 24.0
+allow_greater = true
+allow_lesser = true
+
+[node name="YPos" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/RotateToolContainer"]
+margin_top = 59.0
+margin_right = 190.0
+margin_bottom = 83.0
+
+[node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/RotateToolContainer/YPos"]
+margin_top = 5.0
+margin_right = 11.0
+margin_bottom = 19.0
+text = "Y:"
+
+[node name="SpinBox" type="SpinBox" parent="UI/ToolPanel/ToolContainer/RotateToolContainer/YPos"]
+margin_left = 15.0
+margin_right = 89.0
+margin_bottom = 24.0
+allow_greater = true
+allow_lesser = true
+
+[node name="ZPos" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/RotateToolContainer"]
+margin_top = 87.0
+margin_right = 190.0
+margin_bottom = 111.0
+
+[node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/RotateToolContainer/ZPos"]
+margin_top = 5.0
+margin_right = 12.0
+margin_bottom = 19.0
+text = "Z:"
+
+[node name="SpinBox" type="SpinBox" parent="UI/ToolPanel/ToolContainer/RotateToolContainer/ZPos"]
+margin_left = 16.0
+margin_right = 90.0
+margin_bottom = 24.0
+allow_greater = true
+allow_lesser = true
+
+[node name="TreePanel" type="Panel" parent="UI"]
+editor/display_folded = true
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -157.5
+margin_top = -120.0
+margin_right = 157.5
+
+[node name="TrackTree" type="Tree" parent="UI/TreePanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+allow_reselect = true
+allow_rmb_select = true
+hide_root = true
+select_mode = 1
+
+[node name="PopupMenu2" type="PopupMenu" parent="UI/TreePanel/TrackTree"]
+margin_left = 165.0
+margin_top = -150.0
+margin_right = 228.0
+margin_bottom = -116.0
+items = [ "Up", null, 0, false, false, -1, 0, null, "", false, "Down", null, 0, false, false, -1, 0, null, "", false, "Delete", null, 0, false, false, -1, 0, null, "", false ]
+
+[node name="LoadDialog" type="WindowDialog" parent="UI"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -150.0
+margin_top = -150.0
+margin_right = 90.0
+margin_bottom = 90.0
+window_title = "Load"
+
+[node name="Label" type="Label" parent="UI/LoadDialog"]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -20.0
+margin_top = 10.0
+margin_right = 20.0
+margin_bottom = 24.0
+text = "Load:"
+
+[node name="TrackList" type="ItemList" parent="UI/LoadDialog"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -110.0
+margin_top = -100.0
+margin_right = 110.0
+margin_bottom = 60.0
+allow_rmb_select = true
+
+[node name="NewTrackName" type="LineEdit" parent="UI/LoadDialog"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = -40.0
+margin_right = 170.0
+margin_bottom = -16.0
+
+[node name="NewButton" type="Button" parent="UI/LoadDialog"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -50.0
+margin_top = -40.0
+margin_right = -10.0
+margin_bottom = -20.0
+text = "New"
+
+[node name="PopupMenu" type="PopupMenu" parent="UI/LoadDialog"]
+margin_right = 20.0
+margin_bottom = 20.0
+items = [ "Delete", null, 0, false, false, -1, 0, null, "", false ]
+
+[node name="ConfirmSaveDialog" type="WindowDialog" parent="UI"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -137.0
+margin_top = -55.0
+margin_right = 137.0
+margin_bottom = 55.0
+window_title = "Unsaved changes"
+
+[node name="Label" type="Label" parent="UI/ConfirmSaveDialog"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -90.5
+margin_top = -35.0
+margin_right = 90.5
+margin_bottom = -4.0
+text = "There are unsaved changes, 
+close without saving?"
+
+[node name="CancelButton" type="Button" parent="UI/ConfirmSaveDialog"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 7.0
+margin_top = -25.0
+margin_right = 61.0
+margin_bottom = -5.0
+text = "Cancel"
+
+[node name="CloseButton" type="Button" parent="UI/ConfirmSaveDialog"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -40.0
+margin_top = -25.0
+margin_right = 14.0
+margin_bottom = -5.0
+text = "Discard"
+
+[node name="CloseSaveButton" type="Button" parent="UI/ConfirmSaveDialog"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -97.0
+margin_top = -25.0
+margin_right = -3.0
+margin_bottom = -5.0
+text = "Save & Close"
+
+[node name="InvalidNameDialog" type="AcceptDialog" parent="UI"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -69.0
+margin_top = -29.0
+margin_right = 69.0
+margin_bottom = 29.0
+dialog_text = "Invalid Track Name"
+
+[connection signal="text_changed" from="UI/LoadPanel/LoadContainer/TrackName" to="." method="_on_TrackName_text_changed"]
+[connection signal="pressed" from="UI/LoadPanel/LoadContainer/LoadButton" to="." method="_on_LoadButton_pressed"]
+[connection signal="pressed" from="UI/LoadPanel/LoadContainer/SaveButton" to="." method="_on_SaveButton_pressed"]
+[connection signal="pressed" from="UI/LoadPanel/LoadContainer/FlyButton" to="." method="_on_FlyButton_pressed"]
+[connection signal="pressed" from="UI/LoadPanel/LoadContainer/ExitButton" to="." method="_on_ExitButton_pressed"]
+[connection signal="item_selected" from="UI/ToolPanel/ToolContainer/OptionButton" to="." method="_on_OptionButton_item_selected"]
+[connection signal="item_activated" from="UI/TreePanel/TrackTree" to="." method="_on_TrackTree_item_activated"]
+[connection signal="item_rmb_selected" from="UI/TreePanel/TrackTree" to="." method="_on_TrackTree_item_rmb_selected"]
+[connection signal="item_selected" from="UI/TreePanel/TrackTree" to="." method="_on_TrackTree_item_selected"]
+[connection signal="index_pressed" from="UI/TreePanel/TrackTree/PopupMenu2" to="." method="_on_PopupMenu2_index_pressed"]
+[connection signal="about_to_show" from="UI/LoadDialog" to="." method="_on_LoadDialog_about_to_show"]
+[connection signal="item_activated" from="UI/LoadDialog/TrackList" to="." method="_on_TrackList_item_activated"]
+[connection signal="item_rmb_selected" from="UI/LoadDialog/TrackList" to="." method="_on_TrackList_item_rmb_selected"]
+[connection signal="pressed" from="UI/LoadDialog/NewButton" to="." method="_on_NewButton_pressed"]
+[connection signal="index_pressed" from="UI/LoadDialog/PopupMenu" to="." method="_on_PopupMenu_index_pressed"]
+[connection signal="pressed" from="UI/ConfirmSaveDialog/CancelButton" to="." method="_on_CancelButton_pressed"]
+[connection signal="pressed" from="UI/ConfirmSaveDialog/CloseButton" to="." method="_on_CloseButton_pressed"]
+[connection signal="pressed" from="UI/ConfirmSaveDialog/CloseSaveButton" to="." method="_on_CloseSaveButton_pressed"]

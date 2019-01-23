@@ -81,7 +81,8 @@ func apply_settings():
 	for key in settings["Keys"]:
 		InputMap.get_action_list(key[0])[0].scancode = key[2]
 	
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), linear2db(settings["Volume"] / 100.0))
+	var vol = linear2db(settings["Volume"] / 100.0)
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), vol)
 	
 	Globals.update_settings()
 

@@ -2,7 +2,7 @@ extends Panel
 
 const SAVE_PATH = "user://joy.conf"
 
-var axisView = preload("res://Scenes/AxisView.tscn")
+var axisView = preload("res://Nodes/AxisView.tscn")
 
 onready var joyListOpt = $OptionButton
 onready var allAxis = $AllAxis

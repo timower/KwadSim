@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Script/JoyConf.gd" type="Script" id=1]
-[ext_resource path="res://Scenes/AxisConf.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Nodes/AxisConf.tscn" type="PackedScene" id=2]
 
 [node name="JoyConf" type="Panel"]
 pause_mode = 2
