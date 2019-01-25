@@ -45,16 +45,16 @@ class GateTool extends Tool:
 		cam_pos = root.get_node("CamPos")
 		
 		for gate in Globals.GATES:
-			gate_list.add_item(gate["name"])
+			gate_list.add_item(gate.name)
 		gate_list.connect("item_activated", self, "place_gate")
 	
 	func place_gate(idx):
 		root.changed = true
 		track.add_gate({
-			"pos": cam_pos.global_transform.origin, 
-			"rot": Vector3(), 
-			"id": idx}
-		)
+			pos = cam_pos.global_transform.origin, 
+			rot = Vector3(), 
+			id = idx
+		})
 		root.select_gate(track.gates.size() - 1)
 
 class MoveTool extends Tool:
@@ -63,8 +63,12 @@ class MoveTool extends Tool:
 	var zpos
 	
 	var track
+	var move_gizmo
 	
 	func _init(root, container).("Move", root):
+		move_gizmo = root.get_node("MoveGizmo")
+		move_gizmo.connect("pos_changed", self, "gizmo_pos_changed")
+		
 		xpos = container.get_node("XPos/SpinBox")
 		ypos = container.get_node("YPos/SpinBox")
 		zpos = container.get_node("ZPos/SpinBox")
@@ -78,12 +82,25 @@ class MoveTool extends Tool:
 		if root.selected_gate != null:
 			gate_selected(root.selected_gate)
 	
+	func deselected():
+		move_gizmo.visible = false
+	
 	func gate_selected(idx):
 		disabled = true
-		xpos.value = track.gates[idx]["pos"].x
-		ypos.value = track.gates[idx]["pos"].y
-		zpos.value = track.gates[idx]["pos"].z
+		xpos.value = track.gates[idx].pos.x
+		ypos.value = track.gates[idx].pos.y
+		zpos.value = track.gates[idx].pos.z
 		disabled = false
+			
+		move_gizmo.visible = true
+		move_gizmo.transform.origin = track.gates[idx].pos
+	
+	func gizmo_pos_changed(v):
+		root.changed = true
+		track.change_pos(root.selected_gate, v)
+		xpos.value = v.x
+		ypos.value = v.y
+		zpos.value = v.z
 	
 	var disabled = false
 	func pos_changed(v):
@@ -92,6 +109,7 @@ class MoveTool extends Tool:
 		root.changed = true
 		var new_pos = Vector3(xpos.value, ypos.value, zpos.value)
 		track.change_pos(root.selected_gate, new_pos)
+		move_gizmo.transform.origin = new_pos
 
 class RotateTool extends Tool:
 	var xpos
@@ -100,7 +118,12 @@ class RotateTool extends Tool:
 	
 	var track
 	
+	var rot_gizmo
+	
 	func _init(root, container).("Rotate", root):
+		rot_gizmo = root.get_node("RotateGizmo")
+		rot_gizmo.connect("rot_changed", self, "gizmo_rot_changed")
+		
 		xpos = container.get_node("XPos/SpinBox")
 		ypos = container.get_node("YPos/SpinBox")
 		zpos = container.get_node("ZPos/SpinBox")
@@ -114,11 +137,18 @@ class RotateTool extends Tool:
 		if root.selected_gate != null:
 			gate_selected(root.selected_gate)
 	
+	func deselected():
+		rot_gizmo.visible = false
+	
 	func gate_selected(idx):
+		rot_gizmo.visible = true
+		rot_gizmo.target = track.get_child(idx)
+		rot_gizmo.transform.origin = track.gates[idx].pos
+		
 		disabled = true
-		xpos.value = rad2deg(track.gates[idx]["rot"].x)
-		ypos.value = rad2deg(track.gates[idx]["rot"].y)
-		zpos.value = rad2deg(track.gates[idx]["rot"].z)
+		xpos.value = rad2deg(track.gates[idx].rot.x)
+		ypos.value = rad2deg(track.gates[idx].rot.y)
+		zpos.value = rad2deg(track.gates[idx].rot.z)
 		disabled = false
 	
 	var disabled = false
@@ -132,6 +162,13 @@ class RotateTool extends Tool:
 			deg2rad(zpos.value)
 		)
 		track.change_rot(root.selected_gate, new_rot)
+	
+	func gizmo_rot_changed(new_rot):
+		root.changed = true
+		track.change_rot(root.selected_gate, new_rot)
+		xpos.value = rad2deg(new_rot.x)
+		ypos.value = rad2deg(new_rot.y)
+		zpos.value = rad2deg(new_rot.z)
 
 var tools = [
 	GateTool,
@@ -289,7 +326,7 @@ func _on_TrackTree_item_selected():
 
 func _on_TrackTree_item_activated():
 	var idx = get_track_tree_selected_idx()
-	$CamPos.global_transform.origin = $Track.gates[idx]["pos"]
+	$CamPos.global_transform.origin = $Track.gates[idx].pos
 
 func _on_TrackTree_item_rmb_selected(position):
 	var pop_rect = Rect2(track_tree.rect_global_position + position, Vector2(10, 10))

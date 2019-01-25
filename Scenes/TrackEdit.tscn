@@ -1,30 +1,176 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Script/TrackEdit.gd" type="Script" id=1]
-[ext_resource path="res://Nodes/Track.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Nodes/DefaultGround.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Script/EditCamera.gd" type="Script" id=4]
+[ext_resource path="res://Script/MoveGizmo.gd" type="Script" id=2]
+[ext_resource path="res://Script/RotateGizmo.gd" type="Script" id=3]
+[ext_resource path="res://Nodes/Track.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Nodes/DefaultGround.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Script/EditCamera.gd" type="Script" id=6]
 
-[sub_resource type="CubeMesh" id=1]
+[sub_resource type="CylinderMesh" id=1]
+
+top_radius = 0.1
+bottom_radius = 0.1
+radial_segments = 16
+rings = 1
+
+[sub_resource type="SpatialMaterial" id=2]
+
+flags_transparent = true
+flags_unshaded = true
+albedo_color = Color( 0, 1, 0, 0.501961 )
+
+[sub_resource type="CylinderShape" id=3]
+
+radius = 0.098813
+
+[sub_resource type="SpatialMaterial" id=4]
+
+flags_transparent = true
+flags_unshaded = true
+albedo_color = Color( 1, 0, 0, 0.501961 )
+
+[sub_resource type="SpatialMaterial" id=5]
+
+flags_transparent = true
+flags_unshaded = true
+albedo_color = Color( 0, 0, 1, 0.501961 )
+
+[sub_resource type="CylinderMesh" id=6]
+
+height = 0.05
+radial_segments = 32
+rings = 1
+
+[sub_resource type="SpatialMaterial" id=10]
+
+flags_unshaded = true
+albedo_color = Color( 1, 0, 0, 0.501961 )
+
+[sub_resource type="CylinderShape" id=7]
+
+height = 0.05
+
+[sub_resource type="SpatialMaterial" id=11]
+
+flags_unshaded = true
+albedo_color = Color( 0, 1, 0, 0.501961 )
+
+[sub_resource type="SpatialMaterial" id=12]
+
+flags_unshaded = true
+albedo_color = Color( 0, 0, 1, 1 )
+
+[sub_resource type="CubeMesh" id=8]
+
+size = Vector3( 1, 1, 1 )
+
+[sub_resource type="CubeMesh" id=9]
 
 
 [node name="Root" type="Spatial"]
 script = ExtResource( 1 )
 
-[node name="Track" parent="." instance=ExtResource( 2 )]
+[node name="MoveGizmo" type="Spatial" parent="."]
+editor/display_folded = true
+visible = false
+script = ExtResource( 2 )
 
-[node name="Ground" parent="." instance=ExtResource( 3 )]
+[node name="YArea" type="Area" parent="MoveGizmo"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0 )
+input_ray_pickable = true
+input_capture_on_drag = true
+
+[node name="MeshInstance" type="MeshInstance" parent="MoveGizmo/YArea"]
+mesh = SubResource( 1 )
+material/0 = SubResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/YArea"]
+shape = SubResource( 3 )
+
+[node name="XArea" type="Area" parent="MoveGizmo"]
+transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 1.1, 0, 0 )
+input_ray_pickable = true
+input_capture_on_drag = true
+
+[node name="MeshInstance" type="MeshInstance" parent="MoveGizmo/XArea"]
+mesh = SubResource( 1 )
+material/0 = SubResource( 4 )
+
+[node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/XArea"]
+shape = SubResource( 3 )
+
+[node name="ZArea" type="Area" parent="MoveGizmo"]
+transform = Transform( 1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 0, 1.1 )
+input_ray_pickable = true
+input_capture_on_drag = true
+
+[node name="MeshInstance" type="MeshInstance" parent="MoveGizmo/ZArea"]
+mesh = SubResource( 1 )
+material/0 = SubResource( 5 )
+
+[node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/ZArea"]
+shape = SubResource( 3 )
+
+[node name="RotateGizmo" type="Spatial" parent="."]
+editor/display_folded = true
+visible = false
+script = ExtResource( 3 )
+
+[node name="XArea" type="Area" parent="RotateGizmo"]
+transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0 )
+input_ray_pickable = true
+input_capture_on_drag = true
+
+[node name="MeshInstance" type="MeshInstance" parent="RotateGizmo/XArea"]
+mesh = SubResource( 6 )
+material/0 = SubResource( 10 )
+
+[node name="CollisionShape" type="CollisionShape" parent="RotateGizmo/XArea"]
+shape = SubResource( 7 )
+
+[node name="YArea" type="Area" parent="RotateGizmo"]
+input_ray_pickable = true
+input_capture_on_drag = true
+
+[node name="MeshInstance" type="MeshInstance" parent="RotateGizmo/YArea"]
+mesh = SubResource( 6 )
+material/0 = SubResource( 11 )
+
+[node name="CollisionShape" type="CollisionShape" parent="RotateGizmo/YArea"]
+shape = SubResource( 7 )
+
+[node name="ZArea" type="Area" parent="RotateGizmo"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+input_ray_pickable = true
+input_capture_on_drag = true
+
+[node name="MeshInstance" type="MeshInstance" parent="RotateGizmo/ZArea"]
+mesh = SubResource( 6 )
+material/0 = SubResource( 12 )
+
+[node name="CollisionShape" type="CollisionShape" parent="RotateGizmo/ZArea"]
+shape = SubResource( 7 )
+
+[node name="MeshInstance" type="MeshInstance" parent="RotateGizmo"]
+visible = false
+mesh = SubResource( 8 )
+material/0 = null
+
+[node name="Track" parent="." instance=ExtResource( 4 )]
+
+[node name="Ground" parent="." instance=ExtResource( 5 )]
 
 [node name="CamPos" type="Spatial" parent="."]
 editor/display_folded = true
-script = ExtResource( 4 )
+script = ExtResource( 6 )
 
 [node name="Camera" type="Camera" parent="CamPos"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6 )
 
 [node name="MeshInstance" type="MeshInstance" parent="CamPos"]
 visible = false
-mesh = SubResource( 1 )
+mesh = SubResource( 9 )
 material/0 = null
 
 [node name="UI" type="Control" parent="."]
@@ -75,7 +221,6 @@ margin_bottom = 24.0
 text = "Exit"
 
 [node name="ToolPanel" type="Panel" parent="UI"]
-editor/display_folded = true
 anchor_top = 0.5
 anchor_bottom = 0.5
 margin_top = -165.0
@@ -120,7 +265,6 @@ margin_bottom = 14.0
 text = "pos:"
 
 [node name="XPos" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/MoveToolContainer"]
-editor/display_folded = true
 margin_top = 18.0
 margin_right = 190.0
 margin_bottom = 42.0
@@ -270,6 +414,7 @@ margin_bottom = -116.0
 items = [ "Up", null, 0, false, false, -1, 0, null, "", false, "Down", null, 0, false, false, -1, 0, null, "", false, "Delete", null, 0, false, false, -1, 0, null, "", false ]
 
 [node name="LoadDialog" type="WindowDialog" parent="UI"]
+editor/display_folded = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -326,6 +471,7 @@ margin_bottom = 20.0
 items = [ "Delete", null, 0, false, false, -1, 0, null, "", false ]
 
 [node name="ConfirmSaveDialog" type="WindowDialog" parent="UI"]
+editor/display_folded = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -390,6 +536,12 @@ margin_right = 69.0
 margin_bottom = 29.0
 dialog_text = "Invalid Track Name"
 
+[connection signal="input_event" from="MoveGizmo/YArea" to="MoveGizmo" method="_on_YArea_input_event"]
+[connection signal="input_event" from="MoveGizmo/XArea" to="MoveGizmo" method="_on_XArea_input_event"]
+[connection signal="input_event" from="MoveGizmo/ZArea" to="MoveGizmo" method="_on_ZArea_input_event"]
+[connection signal="input_event" from="RotateGizmo/XArea" to="RotateGizmo" method="_on_XArea_input_event"]
+[connection signal="input_event" from="RotateGizmo/YArea" to="RotateGizmo" method="_on_YArea_input_event"]
+[connection signal="input_event" from="RotateGizmo/ZArea" to="RotateGizmo" method="_on_ZArea_input_event"]
 [connection signal="text_changed" from="UI/LoadPanel/LoadContainer/TrackName" to="." method="_on_TrackName_text_changed"]
 [connection signal="pressed" from="UI/LoadPanel/LoadContainer/LoadButton" to="." method="_on_LoadButton_pressed"]
 [connection signal="pressed" from="UI/LoadPanel/LoadContainer/SaveButton" to="." method="_on_SaveButton_pressed"]

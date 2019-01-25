@@ -7,11 +7,11 @@ var gates = []
 var last_light = null
 
 func add_gate(gate_dict):
-	var id = gate_dict["id"]
-	var pos = gate_dict["pos"]
-	var rot = gate_dict["rot"]
+	var id = gate_dict.id
+	var pos = gate_dict.pos
+	var rot = gate_dict.rot
 	
-	var inst = Globals.GATES[id]["scene"].instance()
+	var inst = Globals.GATES[id].scene.instance()
 	add_child(inst)
 	
 	inst.transform.origin = pos
@@ -77,11 +77,11 @@ func remove_gate(idx):
 	emit_signal("track_changed")
 
 func change_pos(idx, pos):
-	gates[idx]["pos"] = pos
+	gates[idx].pos = pos
 	get_child(idx).transform.origin = pos
 
 func change_rot(idx, rot):
-	gates[idx]["rot"] = rot
+	gates[idx].rot = rot
 	get_child(idx).transform.basis = Basis(rot)
 
 func _ready():
