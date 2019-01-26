@@ -312,7 +312,9 @@ func calc_motor(delta):
 
 func _physics_process(delta):
 	if Input.is_action_just_pressed("reset"):
-		transform.basis = Basis(Vector3())
+		var y = transform.basis.get_euler().y
+		transform.basis = Basis(Vector3(0, y, 0))
+		# TODO: use kwad start from track
 	
 	if Globals.joyConf == null:
 		return

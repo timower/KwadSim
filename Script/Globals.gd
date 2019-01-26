@@ -13,11 +13,12 @@ var selected_track = null
 
 const TRACK_PATH = "user://Tracks/"
 
-const GATES = [
-	{"name": "Square Gate", "scene": preload("res://Models/SquareGate.tscn")},
-	{"name": "Full Gate", "scene": preload("res://Models/SquareGateFull.tscn")},
-	{"name": "Round Gate", "scene": preload("res://Models/GateTest.tscn")},
-	{"name": "Flag Gate", "scene": preload("res://Models/FlagTest.tscn")}
+const OBJECTS = [
+	{"name": "Square Gate", "scene": preload("res://Models/SquareGate.tscn"), "is_gate": true},
+	{"name": "Full Gate", "scene": preload("res://Models/SquareGateFull.tscn"), "is_gate": true},
+	{"name": "Round Gate", "scene": preload("res://Models/GateTest.tscn"), "is_gate": true},
+	{"name": "Flag Gate", "scene": preload("res://Models/FlagTest.tscn"), "is_gate": true},
+	{"name": "Cone", "scene": preload("res://Models/ConeTest.tscn"), "is_gate": false},
 ]
 
 signal settings_changed

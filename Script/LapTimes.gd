@@ -19,7 +19,7 @@ func _ready():
 
 	gate_count = track.gates.size()
 	for i in range(gate_count):
-		var gate = track.get_child(i)
+		var gate = track.get_gate_node(i)
 		gate.get_node("Area").connect("body_entered", self, "gate_entered", [i])
 	track.light_gate(current_gate)
 

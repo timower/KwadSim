@@ -9,7 +9,7 @@ onready var track_list = $UI/LoadDialog/TrackList
 onready var track_tree = $UI/TreePanel/TrackTree
 
 var selected_tool = 0
-var selected_gate = null
+var selected_object = null
 
 var tracks = null
 var track_name = null
@@ -18,6 +18,7 @@ var changed = false
 
 var close_action = null
 
+var gates_item = null
 
 class Tool:
 	var name
@@ -31,7 +32,9 @@ class Tool:
 		pass
 	func deselected():
 		pass
-	func gate_selected(idx):
+	func object_selected(idx):
+		pass
+	func input(event):
 		pass
 
 class GateTool extends Tool:
@@ -44,18 +47,49 @@ class GateTool extends Tool:
 		gate_list = container.get_node("ItemList")
 		cam_pos = root.get_node("CamPos")
 		
-		for gate in Globals.GATES:
-			gate_list.add_item(gate.name)
+		for id in range(Globals.OBJECTS.size()):
+			var object = Globals.OBJECTS[id]
+			if object.is_gate:
+				var idx = gate_list.get_item_count()
+				gate_list.add_item(object.name)
+				gate_list.set_item_metadata(idx, id)
 		gate_list.connect("item_activated", self, "place_gate")
 	
 	func place_gate(idx):
 		root.changed = true
-		track.add_gate({
+		var ref = track.add_gate({
 			pos = cam_pos.global_transform.origin, 
 			rot = Vector3(), 
-			id = idx
+			id = gate_list.get_item_metadata(idx)
 		})
-		root.select_gate(track.gates.size() - 1)
+		root.select_object(ref)
+
+class ObjectTool extends Tool:
+	var obj_list
+	var cam_pos: Spatial
+	var track
+	
+	func _init(root, container).("Place Objects", root):
+		track = root.get_node("Track")
+		obj_list = container.get_node("ItemList")
+		cam_pos = root.get_node("CamPos")
+		
+		for id in range(Globals.OBJECTS.size()):
+			var object = Globals.OBJECTS[id]
+			if not object.is_gate:
+				var idx = obj_list.get_item_count()
+				obj_list.add_item(object.name)
+				obj_list.set_item_metadata(idx, id)
+		obj_list.connect("item_activated", self, "place_object")
+	
+	func place_object(idx):
+		root.changed = true
+		var ref = track.add_object({
+			pos = cam_pos.global_transform.origin, 
+			rot = Vector3(), 
+			id = obj_list.get_item_metadata(idx)
+		})
+		root.select_object(ref)
 
 class MoveTool extends Tool:
 	var xpos
@@ -79,25 +113,25 @@ class MoveTool extends Tool:
 		zpos.connect("value_changed", self, "pos_changed")
 	
 	func selected():
-		if root.selected_gate != null:
-			gate_selected(root.selected_gate)
+		if root.selected_object != null:
+			object_selected(root.selected_object)
 	
 	func deselected():
 		move_gizmo.visible = false
 	
-	func gate_selected(idx):
+	func object_selected(ref):
 		disabled = true
-		xpos.value = track.gates[idx].pos.x
-		ypos.value = track.gates[idx].pos.y
-		zpos.value = track.gates[idx].pos.z
+		xpos.value = track.objects[ref].pos.x
+		ypos.value = track.objects[ref].pos.y
+		zpos.value = track.objects[ref].pos.z
 		disabled = false
 			
 		move_gizmo.visible = true
-		move_gizmo.transform.origin = track.gates[idx].pos
+		move_gizmo.transform.origin = track.objects[ref].pos
 	
 	func gizmo_pos_changed(v):
 		root.changed = true
-		track.change_pos(root.selected_gate, v)
+		track.change_pos(root.selected_object, v)
 		xpos.value = v.x
 		ypos.value = v.y
 		zpos.value = v.z
@@ -108,7 +142,7 @@ class MoveTool extends Tool:
 			return
 		root.changed = true
 		var new_pos = Vector3(xpos.value, ypos.value, zpos.value)
-		track.change_pos(root.selected_gate, new_pos)
+		track.change_pos(root.selected_object, new_pos)
 		move_gizmo.transform.origin = new_pos
 
 class RotateTool extends Tool:
@@ -134,21 +168,21 @@ class RotateTool extends Tool:
 		zpos.connect("value_changed", self, "rot_changed")
 	
 	func selected():
-		if root.selected_gate != null:
-			gate_selected(root.selected_gate)
+		if root.selected_object != null:
+			object_selected(root.selected_object)
 	
 	func deselected():
 		rot_gizmo.visible = false
 	
-	func gate_selected(idx):
+	func object_selected(ref):
 		rot_gizmo.visible = true
-		rot_gizmo.target = track.get_child(idx)
-		rot_gizmo.transform.origin = track.gates[idx].pos
+		rot_gizmo.target = track.get_object_node(ref)
+		rot_gizmo.transform.origin = track.objects[ref].pos
 		
 		disabled = true
-		xpos.value = rad2deg(track.gates[idx].rot.x)
-		ypos.value = rad2deg(track.gates[idx].rot.y)
-		zpos.value = rad2deg(track.gates[idx].rot.z)
+		xpos.value = rad2deg(track.objects[ref].rot.x)
+		ypos.value = rad2deg(track.objects[ref].rot.y)
+		zpos.value = rad2deg(track.objects[ref].rot.z)
 		disabled = false
 	
 	var disabled = false
@@ -161,19 +195,74 @@ class RotateTool extends Tool:
 			deg2rad(ypos.value), 
 			deg2rad(zpos.value)
 		)
-		track.change_rot(root.selected_gate, new_rot)
+		track.change_rot(root.selected_object, new_rot)
 	
 	func gizmo_rot_changed(new_rot):
 		root.changed = true
-		track.change_rot(root.selected_gate, new_rot)
+		track.change_rot(root.selected_object, new_rot)
 		xpos.value = rad2deg(new_rot.x)
 		ypos.value = rad2deg(new_rot.y)
 		zpos.value = rad2deg(new_rot.z)
 
+class ObjectPaintTool extends Tool:
+	var last_pos = null
+	var distance = null
+	var obj_list = null
+	var track = null
+	var camera = null
+	
+	func _init(root, container).("Object Paint", root):
+		track = root.get_node("Track")
+		obj_list = container.get_node("ItemList")
+		distance = container.get_node("Distance/SpinBox")
+		camera = root.get_node("CamPos/Camera")
+		
+		for id in range(Globals.OBJECTS.size()):
+			var object = Globals.OBJECTS[id]
+			if not object.is_gate:
+				var idx = obj_list.get_item_count()
+				obj_list.add_item(object.name)
+				obj_list.set_item_metadata(idx, id)
+				print(object)
+		obj_list.select(0)
+	
+	func place_object(pos):
+		root.changed = true
+		var selected = obj_list.get_selected_items()[0]
+		var ref = track.add_object({
+			pos = pos, 
+			rot = Vector3(), 
+			id = obj_list.get_item_metadata(selected)
+		})
+		#root.select_object(ref)
+	
+	func proj_pos(p: Vector2) -> Vector3:
+		var n = camera.project_ray_normal(p)
+		var o = camera.global_transform.origin
+		var h = 0 # TODO: use cam height
+		var t = (h - o.y) / n.y
+		return o + n * t
+		
+	
+	func input(event):
+		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
+			var p = proj_pos(event.position)
+			last_pos = p
+			print(p)
+			place_object(p)
+		elif event is InputEventMouseMotion and event.button_mask & BUTTON_MASK_LEFT != 0:
+			var p = proj_pos(event.position)
+			if p.distance_to(last_pos) > distance.value:
+				place_object(p)
+				last_pos = p
+			
+
 var tools = [
 	GateTool,
+	ObjectTool,
 	MoveTool,
-	RotateTool
+	RotateTool,
+	ObjectPaintTool
 ]
 
 
@@ -205,28 +294,46 @@ func set_track_name(new_name):
 func on_track_changed():
 	track_tree.clear()
 	var root = track_tree.create_item()
-	var gates_item = track_tree.create_item(root)
+	gates_item = track_tree.create_item(root)
 	gates_item.set_text(0, "Gates")
+	var objects_item = track_tree.create_item(root)
+	objects_item.set_text(0, "Objects")
 	
-	for gate in $Track.gates:
+	for ref in $Track.objects.size():
+		var obj = $Track.objects[ref]
+		var name = Globals.OBJECTS[obj.id]["name"]
+		if not $Track.is_ref_gate(ref):
+			var obj_item = track_tree.create_item(objects_item)
+			obj_item.set_text(0, name)
+			obj_item.set_metadata(0, ref)
+	
+	for idx in $Track.gates.size():
+		var ref = $Track.get_gate_ref(idx)
+		var name = Globals.OBJECTS[$Track.objects[ref].id]["name"]
 		var gate_item = track_tree.create_item(gates_item)
-		gate_item.set_text(0, str(Globals.GATES[gate["id"]]["name"]))
+		gate_item.set_text(0, name)
+		gate_item.set_metadata(0, idx)
 
-func select_gate(idx):
-	$Track.light_gate(idx)
-	selected_gate = idx
-	tools[selected_tool].gate_selected(idx)
+func select_object(ref: int):
+	if $Track.is_ref_gate(ref):
+		$Track.light_object(ref)
+	else:
+		pass # TODO: move light 
+	selected_object = ref
+	tools[selected_tool].object_selected(ref)
+
+#func select_gate(idx):
+#	$Track.light_gate(idx)
+#	selected_object = $Track.get_gate_ref(idx)
+#	tools[selected_tool].gate_selected(idx)
 	
-func get_track_tree_selected_idx():
+func get_track_tree_selected_ref() -> int:
 	var item = track_tree.get_selected()
-	var i = item.get_parent().get_children()
-	var idx = 0
-	while i != null:
-		if i == item:
-			break
-		i = i.get_next()
-		idx += 1
-	return idx
+	if item.get_parent() == gates_item:
+		var idx = item.get_metadata(0)
+		return $Track.get_gate_ref(idx)
+	else:
+		return item.get_metadata(0)
 
 func show_load_menu():
 	$UI/LoadDialog.popup_exclusive = false
@@ -245,7 +352,7 @@ func exit_fly():
 
 func _on_OptionButton_item_selected(ID):
 	select_tool(ID)
-
+	
 
 func _on_LoadDialog_about_to_show():
 	track_list.clear()
@@ -321,32 +428,46 @@ func _on_ExitButton_pressed():
 
 
 func _on_TrackTree_item_selected():
-	var idx = get_track_tree_selected_idx()
-	select_gate(idx)
+	if track_tree.get_selected().get_parent() == track_tree.get_root():
+		return
+	var ref = get_track_tree_selected_ref()
+	select_object(ref)
 
 func _on_TrackTree_item_activated():
-	var idx = get_track_tree_selected_idx()
-	$CamPos.global_transform.origin = $Track.gates[idx].pos
+	if track_tree.get_selected().get_parent() == track_tree.get_root():
+		return
+	var ref = get_track_tree_selected_ref()
+	$CamPos.global_transform.origin = $Track.objects[ref].pos
 
 func _on_TrackTree_item_rmb_selected(position):
+	if track_tree.get_selected().get_parent() == track_tree.get_root():
+		return
+	# TODO: hide up/down when non gate is selected
 	var pop_rect = Rect2(track_tree.rect_global_position + position, Vector2(10, 10))
 	$UI/TreePanel/TrackTree/PopupMenu2.popup(pop_rect)
 
 
 func _on_PopupMenu2_index_pressed(index):
-	var idx = get_track_tree_selected_idx()
+	var item = track_tree.get_selected()
+	var idx = null
+	var ref = 0
+	if item.get_parent() == gates_item:
+		idx = item.get_metadata(0)
+		ref = $Track.get_gate_ref(idx)
+	else:
+		ref = item.get_metadata(0)
 	changed = true
-	if index == 0 and idx > 0:
+	if index == 0 and idx != null and idx > 0:
 		# up
 		$Track.swap_gate(idx, idx - 1)
-		select_gate(idx-1)
-	elif index == 1 and idx < $Track.gates.size() - 1:
+		select_object($Track.get_gate_ref(idx-1))
+	elif index == 1 and idx != null and idx < $Track.gates.size() - 1:
 		# down
 		$Track.swap_gate(idx, idx + 1)
-		select_gate(idx+1)
+		select_object($Track.get_gate_ref(idx+1))
 	elif index == 2:
 		# Delete
-		$Track.remove_gate(idx)
+		$Track.remove_object(ref)
 
 
 func _on_TrackName_text_changed(new_text):
@@ -364,3 +485,6 @@ func _on_CloseSaveButton_pressed():
 	_on_SaveButton_pressed()
 	close_action.call_func()
 	$UI/ConfirmSaveDialog.hide()
+	
+func _unhandled_input(event):
+	tools[selected_tool].input(event)

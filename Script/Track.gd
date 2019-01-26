@@ -2,30 +2,47 @@ extends Spatial
 
 signal track_changed
 
+# objects: array of object dictionaries
+var objects = []
+
+# gates: array of references to objects, in order
 var gates = []
 
 var last_light = null
 
-func add_gate(gate_dict):
-	var id = gate_dict.id
-	var pos = gate_dict.pos
-	var rot = gate_dict.rot
-	
-	var inst = Globals.GATES[id].scene.instance()
+static func is_gate(obj: Dictionary) -> bool:
+	return Globals.OBJECTS[obj.id].is_gate
+
+func add_object(obj: Dictionary) -> int:
+	var type = Globals.OBJECTS[obj.id]
+	var inst = type.scene.instance()
 	add_child(inst)
 	
-	inst.transform.origin = pos
-	inst.transform.basis = Basis(rot)
+	inst.transform.origin = obj.pos
+	inst.transform.basis = Basis(obj.rot)
 	
-	gates.append(gate_dict)
+	var ref = objects.size()
+	objects.append(obj)
+	
 	emit_signal("track_changed")
+	return ref
+
+func add_gate(obj: Dictionary) -> int:
+	assert(is_gate(obj))
+	var ref = add_object(obj)
+	gates.append(ref)
+	emit_signal("track_changed")
+	return ref
 
 func clear():
+	last_light = null
 	gates = []
+	objects = []
+	
 	for i in range(get_child_count()):
 		get_child(i).queue_free()
 
-func load_from(t_name):
+func load_from(t_name: String):
 	var f_name = Globals.TRACK_PATH + t_name + ".track"
 	var file = File.new()
 	
@@ -38,53 +55,81 @@ func load_from(t_name):
 	
 	clear()
 	
-	for gate in conts["gates"]:
-		add_gate(gate)
-	return true
-
-func light_gate(idx):
-	if last_light != null:
-		get_child(last_light).get_node("Light").visible = false
-	get_child(idx).get_node("Light").visible = true
-	last_light = idx
+	for obj in conts["objects"]:
+		add_object(obj)
 	
-func save_to(track_name):
+	gates = conts["gates"]
+	emit_signal("track_changed")
+	
+	return true
+	
+func save_to(track_name: String):
 	var file = File.new()
 	file.open(Globals.TRACK_PATH + track_name + ".track", file.WRITE)
-	file.store_var({"gates": gates})
+	file.store_var({
+		"objects": objects,
+		"gates": gates
+	})
 	file.close()
 
-func swap_gate(idx1, idx2):
+func light_object(ref: int):
+	if last_light != null:
+		last_light.visible = false
+	last_light = get_child(ref).get_node("Light")
+	last_light.visible = true
+
+func light_gate(idx):
+	light_object(gates[idx])
+
+func swap_gate(idx1: int, idx2: int):
 	var tmp = gates[idx1]
 	gates[idx1] = gates[idx2]
 	gates[idx2] = tmp
 	
-	var n1 = get_child(idx1)
-	var n2 = get_child(idx2)
-	move_child(n1, idx2)
-	move_child(n2, idx1)
-	
-	if last_light == idx1:
-		last_light = idx2
-	elif last_light == idx2:
-		last_light = idx1
-	
 	emit_signal("track_changed")
 
-func remove_gate(idx):
-	gates.remove(idx)
-	get_child(idx).queue_free()
+func remove_object(ref: int):
+	objects.remove(ref)
+	get_child(ref).queue_free()
+
+	var remove_last = false
+	for i in range(gates.size()):
+		if gates[i] == ref:
+			remove_last = true
+
+		# move gates after the removed gate forward
+		if remove_last and i+1 < gates.size():
+			gates[i] = gates[i + 1]
+		
+		# subtract one from all gates that ref to an object after ref
+		if gates[i] > ref:
+			gates[i] -= 1
+			
+	if remove_last:
+		gates.pop_back()
+		
 	emit_signal("track_changed")
 
-func change_pos(idx, pos):
-	gates[idx].pos = pos
-	get_child(idx).transform.origin = pos
+func change_pos(ref: int, pos: Vector3):
+	objects[ref].pos = pos
+	get_child(ref).transform.origin = pos
 
-func change_rot(idx, rot):
-	gates[idx].rot = rot
-	get_child(idx).transform.basis = Basis(rot)
+func change_rot(ref: int, rot: Vector3):
+	objects[ref].rot = rot
+	get_child(ref).transform.basis = Basis(rot)
+
+func get_gate_ref(idx: int) -> int:
+	return gates[idx]
+
+func is_ref_gate(ref: int) -> bool:
+	return is_gate(objects[ref])
+
+func get_object_node(ref: int):
+	return get_child(ref)
+
+func get_gate_node(idx: int):
+	return get_child(gates[idx])
 
 func _ready():
 	if Globals.selected_track != null:
-		print(Globals.selected_track)
 		load_from(Globals.selected_track)
