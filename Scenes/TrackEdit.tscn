@@ -1,11 +1,10 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Script/TrackEdit.gd" type="Script" id=1]
 [ext_resource path="res://Script/MoveGizmo.gd" type="Script" id=2]
 [ext_resource path="res://Script/RotateGizmo.gd" type="Script" id=3]
 [ext_resource path="res://Nodes/Track.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Nodes/DefaultGround.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Script/EditCamera.gd" type="Script" id=6]
+[ext_resource path="res://Script/EditCamera.gd" type="Script" id=5]
 
 [sub_resource type="CylinderMesh" id=1]
 
@@ -168,10 +167,8 @@ material/0 = null
 
 [node name="Track" parent="." instance=ExtResource( 4 )]
 
-[node name="Ground" parent="." instance=ExtResource( 5 )]
-
 [node name="CamPos" type="Spatial" parent="."]
-script = ExtResource( 6 )
+script = ExtResource( 5 )
 
 [node name="Camera" type="Camera" parent="CamPos"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6 )
@@ -186,17 +183,15 @@ anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="LoadPanel" type="PanelContainer" parent="UI"]
-editor/display_folded = true
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 149.0
 margin_bottom = 44.0
 
 [node name="LoadContainer" type="HBoxContainer" parent="UI/LoadPanel"]
-editor/display_folded = true
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 229.0
+margin_right = 312.0
 margin_bottom = 31.0
 
 [node name="TrackName" type="LineEdit" parent="UI/LoadPanel/LoadContainer"]
@@ -226,6 +221,12 @@ margin_left = 187.0
 margin_right = 222.0
 margin_bottom = 24.0
 text = "Exit"
+
+[node name="SceneOption" type="OptionButton" parent="UI/LoadPanel/LoadContainer"]
+margin_left = 226.0
+margin_right = 305.0
+margin_bottom = 24.0
+text = "Scene"
 
 [node name="ToolPanel" type="Panel" parent="UI"]
 anchor_top = 0.5
@@ -605,6 +606,7 @@ dialog_text = "Invalid Track Name"
 [connection signal="pressed" from="UI/LoadPanel/LoadContainer/SaveButton" to="." method="_on_SaveButton_pressed"]
 [connection signal="pressed" from="UI/LoadPanel/LoadContainer/FlyButton" to="." method="_on_FlyButton_pressed"]
 [connection signal="pressed" from="UI/LoadPanel/LoadContainer/ExitButton" to="." method="_on_ExitButton_pressed"]
+[connection signal="item_selected" from="UI/LoadPanel/LoadContainer/SceneOption" to="." method="_on_SceneOption_item_selected"]
 [connection signal="item_selected" from="UI/ToolPanel/ToolContainer/OptionButton" to="." method="_on_OptionButton_item_selected"]
 [connection signal="item_activated" from="UI/TreePanel/TrackTree" to="." method="_on_TrackTree_item_activated"]
 [connection signal="item_rmb_selected" from="UI/TreePanel/TrackTree" to="." method="_on_TrackTree_item_rmb_selected"]

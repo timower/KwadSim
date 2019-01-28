@@ -2,6 +2,8 @@ extends Spatial
 
 signal track_changed
 
+var scene_id = 0
+
 # objects: array of object dictionaries
 var objects = []
 
@@ -35,12 +37,14 @@ func add_gate(obj: Dictionary) -> int:
 	return ref
 
 func clear():
+	for ref in range(objects.size()):
+		get_object_node(ref).queue_free()
+		
 	last_light = null
 	gates = []
 	objects = []
-	
-	for i in range(get_child_count()):
-		get_child(i).queue_free()
+		
+	load_scene(0)
 
 func load_from(t_name: String):
 	var f_name = Globals.TRACK_PATH + t_name + ".track"
@@ -48,7 +52,7 @@ func load_from(t_name: String):
 	
 	if not file.file_exists(f_name):
 		return false
-		
+	
 	file.open(f_name, file.READ)
 	var conts = file.get_var()
 	file.close()
@@ -61,6 +65,10 @@ func load_from(t_name: String):
 	gates = conts["gates"]
 	emit_signal("track_changed")
 	
+	if conts.has("scene"):
+		load_scene(conts["scene"])
+	else:
+		load_scene(0)
 	return true
 	
 func save_to(track_name: String):
@@ -68,15 +76,16 @@ func save_to(track_name: String):
 	file.open(Globals.TRACK_PATH + track_name + ".track", file.WRITE)
 	file.store_var({
 		"objects": objects,
-		"gates": gates
+		"gates": gates,
+		"scene": scene_id
 	})
 	file.close()
 
 func light_object(ref: int):
 	if last_light != null:
-		last_light.visible = false
-	last_light = get_child(ref).get_node("Light")
-	last_light.visible = true
+		get_object_node(last_light).get_node("Light").visible = false
+	get_object_node(ref).get_node("Light").visible = true
+	last_light = ref
 
 func light_gate(idx):
 	light_object(gates[idx])
@@ -90,7 +99,7 @@ func swap_gate(idx1: int, idx2: int):
 
 func remove_object(ref: int):
 	objects.remove(ref)
-	get_child(ref).queue_free()
+	get_object_node(ref).queue_free()
 
 	var remove_last = false
 	for i in range(gates.size()):
@@ -108,15 +117,18 @@ func remove_object(ref: int):
 	if remove_last:
 		gates.pop_back()
 		
+	if last_light == ref:
+		last_light = null
+		
 	emit_signal("track_changed")
 
 func change_pos(ref: int, pos: Vector3):
 	objects[ref].pos = pos
-	get_child(ref).transform.origin = pos
+	get_object_node(ref).transform.origin = pos
 
 func change_rot(ref: int, rot: Vector3):
 	objects[ref].rot = rot
-	get_child(ref).transform.basis = Basis(rot)
+	get_object_node(ref).transform.basis = Basis(rot)
 
 func get_gate_ref(idx: int) -> int:
 	return gates[idx]
@@ -125,10 +137,17 @@ func is_ref_gate(ref: int) -> bool:
 	return is_gate(objects[ref])
 
 func get_object_node(ref: int):
-	return get_child(ref)
+	return get_child(ref+1)
 
 func get_gate_node(idx: int):
-	return get_child(gates[idx])
+	return get_object_node(gates[idx])
+
+func load_scene(id: int):
+	scene_id = id
+	for i in range($Scene.get_child_count()):
+		$Scene.get_child(i).queue_free()
+	var scene_inst = Globals.SCENES[id].scene.instance()
+	$Scene.add_child(scene_inst)
 
 func _ready():
 	if Globals.selected_track != null:

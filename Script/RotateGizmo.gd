@@ -44,6 +44,9 @@ func handle_input(camera, event, plane):
 		else:
 			old_rot = null
 	elif event is InputEventMouseMotion and event.button_mask & BUTTON_MASK_LEFT != 0:
+		if old_rot == null:
+			return
+
 		var angle = get_y_angle(camera, event.position, plane)
 		
 		#var new_rot = angle

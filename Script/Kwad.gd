@@ -310,6 +310,7 @@ func calc_motor(delta):
 	
 	apply_torque_impulse(-up * torque_sum * delta * 3)
 
+
 func _physics_process(delta):
 	if Input.is_action_just_pressed("reset"):
 		var y = transform.basis.get_euler().y
@@ -322,11 +323,17 @@ func _physics_process(delta):
 	if not Globals.joyConf.throttle.has_moved:
 		return
 		
-	var height = global_transform.origin.y
-	if height < 3 * prop_radius and input[0] > 0.09:
-		ground_effect = 0.05 / (height / (2 * prop_radius))
-	else:
-		ground_effect = 0
+	# ground effect:
+	ground_effect = 0
+	var space_state = get_world().direct_space_state
+	var orig = global_transform.origin
+	var down = global_transform.origin - global_transform.basis.y * 10
+	var ray_info = space_state.intersect_ray(orig, down, [self])
+	if ray_info.size() > 0:
+		var pos = ray_info.position
+		var height = orig.distance_to(pos)
+		if height < 3 * prop_radius and input[0] > 0.05:
+			ground_effect = 0.05 / (height / (2 * prop_radius))
 		
 	var gyro_in = get_gyro()
 	
@@ -369,5 +376,6 @@ func _process(delta):
 	speedLabel.text = str(int(vel * 3.6)) + " km/h\n" + \
 					  str(round(height * 10)/10) + " m\n" + \
 					  str(round(motor_state[0][1])) + " rpm\n" + \
-					  str(motor_state[0][3]) + " N\n" + \
+					  str(ground_effect) + "\n" + \
 					  str(int(fps)) + " fps"
+#					  str(motor_state[0][3]) + " N\n" + \

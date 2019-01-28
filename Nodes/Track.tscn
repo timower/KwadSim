@@ -5,3 +5,5 @@
 [node name="Track" type="Spatial"]
 script = ExtResource( 1 )
 
+[node name="Scene" type="Spatial" parent="."]
+

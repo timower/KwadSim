@@ -21,6 +21,11 @@ const OBJECTS = [
 	{"name": "Cone", "scene": preload("res://Models/ConeTest.tscn"), "is_gate": false},
 ]
 
+const SCENES = [
+	{"name": "Default", "scene": preload("res://Nodes/DefaultGround.tscn")},
+	{"name": "Garage", "scene": preload("res://Nodes/Garage.tscn")}
+]
+
 signal settings_changed
 
 func reload_quads():

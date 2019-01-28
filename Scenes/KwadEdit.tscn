@@ -4,7 +4,6 @@
 [ext_resource path="res://Nodes/Kwad.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Textures/mossy-ground1-albedo.png" type="Texture" id=3]
 
-
 [sub_resource type="CubeMesh" id=1]
 
 

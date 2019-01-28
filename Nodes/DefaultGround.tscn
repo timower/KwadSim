@@ -48,6 +48,6 @@ material/0 = null
 shape = SubResource( 4 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
-transform = Transform( -0.00208355, 0.99998, -0.00599216, 0.741534, 0.00556524, 0.670893, 0.670913, -0.00304555, -0.74153, 0, 0, 0 )
+transform = Transform( -0.00208355, 0.99998, -0.00599216, 0.741534, 0.00556523, 0.670893, 0.670913, -0.00304555, -0.74153, -0.0111458, 6.16559, -1.63299 )
 script = ExtResource( 6 )
 

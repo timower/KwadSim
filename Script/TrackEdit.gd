@@ -4,6 +4,8 @@ onready var track_label = $UI/LoadPanel/LoadContainer/Label
 onready var tool_option = $UI/ToolPanel/ToolContainer/OptionButton
 onready var tool_opt_cont = $UI/ToolPanel/ToolContainer
 
+onready var scene_opt = $UI/LoadPanel/LoadContainer/SceneOption
+
 onready var track_list = $UI/LoadDialog/TrackList
 
 onready var track_tree = $UI/TreePanel/TrackTree
@@ -239,7 +241,7 @@ class ObjectPaintTool extends Tool:
 	func proj_pos(p: Vector2) -> Vector3:
 		var n = camera.project_ray_normal(p)
 		var o = camera.global_transform.origin
-		var h = 0 # TODO: use cam height
+		var h = 0.01 # TODO: use cam height
 		var t = (h - o.y) / n.y
 		return o + n * t
 		
@@ -248,7 +250,6 @@ class ObjectPaintTool extends Tool:
 		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
 			var p = proj_pos(event.position)
 			last_pos = p
-			print(p)
 			place_object(p)
 		elif event is InputEventMouseMotion and event.button_mask & BUTTON_MASK_LEFT != 0:
 			var p = proj_pos(event.position)
@@ -283,6 +284,9 @@ func _ready():
 	select_tool(0)
 	$UI/LoadDialog.popup_exclusive = true
 	$UI/LoadDialog.popup()
+	
+	for i in range(Globals.SCENES.size()):
+		scene_opt.add_item(Globals.SCENES[i].name)
 	
 	$Track.connect("track_changed", self, "on_track_changed")
 
@@ -371,6 +375,7 @@ func _on_TrackList_item_activated(index):
 	var t_name = track_list.get_item_text(index)
 	
 	if $Track.load_from(t_name):
+		scene_opt.select($Track.scene_id)
 		set_track_name(t_name)
 		$UI/LoadDialog.hide()
 
@@ -383,6 +388,7 @@ func _on_NewButton_pressed():
 	changed = true
 	set_track_name(t_name)
 	$Track.clear()
+	scene_opt.select(0)
 	$UI/LoadDialog.hide()
 
 func _on_TrackList_item_rmb_selected(index, at_position):
@@ -488,3 +494,7 @@ func _on_CloseSaveButton_pressed():
 	
 func _unhandled_input(event):
 	tools[selected_tool].input(event)
+
+
+func _on_SceneOption_item_selected(ID):
+	$Track.load_scene(ID)
