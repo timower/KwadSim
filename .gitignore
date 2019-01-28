@@ -9,3 +9,6 @@ export_presets.cfg
 
 # Blender backups
 *.blend1
+
+# Blender models
+Models/blender
