@@ -6,6 +6,7 @@ onready var motors = [$motor1, $motor2, $motor3, $motor4]
 
 onready var kwadInfo = $"/root/Root/KwadInfo"
 onready var speedLabel = $"/root/Root/KwadInfo/SpeedLabel"
+onready var track = $"/root/Root/Viewport/Track" # TODO: via globals?
 
 # Constants
 
@@ -84,6 +85,11 @@ var motor_state = [
 
 var ground_effect = 0
 
+var crashed = false
+var crash_timer = 0
+
+var size = null
+
 func load_motor(motor_name):
 	var params = Globals.read_json("res://Data/Motors/" + motor_name + ".json")
 	motor_I0 = params["I0"]
@@ -120,10 +126,13 @@ func load_frame(frame_name):
 		motors[i].get_node("movingProp").scale = prop_scale_vec
 		motors[i].get_node("Prop").scale = prop_scale_vec
 		
-	var size = params["size"]
+	size = params["size"]
 	$CollisionShape.shape.extents = Vector3(size[0], size[1], size[2])
+	$Area.transform.origin.y = size[1] + 0.005
+	$Area/CollisionShape.shape.radius = sqrt(size[0]*size[0] + size[2]*size[2])
 	var cam = params["cam"]
 	$Camera.transform.origin = Vector3(cam[0], cam[1], cam[2]) 
+	
 
 func load_params():
 	var quad = Globals.quads[Globals.selected_quad]
@@ -138,6 +147,8 @@ func _ready():
 	Globals.kwad = self
 	for i in range(4):
 		motors[i].get_node("MotorSound").playing = true
+	Globals.connect("reset", self, "_on_reset")
+	_on_reset()
 
 func get_gyro():
 	var curGyro = -transform.basis.xform_inv(angular_velocity) * 180 / PI
@@ -310,18 +321,33 @@ func calc_motor(delta):
 	
 	apply_torque_impulse(-up * torque_sum * delta * 3)
 
+func _on_reset():
+	var y = transform.basis.get_euler().y
+	var start = track.objects[0]
+	linear_velocity = Vector3()
+	angular_velocity = Vector3()
+	transform.origin = start.pos + Vector3(0, 0.15 + size[1], 0)
+	transform.basis = Basis(start.rot)
+	pid_state = [
+		#I  D
+		[0, 0],
+		[0, 0],
+		[0, 0]
+	]
+	crashed = false
+	# TODO: use kwad start from track
 
 func _physics_process(delta):
-	if Input.is_action_just_pressed("reset"):
-		var y = transform.basis.get_euler().y
-		transform.basis = Basis(Vector3(0, y, 0))
-		# TODO: use kwad start from track
-	
-	if Globals.joyConf == null:
+	crash_timer -= delta
+	if crashed:
+		if crash_timer <= 0:
+			Globals.reset()
+		else:
+			return
+		
+	if Globals.joyConf == null or not Globals.joyConf.throttle.has_moved:
 		return
-	
-	if not Globals.joyConf.throttle.has_moved:
-		return
+
 		
 	# ground effect:
 	ground_effect = 0
@@ -379,3 +405,10 @@ func _process(delta):
 					  str(ground_effect) + "\n" + \
 					  str(int(fps)) + " fps"
 #					  str(motor_state[0][3]) + " N\n" + \
+
+func _on_Area_body_entered(body):
+	if body != self and not crashed and crash_timer < -0.1:
+		for i in range(4):
+			motor_state[i][1] = 0
+		crashed = true
+		crash_timer = 2

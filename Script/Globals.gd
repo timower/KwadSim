@@ -14,11 +14,13 @@ var selected_track = null
 const TRACK_PATH = "user://Tracks/"
 
 const OBJECTS = [
+	{"name": "Start Box", "scene": preload("res://Models/startbox/startbox.gltf"), "is_gate": false},
 	{"name": "Square Gate", "scene": preload("res://Models/SquareGate.tscn"), "is_gate": true},
 	{"name": "Full Gate", "scene": preload("res://Models/SquareGateFull.tscn"), "is_gate": true},
 	{"name": "Round Gate", "scene": preload("res://Models/GateTest.tscn"), "is_gate": true},
 	{"name": "Flag Gate", "scene": preload("res://Models/FlagTest.tscn"), "is_gate": true},
 	{"name": "Cone", "scene": preload("res://Models/ConeTest.tscn"), "is_gate": false},
+	{"name": "Flag", "scene": preload("res://Models/FlagTest.tscn"), "is_gate": false},
 ]
 
 const SCENES = [
@@ -27,6 +29,8 @@ const SCENES = [
 ]
 
 signal settings_changed
+
+signal reset
 
 func reload_quads():
 	var def_quads = read_json("res://Data/quads.json")
@@ -42,6 +46,15 @@ func reload_quads():
 
 func _ready():
 	reload_quads()
+	
+	
+func reset():
+	emit_signal("reset")
+
+func _process(delta):
+	if Input.is_action_just_pressed("reset"):
+		emit_signal("reset")
+		
 
 func update_settings():
 	emit_signal("settings_changed")

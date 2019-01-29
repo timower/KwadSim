@@ -42,12 +42,14 @@ class Tool:
 class GateTool extends Tool:
 	var gate_list
 	var cam_pos: Spatial
+	var camera
 	var track
 	
 	func _init(root, container).("Place Gates", root):
 		track = root.get_node("Track")
 		gate_list = container.get_node("ItemList")
 		cam_pos = root.get_node("CamPos")
+		camera = root.get_node("CamPos/Camera")
 		
 		for id in range(Globals.OBJECTS.size()):
 			var object = Globals.OBJECTS[id]
@@ -59,9 +61,10 @@ class GateTool extends Tool:
 	
 	func place_gate(idx):
 		root.changed = true
+		var heading = camera.global_transform.basis.get_euler().y
 		var ref = track.add_gate({
 			pos = cam_pos.global_transform.origin, 
-			rot = Vector3(), 
+			rot = Vector3(0, heading, 0), 
 			id = gate_list.get_item_metadata(idx)
 		})
 		root.select_object(ref)
@@ -212,11 +215,13 @@ class ObjectPaintTool extends Tool:
 	var obj_list = null
 	var track = null
 	var camera = null
+	var cam_pos = null
 	
 	func _init(root, container).("Object Paint", root):
 		track = root.get_node("Track")
 		obj_list = container.get_node("ItemList")
 		distance = container.get_node("Distance/SpinBox")
+		cam_pos = root.get_node("CamPos")
 		camera = root.get_node("CamPos/Camera")
 		
 		for id in range(Globals.OBJECTS.size()):
@@ -241,7 +246,7 @@ class ObjectPaintTool extends Tool:
 	func proj_pos(p: Vector2) -> Vector3:
 		var n = camera.project_ray_normal(p)
 		var o = camera.global_transform.origin
-		var h = 0.01 # TODO: use cam height
+		var h = cam_pos.global_transform.y
 		var t = (h - o.y) / n.y
 		return o + n * t
 		
@@ -387,7 +392,7 @@ func _on_NewButton_pressed():
 	
 	changed = true
 	set_track_name(t_name)
-	$Track.clear()
+	$Track.new_track()
 	scene_opt.select(0)
 	$UI/LoadDialog.hide()
 

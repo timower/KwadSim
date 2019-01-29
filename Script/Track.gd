@@ -36,14 +36,22 @@ func add_gate(obj: Dictionary) -> int:
 	emit_signal("track_changed")
 	return ref
 
-func clear():
+func new_track():
+	clear_track()
+	add_object({
+		pos = Vector3(),
+		rot = Vector3(),
+		id = 0
+	})
+
+func clear_track():
 	for ref in range(objects.size()):
 		get_object_node(ref).queue_free()
 		
 	last_light = null
 	gates = []
 	objects = []
-		
+
 	load_scene(0)
 
 func load_from(t_name: String):
@@ -57,7 +65,7 @@ func load_from(t_name: String):
 	var conts = file.get_var()
 	file.close()
 	
-	clear()
+	clear_track()
 	
 	for obj in conts["objects"]:
 		add_object(obj)
@@ -69,6 +77,8 @@ func load_from(t_name: String):
 		load_scene(conts["scene"])
 	else:
 		load_scene(0)
+	
+	
 	return true
 	
 func save_to(track_name: String):
@@ -98,6 +108,9 @@ func swap_gate(idx1: int, idx2: int):
 	emit_signal("track_changed")
 
 func remove_object(ref: int):
+	if ref == 0:
+		return
+
 	objects.remove(ref)
 	get_object_node(ref).queue_free()
 

@@ -21,7 +21,11 @@ func _ready():
 	for i in range(gate_count):
 		var gate = track.get_gate_node(i)
 		gate.get_node("Area").connect("body_entered", self, "gate_entered", [i])
-	track.light_gate(current_gate)
+	
+	if gate_count > 0:
+		track.light_gate(current_gate)
+	
+	Globals.connect("reset", self, "_on_reset")
 
 func _process(delta):
 	if track == null:
@@ -36,11 +40,12 @@ func _process(delta):
 					"last: " + str(last_lap_time) + " s\n" + \
 					"cur:  " + str(lap_time) + " s"
 
-	if Input.is_action_just_pressed("reset"):
-		last_gate = current_gate
-		current_gate = 0
-		lap_time = 0
-		started = false
+func _on_reset():
+	last_gate = current_gate
+	current_gate = 0
+	lap_time = 0
+	started = false
+	if gate_count > 0:
 		track.light_gate(current_gate)
 
 

@@ -24,7 +24,7 @@ func pos_change(camera, event, plane):
 			old_pos = round_m(mult, start_pos)
 		else:
 			old_pos = null
-	elif event is InputEventMouseMotion and event.button_mask & BUTTON_MASK_LEFT != 0:
+	elif event is InputEventMouseMotion and event.button_mask & BUTTON_MASK_LEFT != 0 and old_pos != null:
 		var pos = get_proj_point(camera, event.position)
 		var new_pos = round_m(mult, pos[plane])
 		

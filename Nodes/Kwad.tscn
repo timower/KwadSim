@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Script/Kwad.gd" type="Script" id=1]
 [ext_resource path="res://Models/kwad/kwad.gltf" type="PackedScene" id=2]
@@ -21,6 +21,11 @@ top_radius = 0.062
 bottom_radius = 0.062
 height = 0.001
 
+[sub_resource type="CylinderShape" id=4]
+
+radius = 0.115269
+height = 0.0198999
+
 [node name="Kwad" type="RigidBody"]
 input_capture_on_drag = true
 mass = 0.6
@@ -42,6 +47,7 @@ transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.0
 shape = SubResource( 2 )
 
 [node name="motor1" type="Spatial" parent="."]
+editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.065, 0, 0.065 )
 
 [node name="MotorSound" type="AudioStreamPlayer3D" parent="motor1"]
@@ -119,3 +125,11 @@ material/0 = null
 [node name="Listener" type="Listener" parent="."]
 current = true
 
+[node name="Area" type="Area" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0348567, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Area"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00223926, 0 )
+shape = SubResource( 4 )
+
+[connection signal="body_entered" from="Area" to="." method="_on_Area_body_entered"]
