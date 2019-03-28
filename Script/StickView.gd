@@ -6,7 +6,7 @@ export(int) var axis2 = 1
 func _ready():
 	pass
 
-func _process(delta):
+func _process(_delta):
 	update()
 
 func _draw():

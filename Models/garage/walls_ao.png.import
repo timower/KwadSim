@@ -2,12 +2,17 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/walls_ao.png-f2a4b7b6c133b5a57828b188ae00dcba.stex"
+path.s3tc="res://.import/walls_ao.png-f2a4b7b6c133b5a57828b188ae00dcba.s3tc.stex"
+path.etc2="res://.import/walls_ao.png-f2a4b7b6c133b5a57828b188ae00dcba.etc2.stex"
+metadata={
+"imported_formats": [ "s3tc", "etc2" ],
+"vram_texture": true
+}
 
 [deps]
 
 source_file="res://Models/garage/walls_ao.png"
-dest_files=[ "res://.import/walls_ao.png-f2a4b7b6c133b5a57828b188ae00dcba.stex" ]
+dest_files=[ "res://.import/walls_ao.png-f2a4b7b6c133b5a57828b188ae00dcba.s3tc.stex", "res://.import/walls_ao.png-f2a4b7b6c133b5a57828b188ae00dcba.etc2.stex" ]
 
 [params]
 

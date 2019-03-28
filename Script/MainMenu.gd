@@ -1,6 +1,5 @@
 extends Control
 
-onready var trackPopup = $TrackDialog
 onready var settings = $"/root/Root/Settings"
 
 func _ready():
@@ -8,7 +7,7 @@ func _ready():
 		$QuadSelectDialog/KwadList.add_item(quad)
 	$QuadSelectDialog/KwadList.select(0)
 	
-	var tracks = Globals.list_dir(Globals.TRACK_PATH)
+	var tracks = Globals.get_tracks()
 	for track in tracks:
 		$QuadSelectDialog/TrackList.add_item(track)
 	$QuadSelectDialog/TrackList.select(0)

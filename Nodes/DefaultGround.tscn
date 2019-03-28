@@ -1,53 +1,55 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://Textures/mossy-ground1-albedo.png" type="Texture" id=1]
-[ext_resource path="res://Textures/mossy-ground1-ao.png" type="Texture" id=2]
-[ext_resource path="res://Textures/mossy-ground1-metal.png" type="Texture" id=3]
-[ext_resource path="res://Textures/mossy-ground1-preview.png" type="Texture" id=4]
-[ext_resource path="res://Textures/mossy-ground1-roughness.png" type="Texture" id=5]
-[ext_resource path="res://Script/Sun.gd" type="Script" id=6]
+[ext_resource path="res://Script/Sun.gd" type="Script" id=1]
+[ext_resource path="res://Textures/mossy-ground1-albedo.png" type="Texture" id=2]
 
-[sub_resource type="PhysicsMaterial" id=1]
+[sub_resource type="OpenSimplexNoise" id=1]
+octaves = 4
+period = 17.0
 
-absorbent = true
+[sub_resource type="NoiseTexture" id=2]
+as_normalmap = true
+noise = SubResource( 1 )
 
-[sub_resource type="SpatialMaterial" id=2]
-
-albedo_texture = ExtResource( 1 )
-metallic_specular = 0.0
-metallic_texture = ExtResource( 3 )
-roughness_texture = ExtResource( 5 )
+[sub_resource type="SpatialMaterial" id=3]
+albedo_color = Color( 0.137255, 0.686275, 0.776471, 1 )
+roughness = 0.0
 normal_enabled = true
-normal_scale = 0.5
-normal_texture = ExtResource( 4 )
-ao_enabled = true
-ao_light_affect = 0.0
-ao_texture = ExtResource( 2 )
-ao_on_uv2 = false
-ao_texture_channel = 0
-uv1_scale = Vector3( 1000, 1000, 0.1 )
+normal_scale = 1.0
+normal_texture = SubResource( 2 )
 
-[sub_resource type="CubeMesh" id=3]
+[sub_resource type="QuadMesh" id=4]
+material = SubResource( 3 )
+size = Vector2( 2048, 2048 )
 
-material = SubResource( 2 )
-size = Vector3( 1000, 1, 1000 )
+[sub_resource type="CubeMesh" id=5]
+size = Vector3( 500, 1, 500 )
 
-[sub_resource type="BoxShape" id=4]
+[sub_resource type="SpatialMaterial" id=6]
+albedo_texture = ExtResource( 2 )
+uv1_scale = Vector3( 500, 500, 1 )
 
-extents = Vector3( 500, 0.5, 500 )
+[sub_resource type="BoxShape" id=7]
+extents = Vector3( 250, 0.5, 250 )
 
-[node name="Ground" type="StaticBody"]
+[node name="Ground" type="Spatial"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0 )
-physics_material_override = SubResource( 1 )
-
-[node name="MeshInstance" type="MeshInstance" parent="."]
-mesh = SubResource( 3 )
-material/0 = null
-
-[node name="CollisionShape" type="CollisionShape" parent="."]
-shape = SubResource( 4 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
-transform = Transform( -0.00208355, 0.99998, -0.00599216, 0.741534, 0.00556523, 0.670893, 0.670913, -0.00304555, -0.74153, -0.0111458, 6.16559, -1.63299 )
-script = ExtResource( 6 )
+transform = Transform( 0.08191, 0.801649, 0.592157, -0.941727, -0.132244, 0.309293, 0.326254, -0.582985, 0.744102, -0.0111465, 99.4448, 174.087 )
+script = ExtResource( 1 )
 
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.5, 0 )
+visible = false
+mesh = SubResource( 4 )
+material/0 = null
+
+[node name="MeshInstance2" type="MeshInstance" parent="."]
+mesh = SubResource( 5 )
+material/0 = SubResource( 6 )
+
+[node name="StaticBody" type="StaticBody" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
+shape = SubResource( 7 )

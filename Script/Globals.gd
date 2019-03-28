@@ -1,5 +1,7 @@
 extends Node
 
+#warning-ignore-all:unused_class_variable
+
 var joyConf = null
 var kwad = null
 
@@ -12,6 +14,7 @@ var selected_quad = "QQ190"
 var selected_track = null
 
 const TRACK_PATH = "user://Tracks/"
+const BUILTIN_TRACKS_PATH = "res://Data/Tracks/"
 
 const OBJECTS = [
 	{"name": "Start Box", "scene": preload("res://Models/startbox/startbox.gltf"), "is_gate": false},
@@ -51,7 +54,7 @@ func _ready():
 func reset():
 	emit_signal("reset")
 
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_pressed("reset"):
 		emit_signal("reset")
 		
@@ -82,3 +85,12 @@ func list_dir(name):
 		file = dir.get_next()
 		
 	return list
+	
+func get_tracks():
+	var builtins = Globals.list_dir(BUILTIN_TRACKS_PATH)
+	var tracks = Globals.list_dir(TRACK_PATH)
+	if tracks == null:
+		var dir = Directory.new()
+		dir.make_dir(TRACK_PATH)
+		return builtins
+	return tracks + builtins

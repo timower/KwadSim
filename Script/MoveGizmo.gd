@@ -36,13 +36,13 @@ func pos_change(camera, event, plane):
 		
 		emit_signal("pos_changed", global_transform.origin)
 
-func _on_YArea_input_event(camera, event, click_position, click_normal, shape_idx):
+func _on_YArea_input_event(camera, event, _click_position, _click_normal, _shape_idx):
 	pos_change(camera, event, 1)
 
 
-func _on_XArea_input_event(camera, event, click_position, click_normal, shape_idx):
+func _on_XArea_input_event(camera, event, _click_position, _click_normal, _shape_idx):
 	pos_change(camera, event, 0)
 
 
-func _on_ZArea_input_event(camera, event, click_position, click_normal, shape_idx):
+func _on_ZArea_input_event(camera, event, _click_position, _click_normal, _shape_idx):
 	pos_change(camera, event, 2)

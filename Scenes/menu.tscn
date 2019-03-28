@@ -180,7 +180,6 @@ visible = false
 
 [node name="Settings" parent="." instance=ExtResource( 4 )]
 visible = false
-
 [connection signal="pressed" from="MainMenu/ButtonContainer/FlyButtonContainer/FlyButton" to="MainMenu" method="_on_FlyButton_pressed"]
 [connection signal="pressed" from="MainMenu/ButtonContainer/TrackButtonContainer/TrackButton" to="MainMenu" method="_on_TrackButton_pressed"]
 [connection signal="pressed" from="MainMenu/ButtonContainer/InputButtonContainer/InputButton" to="MainMenu" method="_on_InputButton_pressed"]

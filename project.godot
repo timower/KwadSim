@@ -8,9 +8,14 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Object",
+"class": "TrackTools",
+"language": "GDScript",
+"path": "res://Script/TrackTools.gd"
+} ]
 _global_script_class_icons={
-
+"TrackTools": ""
 }
 
 [application]
@@ -22,6 +27,10 @@ config/icon="res://icon.png"
 [autoload]
 
 Globals="*res://Script/Globals.gd"
+
+[debug]
+
+gdscript/warnings/return_value_discarded=false
 
 [display]
 
@@ -51,4 +60,5 @@ common/physics_fps=100
 
 [rendering]
 
+quality/directional_shadow/size=2048
 environment/default_environment="res://default_env.tres"

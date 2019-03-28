@@ -4,6 +4,10 @@ importer="texture"
 type="StreamTexture"
 path.s3tc="res://.import/mossy-ground1-preview.png-3a742e3e8b8328c3c87f0d7804c422d5.s3tc.stex"
 path.etc2="res://.import/mossy-ground1-preview.png-3a742e3e8b8328c3c87f0d7804c422d5.etc2.stex"
+metadata={
+"imported_formats": [ "s3tc", "etc2" ],
+"vram_texture": true
+}
 
 [deps]
 

@@ -82,7 +82,7 @@ func apply_settings():
 		InputMap.get_action_list(key[0])[0].scancode = key[2]
 	
 	var vol = linear2db(settings["Volume"] / 100.0)
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), vol)
+	AudioServer.set_bus_volume_db(0, vol)
 	
 	Globals.update_settings()
 
@@ -136,7 +136,7 @@ func _ready():
 	load_settings()
 	apply_settings()
 
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_pressed("ui_cancel"):
 		load_settings()
 		visible = false

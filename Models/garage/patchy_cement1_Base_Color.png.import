@@ -4,6 +4,10 @@ importer="texture"
 type="StreamTexture"
 path.s3tc="res://.import/patchy_cement1_Base_Color.png-d7545e83d76366702180309e2823dfe6.s3tc.stex"
 path.etc2="res://.import/patchy_cement1_Base_Color.png-d7545e83d76366702180309e2823dfe6.etc2.stex"
+metadata={
+"imported_formats": [ "s3tc", "etc2" ],
+"vram_texture": true
+}
 
 [deps]
 

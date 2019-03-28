@@ -12,6 +12,13 @@
 		"frame": "F330",
 		"prop": "apc8x38",
 		"Vbat": 12.0,
-		"weight": 0.8,
-	}
+		"weight": 0.8
+	},
+    "TWE210": {
+        "motor": "wei2207",
+        "frame": "TWE210",
+        "prop": "GF5x46",
+        "Vbat": 16.0,
+        "weight": 0.6
+    }
 }

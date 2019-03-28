@@ -4,6 +4,10 @@ importer="texture"
 type="StreamTexture"
 path.s3tc="res://.import/Pilar_AO.png-57471925bcf81b4888a214217dfd56af.s3tc.stex"
 path.etc2="res://.import/Pilar_AO.png-57471925bcf81b4888a214217dfd56af.etc2.stex"
+metadata={
+"imported_formats": [ "s3tc", "etc2" ],
+"vram_texture": true
+}
 
 [deps]
 

@@ -4,6 +4,10 @@ importer="texture"
 type="StreamTexture"
 path.s3tc="res://.import/concrete2_Normal-ogl.png-f77937ff995a033f52d0a1c6d5aaded2.s3tc.stex"
 path.etc2="res://.import/concrete2_Normal-ogl.png-f77937ff995a033f52d0a1c6d5aaded2.etc2.stex"
+metadata={
+"imported_formats": [ "s3tc", "etc2" ],
+"vram_texture": true
+}
 
 [deps]
 

@@ -85,19 +85,19 @@ func _ready():
 			
 		rateUI[axis][3].text = str(int(apply_rates(axis, 1.0)))
 	
-func _pid_changed(value):
+func _pid_changed(_value):
 	for axis in range(3):
 		for box in range(3):
 			pids[axis][box] = int(pidUI[axis][box].value)
 
-func _rate_changed(value):
+func _rate_changed(_value):
 	for axis in range(3):
 		for box in range(3):
 			rates[axis][box] = rateUI[axis][box].value
 		rateUI[axis][3].text = str(int(apply_rates(axis, 1.0)))
 	graph.update()
 
-func _process(delta):
+func _process(_delta):
 	if (Input.is_action_just_pressed("ui_cancel") and self.visible) or (Input.is_action_just_pressed("kwad_config") and (self.visible or not get_tree().paused)):
 		self.visible = not self.visible
 		get_tree().paused = self.visible

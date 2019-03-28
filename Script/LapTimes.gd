@@ -39,6 +39,11 @@ func _process(delta):
 	lapLabel.text = "best: " + best + " s\n" + \
 					"last: " + str(last_lap_time) + " s\n" + \
 					"cur:  " + str(lap_time) + " s"
+	
+	if Globals.kwad.crashed:
+		$PopupLabel.text = "Crashed!"
+	else:
+		$PopupLabel.text = ""
 
 func _on_reset():
 	last_gate = current_gate

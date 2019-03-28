@@ -128,8 +128,8 @@ func load_frame(frame_name):
 		
 	size = params["size"]
 	$CollisionShape.shape.extents = Vector3(size[0], size[1], size[2])
-	$Area.transform.origin.y = size[1] + 0.005
-	$Area/CollisionShape.shape.radius = sqrt(size[0]*size[0] + size[2]*size[2])
+#	$Area.transform.origin.y = size[1]
+#	$Area/CollisionShape.shape.radius = sqrt(size[0]*size[0] + size[2]*size[2])
 	var cam = params["cam"]
 	$Camera.transform.origin = Vector3(cam[0], cam[1], cam[2]) 
 	
@@ -319,10 +319,9 @@ func calc_motor(delta):
 		apply_impulse(pos, up * delta * thrust)
 		kwadInfo.get_child(midx + 1).value = val * 100
 	
-	apply_torque_impulse(-up * torque_sum * delta * 3)
+	apply_torque_impulse(-up * torque_sum * delta)
 
 func _on_reset():
-	var y = transform.basis.get_euler().y
 	var start = track.objects[0]
 	linear_velocity = Vector3()
 	angular_velocity = Vector3()
@@ -335,7 +334,6 @@ func _on_reset():
 		[0, 0]
 	]
 	crashed = false
-	# TODO: use kwad start from track
 
 func _physics_process(delta):
 	crash_timer -= delta
@@ -406,9 +404,17 @@ func _process(delta):
 					  str(int(fps)) + " fps"
 #					  str(motor_state[0][3]) + " N\n" + \
 
-func _on_Area_body_entered(body):
-	if body != self and not crashed and crash_timer < -0.1:
-		for i in range(4):
-			motor_state[i][1] = 0
-		crashed = true
-		crash_timer = 2
+var last_vel
+func _integrate_forces(state):
+	if state.get_contact_count() > 0:
+		var norm = state.get_contact_local_normal(0)
+		var nvel = last_vel.dot(norm)
+#		if abs(nvel) > 1:
+#			print(nvel)
+		if abs(nvel) > 4.5 and not crashed:
+			for i in range(4):
+				motor_state[i][1] = 0
+			crashed = true
+			crash_timer = 2
+	
+	last_vel = state.linear_velocity

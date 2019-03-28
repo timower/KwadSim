@@ -5,7 +5,7 @@ onready var kwadConf = $"/root/Root/KwadConfig"
 func _ready():
 	get_tree().paused = self.visible
 
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_pressed("ui_cancel"):
 		self.visible = not self.visible
 		get_tree().paused = self.visible

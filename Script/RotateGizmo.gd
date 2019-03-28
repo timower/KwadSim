@@ -58,12 +58,12 @@ func handle_input(camera, event, plane):
 		old_rot = new_rot
 		emit_signal("rot_changed", target.global_transform.basis.get_euler())
 
-func _on_YArea_input_event(camera, event, click_position, click_normal, shape_idx):
+func _on_YArea_input_event(camera, event, _click_position, _click_normal, _shape_idx):
 	handle_input(camera, event, 1)
 
-func _on_XArea_input_event(camera, event, click_position, click_normal, shape_idx):
+func _on_XArea_input_event(camera, event, _click_position, _click_normal, _shape_idx):
 	handle_input(camera, event, 0)
 
 
-func _on_ZArea_input_event(camera, event, click_position, click_normal, shape_idx):
+func _on_ZArea_input_event(camera, event, _click_position, _click_normal, _shape_idx):
 	handle_input(camera, event, 2)

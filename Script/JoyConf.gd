@@ -14,6 +14,7 @@ onready var yaw = $Yaw
 onready var pitch = $Pitch
 onready var roll = $Roll
 
+#warning-ignore:unused_class_variable
 onready var axis = [
 	throttle,
 	pitch,
@@ -50,7 +51,7 @@ func _ready():
 func _exit_tree():
 	Globals.joyConf = null
 
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_pressed("ui_cancel") and self.visible:
 		self.visible = not self.visible
 		get_tree().paused = self.visible
@@ -60,7 +61,7 @@ func _process(delta):
 		for i in range(JOY_AXIS_MAX):
 			allAxis.get_child(i).get_node("ProgressBar").value = Input.get_joy_axis(selected_dev, i)
 
-func joy_con_changed(devId, isConnected):
+func joy_con_changed(_devId, _isConnected):
 	list_joys()
 
 func joy_changed(devId):

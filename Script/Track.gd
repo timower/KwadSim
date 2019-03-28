@@ -59,7 +59,10 @@ func load_from(t_name: String):
 	var file = File.new()
 	
 	if not file.file_exists(f_name):
-		return false
+		f_name = Globals.BUILTIN_TRACKS_PATH + t_name + ".track"
+		if not file.file_exists(f_name):
+			return false
+		
 	
 	file.open(f_name, file.READ)
 	var conts = file.get_var()
