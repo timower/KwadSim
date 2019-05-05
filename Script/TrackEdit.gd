@@ -23,16 +23,24 @@ var close_action = null
 var gates_item = null
 
 class Action:
-	var track
-	
-	func _init(t):
-		track = t
-	
-	func do():
+	func do(track):
 		pass
-	func undo():
+	func undo(track):
 		pass
 
+class PlaceGateAction extends Action:
+	var gate_dict
+	var gate_ref = null
+	
+	func _init(gdict):
+		gate_dict = gdict
+		
+	func do(track):
+		gate_ref = track.add_gate(gate_dict)
+
+	func undo(track):
+		track.remove_gate(gate_ref)
+		gate_ref = null
 
 var tools = [
 	TrackTools.GateTool,

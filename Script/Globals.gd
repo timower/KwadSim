@@ -3,7 +3,7 @@ extends Node
 #warning-ignore-all:unused_class_variable
 
 var joyConf = null
-var kwad = null
+var kwad = null setget ,get_kwad
 
 var s3d_width = 1280
 var s3d_height = 720
@@ -34,6 +34,8 @@ const SCENES = [
 signal settings_changed
 
 signal reset
+
+signal rc_input
 
 func reload_quads():
 	var def_quads = read_json("res://Data/quads.json")
@@ -94,3 +96,9 @@ func get_tracks():
 		dir.make_dir(TRACK_PATH)
 		return builtins
 	return tracks + builtins
+
+func new_rc_input(inputs):
+	emit_signal("rc_input", inputs)
+
+func get_kwad():
+	return get_tree().get_nodes_in_group("Kwad")[0]

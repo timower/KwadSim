@@ -1,11 +1,11 @@
 [gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Script/Kwad.gd" type="Script" id=1]
-[ext_resource path="res://Models/kwad/kwad.gltf" type="PackedScene" id=2]
+[ext_resource path="res://Models/prop/prop.gltf" type="PackedScene" id=2]
 [ext_resource path="res://Sound/prop.wav" type="AudioStream" id=3]
-[ext_resource path="res://Models/motor/motor.gltf" type="PackedScene" id=4]
+[ext_resource path="res://Models/kwad/kwad.gltf" type="PackedScene" id=4]
 [ext_resource path="res://Models/prop/Material_Moving.material" type="Material" id=5]
-[ext_resource path="res://Models/prop/prop.gltf" type="PackedScene" id=6]
+[ext_resource path="res://Models/motor/motor.gltf" type="PackedScene" id=6]
 
 [sub_resource type="PhysicsMaterial" id=1]
 
@@ -33,7 +33,7 @@ fov = 120.0
 near = 0.01
 far = 500.0
 
-[node name="Scene Root" parent="." instance=ExtResource( 2 )]
+[node name="Scene Root" parent="." instance=ExtResource( 4 )]
 transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.0266218, 0 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
@@ -46,7 +46,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.065, 0, 0.065 )
 stream = ExtResource( 3 )
 bus = "SFX"
 
-[node name="Scene Root" parent="motor1" instance=ExtResource( 4 )]
+[node name="Scene Root" parent="motor1" instance=ExtResource( 6 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.027, 0 )
 
 [node name="movingProp" type="MeshInstance" parent="motor1"]
@@ -54,7 +54,7 @@ visible = false
 mesh = SubResource( 3 )
 material/0 = null
 
-[node name="Prop" parent="motor1" instance=ExtResource( 6 )]
+[node name="Prop" parent="motor1" instance=ExtResource( 2 )]
 transform = Transform( -0.280763, 0, 0.959777, 0, 1, 0, -0.959777, 0, -0.280763, 0, -0.00284342, 0 )
 
 [node name="motor2" type="Spatial" parent="."]
@@ -64,7 +64,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.065, 0, 0.065 )
 stream = ExtResource( 3 )
 bus = "SFX"
 
-[node name="Scene Root" parent="motor2" instance=ExtResource( 4 )]
+[node name="Scene Root" parent="motor2" instance=ExtResource( 6 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.027, 0 )
 
 [node name="movingProp" type="MeshInstance" parent="motor2"]
@@ -72,7 +72,7 @@ visible = false
 mesh = SubResource( 3 )
 material/0 = null
 
-[node name="Prop" parent="motor2" instance=ExtResource( 6 )]
+[node name="Prop" parent="motor2" instance=ExtResource( 2 )]
 transform = Transform( 0.840923, 0, -0.541155, 0, 1, 0, -0.541155, 0, -0.840923, -0.000283733, -0.00284342, 2.98023e-08 )
 
 [node name="motor3" type="Spatial" parent="."]
@@ -82,10 +82,10 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.065, 0, -0.065 )
 stream = ExtResource( 3 )
 bus = "SFX"
 
-[node name="Scene Root" parent="motor3" instance=ExtResource( 4 )]
+[node name="Scene Root" parent="motor3" instance=ExtResource( 6 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.027, 0 )
 
-[node name="Prop" parent="motor3" instance=ExtResource( 6 )]
+[node name="Prop" parent="motor3" instance=ExtResource( 2 )]
 transform = Transform( -0.501838, 0, 0.864962, 0, 1, 0, 0.864962, 0, 0.501838, 0, -0.00284342, 0.000440836 )
 
 [node name="movingProp" type="MeshInstance" parent="motor3"]
@@ -100,10 +100,10 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.065, 0, -0.065 )
 stream = ExtResource( 3 )
 bus = "SFX"
 
-[node name="Scene Root" parent="motor4" instance=ExtResource( 4 )]
+[node name="Scene Root" parent="motor4" instance=ExtResource( 6 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.027, 0 )
 
-[node name="Prop" parent="motor4" instance=ExtResource( 6 )]
+[node name="Prop" parent="motor4" instance=ExtResource( 2 )]
 transform = Transform( 0.587029, 0, -0.809566, 0, 1, 0, 0.809566, 0, 0.587029, 0, -0.003, 0 )
 
 [node name="movingProp" type="MeshInstance" parent="motor4"]

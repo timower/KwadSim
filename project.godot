@@ -9,12 +9,18 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "RigidBody",
+"class": "Kwad",
+"language": "NativeScript",
+"path": "res://Script/native/kwad.gdns"
+}, {
 "base": "Object",
 "class": "TrackTools",
 "language": "GDScript",
 "path": "res://Script/TrackTools.gd"
 } ]
 _global_script_class_icons={
+"Kwad": "",
 "TrackTools": ""
 }
 

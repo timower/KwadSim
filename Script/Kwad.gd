@@ -325,7 +325,7 @@ func _on_reset():
 	var start = track.objects[0]
 	linear_velocity = Vector3()
 	angular_velocity = Vector3()
-	transform.origin = start.pos + Vector3(0, 0.15 + size[1], 0)
+	transform.origin = start.pos + Vector3(0, 0.2 + size[1], 0)
 	transform.basis = Basis(start.rot)
 	pid_state = [
 		#I  D

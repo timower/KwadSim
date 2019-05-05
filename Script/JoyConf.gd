@@ -25,15 +25,21 @@ onready var axis = [
 func list_joys():
 	joyListOpt.clear()
 	var idx = 0
+	var seen_selected = false
 	for joyPad in Input.get_connected_joypads():
 		joyListOpt.add_item(Input.get_joy_name(joyPad), joyPad)
 		
 		if selected_dev == -1:
 			selected_dev = joyPad
+			seen_selected = true
 		elif selected_dev == joyPad:
 			joyListOpt.select(idx)
+			seen_selected = true
 			
 		idx += 1
+	if not seen_selected:
+		selected_dev = 0
+		joyListOpt.select(0)
 
 func _ready():
 	for i in range(JOY_AXIS_MAX):
@@ -51,12 +57,16 @@ func _ready():
 func _exit_tree():
 	Globals.joyConf = null
 
+func _input(event):
+	if event is InputEventJoypadMotion and event.device == selected_dev:
+		Globals.new_rc_input([roll.value, pitch.value, yaw.value, throttle.value])
+
 func _process(_delta):
 	if Input.is_action_just_pressed("ui_cancel") and self.visible:
 		self.visible = not self.visible
 		get_tree().paused = self.visible
 		saveConf()
-
+		
 	if self.visible:
 		for i in range(JOY_AXIS_MAX):
 			allAxis.get_child(i).get_node("ProgressBar").value = Input.get_joy_axis(selected_dev, i)
