@@ -69,6 +69,8 @@
 #define USE_BARO
 #define USE_FAKE_BARO
 
+#define USE_GPS
+
 #define USABLE_TIMER_CHANNEL_COUNT 0
 
 #define USE_UART1

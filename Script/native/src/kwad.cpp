@@ -25,6 +25,8 @@ extern "C" {
 
 #include "rx/msp.h"
 
+#include "io/gps.h"
+
 #include "drivers/display.h"
 }
 
@@ -36,6 +38,9 @@ const auto PID_MIXER_SCALING = 1000.0f;
 
 const auto AIR_RHO = 1.225f;
 
+const auto FREQUENCY =
+    20000.0f;  // 20kHz scheduler, is enough to run PID at 8khz
+
 static int16_t motorsPwm[MAX_SUPPORTED_MOTORS];
 
 static bool workerRunning = false;
@@ -46,6 +51,8 @@ const auto VIDEO_LINES = 16;
 static uint8_t osdScreen[16][30];
 
 static int64_t sleep_timer = 0;
+
+static uint64_t micros_passed = 0;
 
 static float clamp(float x, float min, float max) {
     if (x < min) return min;
@@ -123,7 +130,9 @@ void Kwad::get_gyro(const PhysicsDirectBodyState &state) {
     Vector3 pos = get_transform().origin;
     Quat rotation(basis);
     Vector3 gyro = basis.xform_inv(state.get_angular_velocity());
-    Vector3 accelerometer = basis.xform_inv(acceleration);
+
+    Vector3 accelerometer =
+        basis.xform_inv(acceleration) * state.get_inverse_mass();
 
     int16_t x, y, z;
     if (sensors(SENSOR_ACC)) {
@@ -141,7 +150,38 @@ void Kwad::get_gyro(const PhysicsDirectBodyState &state) {
     z = constrain(gyro.y * GYRO_SCALE * RAD2DEG, -32767, 32767);
     fakeGyroSet(fakeGyroDev, x, y, z);
 
-    imuSetAttitudeQuat(rotation.w, rotation.z, rotation.x, rotation.y);
+    imuSetAttitudeQuat(rotation.w, rotation.z, rotation.x, -rotation.y);
+
+    const auto
+        DISTANCE_BETWEEN_TWO_LONGITUDE_POINTS_AT_EQUATOR_IN_HUNDREDS_OF_KILOMETERS =
+            1.113195f;
+    const auto cosLon0 = 0.63141842418f;
+
+    // set gps:
+    static int64_t last_millis = 0;
+    int64_t millis = micros_passed / 1000;
+
+    if (millis - last_millis > 100) {
+        ENABLE_STATE(GPS_FIX);
+        gpsSol.numSat = 10;
+        gpsSol.llh.lat =
+            int32_t(
+                -pos.z * 100 /
+                DISTANCE_BETWEEN_TWO_LONGITUDE_POINTS_AT_EQUATOR_IN_HUNDREDS_OF_KILOMETERS) +
+            508445910;  // 508445910;
+        gpsSol.llh.lon =
+            int32_t(
+                pos.x * 100 /
+                (cosLon0 *
+                 DISTANCE_BETWEEN_TWO_LONGITUDE_POINTS_AT_EQUATOR_IN_HUNDREDS_OF_KILOMETERS)) +
+            43551050;  // 43551050;
+        gpsSol.llh.altCm = int32_t(pos.y * 100);
+        gpsSol.groundSpeed =
+            uint16_t(state.get_linear_velocity().length() * 100);
+        GPS_update |= GPS_MSP_UPDATE;
+
+        last_millis = millis;
+    }
 }
 
 static jmp_buf reset_buf;
@@ -267,10 +307,6 @@ void Kwad::calc_motors(float delta) {
         resultant_prop_torque += motor_dir[i] * torque;
     }
 }
-
-const auto FREQUENCY = 20000.0f;
-
-static uint64_t micros_passed = 0;
 
 Vector3 Kwad::point_vel(Vector3 point) {
     return Vector3();  // velocity + angularVel.cross(point -
