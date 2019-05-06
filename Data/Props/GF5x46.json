@@ -2,6 +2,10 @@
 	"inertia": 0.00000413,
 	"radius": 0.0635,
 	"chord": 0.018,
+    "thrust": 12.99,
+    "a": 2.0e-8,
+    "rpm": 25000,
+    "torque_factor": 0.0195,
 
 	"curve": [
 [0.000, [

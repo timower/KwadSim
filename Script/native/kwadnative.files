@@ -1,4 +1,5 @@
 SConstruct
+SerialTcpThread.gdns
 godot-cpp/godot_headers/android/godot_android.h
 godot-cpp/godot_headers/arvr/godot_arvr.h
 godot-cpp/godot_headers/gdnative/aabb.h
@@ -1301,3 +1302,5 @@ godot-cpp/src/gen/__register_types.cpp
 src/gdlibrary.cpp
 src/kwad.cpp
 src/kwad.h
+src/serialtcpthread.cpp
+src/serialtcpthread.h

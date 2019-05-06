@@ -14,12 +14,21 @@ onready var yaw = $Yaw
 onready var pitch = $Pitch
 onready var roll = $Roll
 
+onready var aux1 = $Aux1
+onready var aux2 = $Aux2
+onready var aux3 = $Aux3
+onready var aux4 = $Aux4
+
 #warning-ignore:unused_class_variable
-onready var axis = [
+onready var axes = [
 	throttle,
 	pitch,
 	yaw,
-	roll
+	roll,
+	aux1,
+	aux2,
+	aux3,
+	aux4
 ]
 
 func list_joys():
@@ -59,7 +68,8 @@ func _exit_tree():
 
 func _input(event):
 	if event is InputEventJoypadMotion and event.device == selected_dev:
-		Globals.new_rc_input([roll.value, pitch.value, yaw.value, throttle.value])
+		Globals.new_rc_input([roll.value, pitch.value, throttle.value, yaw.value,
+							  aux1.value, aux2.value, aux3.value, aux4.value])
 
 func _process(_delta):
 	if Input.is_action_just_pressed("ui_cancel") and self.visible:
@@ -87,10 +97,9 @@ func saveConf():
 	file.open(SAVE_PATH, file.WRITE)
 	
 	file.store_var(selected_dev)
-	throttle.saveConf(file)
-	yaw.saveConf(file)
-	pitch.saveConf(file)
-	roll.saveConf(file)
+	
+	for axis in axes:
+		axis.saveConf(file)
 	
 	file.close()
 
@@ -102,10 +111,9 @@ func loadConf():
 	
 	selected_dev = file.get_var()
 	
-	throttle.loadConf(file)
-	yaw.loadConf(file)
-	pitch.loadConf(file)
-	roll.loadConf(file)
+	for axis in axes:
+		axis.loadConf(file)
+		
 	file.close()
 	
 	

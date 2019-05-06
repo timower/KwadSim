@@ -2,6 +2,8 @@ extends Node
 
 #warning-ignore-all:unused_class_variable
 
+var serialTcpThread = SerialTcpThread.new()
+
 var joyConf = null
 var kwad = null setget ,get_kwad
 
@@ -49,9 +51,15 @@ func reload_quads():
 #	for quad in user_quads:
 #		quads[quad] = user_quads[quad]
 
+func _init():
+	serialTcpThread.start_tcp()
+	
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+        serialTcpThread.stop_tcp()
+
 func _ready():
 	reload_quads()
-	
 	
 func reset():
 	emit_signal("reset")
