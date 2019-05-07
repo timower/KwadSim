@@ -1,6 +1,14 @@
 #!python
-import os, subprocess
+import os, subprocess, sys
 
+# Try to detect the host platform automatically.
+# This is used if no `platform` argument is passed
+if sys.platform.startswith('linux'):
+    host_platform = 'linux'
+elif sys.platform == 'darwin':
+    host_platform = 'osx'
+elif sys.platform == 'win32':
+    host_platform = 'windows'
 
 opts = Variables([], ARGUMENTS)
 
@@ -58,17 +66,29 @@ elif env['platform'] in ('x11', 'linux'):
         env.Append(CCFLAGS = ['-fPIC', '-g','-O3', '-std=c++17'])
 
 elif env['platform'] == "windows":
-    env['target_path'] += 'win64/'
-    cpp_library += '.windows'
-    # This makes sure to keep the session environment variables on windows,
-    # that way you can run scons in a vs 2017 prompt and it will find all the required tools
-    env.Append(ENV = os.environ)
+    if host_platform == "windows": 
+        env['target_path'] += 'win64/'
+        cpp_library += '.windows'
+        # This makes sure to keep the session environment variables on windows,
+        # that way you can run scons in a vs 2017 prompt and it will find all the required tools
+        env.Append(ENV = os.environ)
 
-    env.Append(CCFLAGS = ['-DWIN32', '-D_WIN32', '-D_WINDOWS', '-W3', '-GR', '-D_CRT_SECURE_NO_WARNINGS'])
-    if env['target'] in ('debug', 'd'):
-        env.Append(CCFLAGS = ['-EHsc', '-D_DEBUG', '-MDd'])
+        env.Append(CCFLAGS = ['-DWIN32', '-D_WIN32', '-D_WINDOWS', '-W3', '-GR', '-D_CRT_SECURE_NO_WARNINGS'])
+        if env['target'] in ('debug', 'd'):
+            env.Append(CCFLAGS = ['-EHsc', '-D_DEBUG', '-MDd'])
+        else:
+            env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '-MD'])
     else:
-        env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '-MD'])
+        env['target_path'] += 'win64/'
+        cpp_library += '.windows'
+        env['CC'] = 'x86_64-w64-mingw32-gcc'
+        env['CXX'] = 'x86_64-w64-mingw32-g++'
+
+        env.Append(LIBS=['wsock32', 'ws2_32'])
+        env.Append(CCFLAGS = ['-std=c++14', '-mno-ms-bitfields'])
+        env.Append(LINKFLAGS = ['--static', '-Wl,--no-undefined', '-static-libgcc', '-static-libstdc++'])
+
+
 
 if env['target'] in ('debug', 'd'):
     cpp_library += '.debug'
@@ -98,6 +118,8 @@ env.Append(CPPDEFINES=['FLASH_SIZE=2048'])
 
 env.Append(CPPPATH=['betaflight/lib/main/dyad'])
 env.Append(CPPPATH=['betaflight/src/main'])
+
+#env.Append(CCFLAGS = ['-include', 'drivers/serial_tcp.h'])
 
 betaflight_sources = [
     "build/build_config.c",
@@ -277,7 +299,6 @@ betaflight_sources = [
     "drivers/accgyro/accgyro_fake.c",
     "drivers/barometer/barometer_fake.c",
     "drivers/compass/compass_fake.c",
-    "drivers/serial_tcp.c"
 ]
 
 betaflight_sources = ["betaflight/src/main/" + x for x in betaflight_sources]
@@ -287,12 +308,16 @@ betaflight_sources.append("betaflight/lib/main/dyad/dyad.c")
 betaflight_sources.append("src/target.c")
 
 betaflight_sources += Glob("betaflight/src/main/pg/*.c")
-betaflight_sources += Glob("betaflight/src/main/common/*.c")
+betaflight_sources += Glob("betaflight/src/main/common/*.c", exclude="betaflight/src/main/common/string_light.c")
 betaflight_sources += Glob("betaflight/src/main/config/*.c")
+
+betaflight_sources += Glob("drivers/*.c")
+betaflight_sources += Glob("io/*.c")
 
 sources += betaflight_sources
 
 env.Append(LINKFLAGS=['-Tbetaflight/src/main/target/SITL/pg.ld'])
+
 
 library = env.SharedLibrary(target=env['target_path'] + env['target_name'] , source=sources)
 

@@ -1,5 +1,7 @@
 SConstruct
 SerialTcpThread.gdns
+drivers/pwm_output_fake.c
+drivers/pwm_output_fake.h
 godot-cpp/godot_headers/android/godot_android.h
 godot-cpp/godot_headers/arvr/godot_arvr.h
 godot-cpp/godot_headers/gdnative/aabb.h
@@ -1299,6 +1301,8 @@ godot-cpp/src/gen/__icalls.cpp
 godot-cpp/src/gen/__icalls.hpp
 godot-cpp/src/gen/__init_method_bindings.cpp
 godot-cpp/src/gen/__register_types.cpp
+io/displayport_fake.c
+io/displayport_fake.h
 src/gdlibrary.cpp
 src/kwad.cpp
 src/kwad.h

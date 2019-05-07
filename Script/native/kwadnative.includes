@@ -14,3 +14,5 @@ src
 
 betaflight/src/main
 betaflight/lib/main/dyad
+io
+drivers

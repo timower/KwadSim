@@ -2,6 +2,7 @@
 
 #include <KinematicCollision.hpp>
 #include <Label.hpp>
+#include <OS.hpp>
 #include <PhysicsDirectBodyState.hpp>
 #include <Spatial.hpp>
 #include <String.hpp>
@@ -11,22 +12,32 @@
 #include <csetjmp>
 #include <cstring>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979
+#endif
+
 extern "C" {
+#include "dyad.h"
+
 #include "common/maths.h"
-#include "drivers/accgyro/accgyro_fake.h"
-#include "drivers/pwm_output.h"
+
 #include "fc/init.h"
 #include "fc/runtime_config.h"
 #include "fc/tasks.h"
+
 #include "flight/imu.h"
+
 #include "scheduler/scheduler.h"
 #include "sensors/sensors.h"
 
+#include "drivers/accgyro/accgyro_fake.h"
+#include "drivers/pwm_output.h"
+#include "drivers/pwm_output_fake.h"
+
 #include "rx/msp.h"
 
+#include "io/displayport_fake.h"
 #include "io/gps.h"
-
-#include "drivers/display.h"
 }
 
 using namespace godot;
@@ -43,12 +54,6 @@ const auto AIR_RHO = 1.225f;
 
 // 20kHz scheduler, is enough to run PID at 8khz
 const auto FREQUENCY = 20000.0f;
-
-static int16_t motorsPwm[MAX_SUPPORTED_MOTORS];
-
-const auto CHARS_PER_LINE = 30;
-const auto VIDEO_LINES = 16;
-static uint8_t osdScreen[16][30];
 
 static int64_t sleep_timer = 0;
 
@@ -249,6 +254,17 @@ void Kwad::integrate_forces(PhysicsDirectBodyState *state) {
 
     totalDelta += state->get_step();
 
+#ifdef TIMING
+    auto start = OS::get_singleton()->get_ticks_usec();
+#endif
+    // update tcp serial
+    dyad_update();
+
+#ifdef TIMING
+    auto end = OS::get_singleton()->get_ticks_usec();
+    Godot::print(String("dyad time: {0}").format(Array::make(end - start)));
+#endif
+
     // update rc at 100Hz, otherwise rx loss gets reported:
     rxMspFrameReceive(&rcData[0], 8);
 
@@ -310,6 +326,11 @@ void Kwad::integrate_forces(PhysicsDirectBodyState *state) {
 
         totalDelta -= dt;
     }
+
+#ifdef TIMING
+    auto end2 = OS::get_singleton()->get_ticks_usec();
+    Godot::print(String("loop time: {0}").format(Array::make(end2 - end)));
+#endif
 }
 
 void Kwad::set_motor_params(float Kv, float R, float I0) {
@@ -351,7 +372,7 @@ void Kwad::set_quad_params(float Vbat) {
 /*********************
  * Betaflight Stuff: *
  *********************/
-
+extern "C" {
 extern "C" void systemInit(void) {
     int ret;
 
@@ -361,10 +382,10 @@ extern "C" void systemInit(void) {
     FLASH_Unlock();
 
     // serial can't been slow down
-    rescheduleTask(TASK_SERIAL, 1);
+    // rescheduleTask(TASK_SERIAL, 1);
 }
 
-extern "C" void systemReset(void) {
+void systemReset(void) {
     printf("[system]Reset!\n");
 
     micros_passed = 0;
@@ -373,7 +394,7 @@ extern "C" void systemReset(void) {
     longjmp(reset_buf, 1);
 }
 
-extern "C" void systemResetToBootloader(void) {
+void systemResetToBootloader(void) {
     printf("[system]ResetToBootloader!\n");
 
     micros_passed = 0;
@@ -382,16 +403,16 @@ extern "C" void systemResetToBootloader(void) {
     longjmp(reset_buf, 1);
 }
 
-extern "C" uint32_t micros(void) {
+uint32_t micros(void) {
     return micros_passed & 0xFFFFFFFF;
 }
 
-extern "C" uint32_t millis(void) {
-    static uint32_t last_mil = 0;
+uint32_t millis(void) {
+    // static uint32_t last_mil = 0;
     uint32_t mil = (micros_passed / 1000) & 0xFFFFFFFF;
     // fix for gps double stuff:
-    if (mil == last_mil) mil += 1;
-    last_mil = mil;
+    // if (mil == last_mil) mil += 1;
+    // last_mil = mil;
     return mil;
 }
 
@@ -399,191 +420,11 @@ void microsleep(uint32_t usec) {
     sleep_timer = usec;
 }
 
-extern "C" void delayMicroseconds(uint32_t usec) {
+void delayMicroseconds(uint32_t usec) {
     microsleep(usec);
 }
 
-extern "C" void delay(uint32_t ms) {
+void delay(uint32_t ms) {
     microsleep(ms * 1000);
-}
-
-extern "C" {
-
-// PWM part
-static bool pwmMotorsEnabled = false;
-static pwmOutputPort_t motors[MAX_SUPPORTED_MOTORS];
-static pwmOutputPort_t servos[MAX_SUPPORTED_SERVOS];
-
-// real value to send
-static int16_t servosPwm[MAX_SUPPORTED_SERVOS];
-static int16_t idlePulse;
-
-void motorDevInit(const motorDevConfig_t *motorConfig, uint16_t _idlePulse,
-                  uint8_t motorCount) {
-    UNUSED(motorConfig);
-    UNUSED(motorCount);
-
-    idlePulse = _idlePulse;
-    if (motorConfig->motorPwmProtocol == PWM_TYPE_BRUSHED) {
-        idlePulse = 1000.0;
-    }
-
-    for (int motorIndex = 0;
-         motorIndex < MAX_SUPPORTED_MOTORS && motorIndex < motorCount;
-         motorIndex++) {
-        motors[motorIndex].enabled = true;
-    }
-    pwmMotorsEnabled = true;
-}
-
-void servoDevInit(const servoDevConfig_t *servoConfig) {
-    UNUSED(servoConfig);
-    for (uint8_t servoIndex = 0; servoIndex < MAX_SUPPORTED_SERVOS;
-         servoIndex++) {
-        servos[servoIndex].enabled = true;
-    }
-}
-
-pwmOutputPort_t *pwmGetMotors(void) {
-    return motors;
-}
-
-void pwmEnableMotors(void) {
-    pwmMotorsEnabled = true;
-}
-
-bool pwmAreMotorsEnabled(void) {
-    return pwmMotorsEnabled;
-}
-
-bool isMotorProtocolDshot(void) {
-    return false;
-}
-
-void pwmWriteMotor(uint8_t index, float value) {
-    motorsPwm[index] = int16_t(value - idlePulse);
-}
-
-void pwmShutdownPulsesForAllMotors(uint8_t motorCount) {
-    UNUSED(motorCount);
-    pwmMotorsEnabled = false;
-}
-
-void pwmWriteServo(uint8_t index, float value) {
-    servosPwm[index] = int16_t(value);
-}
-
-void pwmCompleteMotorUpdate(uint8_t motorCount) {
-    UNUSED(motorCount);
-}
-
-// osd:
-static uint8_t osdBackBuffer[VIDEO_LINES][CHARS_PER_LINE];
-static displayPort_t fakeDisplayPort;
-
-extern unsigned int resumeRefreshAt;
-static int grab(displayPort_t *displayPort) {
-    UNUSED(displayPort);
-
-#ifdef USE_OSD
-    resumeRefreshAt = 0;
-#endif
-    return 0;
-}
-
-static int release(displayPort_t *displayPort) {
-    UNUSED(displayPort);
-    return 0;
-}
-
-static int clearScreen(displayPort_t *displayPort) {
-    UNUSED(displayPort);
-    std::memset(osdBackBuffer, 0, 16 * 30);
-    return 0;
-}
-
-static int drawScreen(displayPort_t *displayPort) {
-    UNUSED(displayPort);
-    std::memcpy(osdScreen, osdBackBuffer, 16 * 30);
-    return 0;
-}
-
-static int screenSize(const displayPort_t *displayPort) {
-    UNUSED(displayPort);
-    return 480;
-}
-
-static int writeString(displayPort_t *displayPort, uint8_t x, uint8_t y,
-                       const char *s) {
-    UNUSED(displayPort);
-    // printf("%d, %d: %s\n", x, y, s);
-    if (y < VIDEO_LINES) {
-        for (int i = 0; s[i] && x + i < CHARS_PER_LINE; i++) {
-            osdBackBuffer[y][x + i] = s[i];
-            // printf("%d, %d: %d\n", x, y, s[i]);
-        }
-    }
-    return 0;
-}
-
-static int writeChar(displayPort_t *displayPort, uint8_t x, uint8_t y,
-                     uint8_t c) {
-    UNUSED(displayPort);
-    if (x < CHARS_PER_LINE && y < VIDEO_LINES) {
-        osdBackBuffer[y][x] = c;
-    }
-    return 0;
-}
-
-static bool isTransferInProgress(const displayPort_t *displayPort) {
-    UNUSED(displayPort);
-    return false;
-}
-
-static bool isSynced(const displayPort_t *displayPort) {
-    UNUSED(displayPort);
-    return true;
-}
-
-static void resync(displayPort_t *displayPort) {
-    displayPort->rows = VIDEO_LINES;
-    displayPort->cols = CHARS_PER_LINE;
-}
-
-static int heartbeat(displayPort_t *displayPort) {
-    UNUSED(displayPort);
-    return 0;
-}
-
-static uint32_t txBytesFree(const displayPort_t *displayPort) {
-    UNUSED(displayPort);
-    return UINT32_MAX;
-}
-
-static const displayPortVTable_t fakeDispVTable = {
-    .grab = grab,
-    .release = release,
-    .clearScreen = clearScreen,
-    .drawScreen = drawScreen,
-    .screenSize = screenSize,
-    .writeString = writeString,
-    .writeChar = writeChar,
-    .isTransferInProgress = isTransferInProgress,
-    .heartbeat = heartbeat,
-    .resync = resync,
-    .isSynced = isSynced,
-    .txBytesFree = txBytesFree,
-};
-
-struct vcdProfile_s;
-displayPort_t *max7456DisplayPortInit(const struct vcdProfile_s *vcdProfile) {
-    UNUSED(vcdProfile);
-
-    printf("display init\n");
-    displayInit(&fakeDisplayPort, &fakeDispVTable);
-
-    resync(&fakeDisplayPort);
-
-    return &fakeDisplayPort;
 }
 }

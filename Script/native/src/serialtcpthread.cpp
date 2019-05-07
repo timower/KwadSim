@@ -34,14 +34,20 @@ static void *tcpThread(void * /*data*/) {
 
 void SerialTcpThread::start_tcp() {
     workerRunning = true;
+    dyad_init();
+    dyad_setTickInterval(0.2);
+    dyad_setUpdateTimeout(0.0);
+    /*
     int ret = pthread_create(&tcpWorker, nullptr, tcpThread, nullptr);
     if (ret != 0) {
         printf("Create tcpWorker error!\n");
         exit(1);
     }
+    */
 }
 
 void SerialTcpThread::stop_tcp() {
     workerRunning = false;
-    pthread_join(tcpWorker, nullptr);
+    dyad_shutdown();
+    // pthread_join(tcpWorker, nullptr);
 }
