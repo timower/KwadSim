@@ -15,6 +15,7 @@ reloadable=true
 [entry]
 
 X11.64="res://Script/native/build/bin/x11/libkwadsim.so"
+Windows.64="res://Script/native/build/bin/win64/libkwadsim.so"
 
 [dependencies]
 
