@@ -1,7 +1,7 @@
-# KwadSim
+# KwadSim [![Build Status](https://travis-ci.com/timower/KwadSim.svg?branch=master)](https://travis-ci.com/timower/KwadSim)
 The open source racing/freestyle drone simulator
 
-[Demo](https://gfycat.com/OptimalKaleidoscopicAtlanticridleyturtle)
+[Screen recording](https://gfycat.com/OptimalKaleidoscopicAtlanticridleyturtle)
 
 ## Building
 
