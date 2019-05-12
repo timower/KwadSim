@@ -1,5 +1,6 @@
 os:
   - linux
+  - osx
 
 sudo: false
 
@@ -23,11 +24,8 @@ language: cpp
 compiler: gcc
 
 before_install:
-  - |
-    echo "Target branch: $TRAVIS_BRANCH"
-    echo "Commit range: $TRAVIS_COMMIT_RANGE"
-
-    #install:
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update       ; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install scons; fi
 
 before_script:
   - gcc --version

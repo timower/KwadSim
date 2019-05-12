@@ -50,6 +50,7 @@ if env['platform'] == '':
 if env['platform'] == "osx":
     env['target_path'] += 'osx/'
     cpp_library += '.osx'
+    env.Append(CXXFLAGS='-std=c++14')
     if env['target'] in ('debug', 'd'):
         env.Append(CCFLAGS = ['-g','-O2', '-arch', 'x86_64'])
         env.Append(LINKFLAGS = ['-arch', 'x86_64'])
@@ -60,10 +61,12 @@ if env['platform'] == "osx":
 elif env['platform'] in ('x11', 'linux'):
     env['target_path'] += 'x11/'
     cpp_library += '.linux'
+    env.Append(CXXFLAGS='-std=c++14')
+    env.Append(LINKFLAGS=['-Tbetaflight/src/main/target/SITL/pg.ld'])
     if env['target'] in ('debug', 'd'):
-        env.Append(CCFLAGS = ['-fPIC', '-g3','-O0', '-std=c++17'])
+        env.Append(CCFLAGS = ['-fPIC', '-g3','-O0'])
     else:
-        env.Append(CCFLAGS = ['-fPIC', '-g','-O3', '-std=c++17'])
+        env.Append(CCFLAGS = ['-fPIC', '-g','-O3'])
 
 elif env['platform'] == "windows":
     if host_platform == "windows": 
@@ -83,10 +86,12 @@ elif env['platform'] == "windows":
         cpp_library += '.windows'
         env['CC'] = 'x86_64-w64-mingw32-gcc'
         env['CXX'] = 'x86_64-w64-mingw32-g++'
-
+        
+        env.Append(CXXFLAGS='-std=c++14')
         env.Append(LIBS=['wsock32', 'ws2_32'])
-        env.Append(CCFLAGS = ['-std=c++14', '-mno-ms-bitfields'])
+        env.Append(CCFLAGS = ['-mno-ms-bitfields'])
         env.Append(LINKFLAGS = ['--static', '-Wl,--no-undefined', '-static-libgcc', '-static-libstdc++'])
+        env.Append(LINKFLAGS=['-Tbetaflight/src/main/target/SITL/pg.ld'])
 
 
 
@@ -316,7 +321,6 @@ betaflight_sources += Glob("io/*.c")
 
 sources += betaflight_sources
 
-env.Append(LINKFLAGS=['-Tbetaflight/src/main/target/SITL/pg.ld'])
 
 
 library = env.SharedLibrary(target=env['target_path'] + env['target_name'] , source=sources)
