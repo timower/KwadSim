@@ -15,7 +15,7 @@ void SerialTcpThread::_register_methods() {
 }
 
 static bool workerRunning = false;
-static pthread_t tcpWorker;
+// static pthread_t tcpWorker;
 
 static void *tcpThread(void * /*data*/) {
     printf("tcpThread start!!\n");
