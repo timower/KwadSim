@@ -54,6 +54,9 @@ const timerHardware_t timerHardware[1]; // unused
 #include "dyad.h"
 #include "drivers/display.h"
 
+#include "io/gps.h"
+#include "fc/runtime_config.h"
+
 uint32_t SystemCoreClock;
 
 int timeval_sub(struct timespec *result, struct timespec *x, struct timespec *y);
@@ -229,4 +232,39 @@ void pgResetFn_displayPortProfileMax7456(displayPortProfile_t *displayPortProfil
     displayPortProfile->invert = false;
     displayPortProfile->blackBrightness = 0;
     displayPortProfile->whiteBrightness = 2;
+}
+
+#define GPS_DISTANCE_FLOWN_MIN_GROUND_SPEED_THRESHOLD_CM_S 15
+
+uint32_t millis();
+
+void GPS_calculateDistanceFlownVerticalSpeed_Fake(bool initialize) {
+    static int32_t lastCoord[2] = { 0, 0 };
+    static int16_t lastAlt;
+    static int32_t lastMillis;
+
+    int currentMillis = millis();
+
+    if (initialize) {
+        GPS_distanceFlownInCm = 0;
+        GPS_verticalSpeedInCmS = 0;
+    } else {
+        if (STATE(GPS_FIX_HOME) && ARMING_FLAG(ARMED)) {
+            // Only add up movement when speed is faster than minimum threshold
+            if (gpsSol.groundSpeed > GPS_DISTANCE_FLOWN_MIN_GROUND_SPEED_THRESHOLD_CM_S) {
+                uint32_t dist;
+                int32_t dir;
+                GPS_distance_cm_bearing(&gpsSol.llh.lat, &gpsSol.llh.lon, &lastCoord[LAT], &lastCoord[LON], &dist, &dir);
+                GPS_distanceFlownInCm += dist;
+            }
+        }
+
+        int32_t dt = currentMillis - lastMillis;
+        GPS_verticalSpeedInCmS = dt == 0 ? 0 : (gpsSol.llh.altCm - lastAlt) * 1000 / dt;
+        GPS_verticalSpeedInCmS = constrain(GPS_verticalSpeedInCmS, -1500.0f, 1500.0f);
+    }
+    lastCoord[LON] = gpsSol.llh.lon;
+    lastCoord[LAT] = gpsSol.llh.lat;
+    lastAlt = gpsSol.llh.altCm;
+    lastMillis = currentMillis;
 }

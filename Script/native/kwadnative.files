@@ -1303,6 +1303,7 @@ godot-cpp/src/gen/__init_method_bindings.cpp
 godot-cpp/src/gen/__register_types.cpp
 io/displayport_fake.c
 io/displayport_fake.h
+src/blackbox_io_fake.c
 src/gdlibrary.cpp
 src/kwad.cpp
 src/kwad.h

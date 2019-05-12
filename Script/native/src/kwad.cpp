@@ -46,10 +46,6 @@ const static auto GYRO_SCALE = 16.4f;
 const static auto RAD2DEG = (180.0f / float(M_PI));
 const static auto ACC_SCALE = (256 / 9.80665f);
 
-const auto PIDSUM_LIMIT = 500.0f;
-const auto PIDSUM_LIMIT_YAW = 400.0f;
-const auto PID_MIXER_SCALING = 1000.0f;
-
 const auto AIR_RHO = 1.225f;
 
 // 20kHz scheduler, is enough to run PID at 8khz
@@ -78,6 +74,8 @@ void Kwad::_register_methods() {
     register_method("set_prop_params", &Kwad::set_prop_params);
     register_method("set_frame_params", &Kwad::set_frame_params);
     register_method("set_quad_params", &Kwad::set_quad_params);
+
+    register_property("crashed", &Kwad::crashed, false);
 }
 
 Kwad::Kwad() : dragArea(0.0024f, 0.018f, 0.0024f), dragC(1.8f) {
@@ -86,11 +84,13 @@ Kwad::Kwad() : dragArea(0.0024f, 0.018f, 0.0024f), dragC(1.8f) {
     motorI0 = 1.6f;
     motorKq = 60 / (motorKv * 2.0f * float(M_PI));
 
-    propF = 12.99f;
     propA = 2e-8f;
     propRpm = 25000;
     propTorqueFac = 0.0195f;
     propInertia = 0.00000413f;
+    propVela = -2.40336140e-03f;
+    propVelb = -1.11946546e-01f;
+    propVelc = 1.09384441e+01f;
 
     batV = 16.0f;
 
@@ -108,7 +108,8 @@ void Kwad::_init() {
 }
 
 void Kwad::_ready() {
-    get_node("/root/Globals")->connect("rc_input", this, "new_rc_input");
+    auto *globals = get_node("/root/Globals");
+    globals->connect("rc_input", this, "new_rc_input");
 
     // init motor pos, if not done already:
     set_frame_params(dragArea, dragC);
@@ -165,7 +166,7 @@ void Kwad::get_gyro(const PhysicsDirectBodyState &state) {
     z = int16_t(constrain(int(gyro.y * GYRO_SCALE * RAD2DEG), -32767, 32767));
     fakeGyroSet(fakeGyroDev, x, y, z);
 
-    imuSetAttitudeQuat(rotation.w, -rotation.z, rotation.x, -rotation.y);
+    // imuSetAttitudeQuat(rotation.w, -rotation.z, rotation.x, -rotation.y);
 
     const auto
         DISTANCE_BETWEEN_TWO_LONGITUDE_POINTS_AT_EQUATOR_IN_HUNDREDS_OF_KILOMETERS =
@@ -215,27 +216,33 @@ float Kwad::motor_torque(float volts, float rpm) {
     return current * motorKq;
 }
 
-float Kwad::prop_thrust(float rpm) {
+float Kwad::prop_thrust(float rpm, float vel) {
+    const auto propF = propVela * vel * vel + propVelb * vel + propVelc;
     const auto b = (propF - propA * propRpm * propRpm) / propRpm;
     return b * rpm + propA * rpm * rpm;
 }
 
-float Kwad::prop_torque(float rpm) {
-    return prop_thrust(rpm) * propTorqueFac;
+float Kwad::prop_torque(float rpm, float vel) {
+    return prop_thrust(rpm, vel) * propTorqueFac;
 }
 
-void Kwad::calc_motors(float delta) {
+void Kwad::calc_motors(float delta, Vector3 linVel, Vector3 rotVel) {
     const float motor_dir[4] = {1.0, -1.0, -1.0, 1.0};
 
     resPropTorque = 0;
 
+    const auto up = get_global_transform().basis.y;
+
     for (int i = 0; i < 4; i++) {
+        const auto r = get_transform().basis.xform(motors[i]);
+        const auto vel = std::max(0.0f, (linVel + rotVel.cross(r)).dot(up));
+
         auto rpm = motorRpm[i];
 
         auto volts = motorsPwm[i] / 1000.0f * batV;
         auto torque = motor_torque(volts, rpm);
 
-        auto ptorque = prop_torque(rpm);
+        auto ptorque = prop_torque(rpm, vel);
         auto net_torque = torque - ptorque;
         auto domega = net_torque / propInertia;
         auto drpm = (domega * delta) * 60.0f / (2.0f * float(M_PI));
@@ -243,7 +250,7 @@ void Kwad::calc_motors(float delta) {
         auto maxdrpm = fabsf(volts * motorKv - rpm);
         rpm += clamp(drpm, -maxdrpm, maxdrpm);
 
-        motorF[i] = prop_thrust(rpm);
+        motorF[i] = prop_thrust(rpm, vel);
         motorRpm[i] = rpm;
         resPropTorque += motor_dir[i] * torque;
     }
@@ -271,6 +278,7 @@ void Kwad::integrate_forces(PhysicsDirectBodyState *state) {
     // high frequency:
     const auto dt = 1 / FREQUENCY;
     while (totalDelta - dt > 0) {
+        totalDelta -= dt;
         const auto dmicros = uint64_t(dt * 1e6f);
         micros_passed += dmicros;
 
@@ -285,8 +293,11 @@ void Kwad::integrate_forces(PhysicsDirectBodyState *state) {
             run_FC();
         }
 
+        if (crashed) continue;
+
         // run motors
-        calc_motors(dt);
+        calc_motors(dt, state->get_linear_velocity(),
+                    state->get_angular_velocity());
 
         // run Physics
         auto gravityF = Vector3(0, -9.81f * get_mass(), 0);
@@ -323,10 +334,17 @@ void Kwad::integrate_forces(PhysicsDirectBodyState *state) {
 
         auto total_angular = state->get_angular_velocity() + angularAcc * dt;
         state->set_angular_velocity(total_angular);
-
-        totalDelta -= dt;
     }
 
+    // crash detection:
+    auto ncontacts = state->get_contact_count();
+    auto totalImulse = 0.0f;
+    for (auto i = 0; i < ncontacts; i++) {
+        totalImulse += fabsf(state->get_contact_impulse(i));
+    }
+    if (ncontacts != 0) {
+        // if (totalImulse > 1.0f) crashed = true;
+    }
 #ifdef TIMING
     auto end2 = OS::get_singleton()->get_ticks_usec();
     Godot::print(String("loop time: {0}").format(Array::make(end2 - end)));
@@ -341,13 +359,16 @@ void Kwad::set_motor_params(float Kv, float R, float I0) {
     // printf("motor: %f, %f, %f, %f\n", motorKv, motorR, motorI0, motorKq);
 }
 
-void Kwad::set_prop_params(float T, float Rpm, float a, float torqueFactor,
-                           float inertia) {
-    propF = T;
+void Kwad::set_prop_params(float Rpm, float a, float torqueFactor,
+                           float inertia, Array thrustVel) {
     propRpm = Rpm;
     propA = a;
     propTorqueFac = torqueFactor;
     propInertia = inertia;
+
+    propVela = thrustVel[0];
+    propVelb = thrustVel[1];
+    propVelc = thrustVel[2];
     // printf("prop: %f, %f, %f, %f, %f\n", propF, propRpm, propA * 1e8,
     //       propTorqueFac, propInertia);
 }
@@ -373,7 +394,7 @@ void Kwad::set_quad_params(float Vbat) {
  * Betaflight Stuff: *
  *********************/
 extern "C" {
-extern "C" void systemInit(void) {
+void systemInit(void) {
     int ret;
 
     printf("[system]Init...\n");

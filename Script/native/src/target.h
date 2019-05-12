@@ -24,8 +24,10 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #include "common/utils.h"
+
 #define TARGET_BOARD_IDENTIFIER "KWADSIM"
 
 #ifdef __MINGW32__
@@ -34,7 +36,7 @@
 
 // use simulatior's attitude directly
 // disable this if wants to test AHRS algorithm
-#undef USE_IMU_CALC
+//#undef USE_IMU_CALC
 
 // file name to save config
 #define EEPROM_FILENAME "eeprom.bin"
@@ -67,6 +69,8 @@
 
 #define USE_GPS
 
+#define USE_BLACKBOX
+
 #define USABLE_TIMER_CHANNEL_COUNT 0
 
 #define USE_UART1
@@ -84,11 +88,10 @@
 #define SERIAL_PORT_COUNT 8
 
 #define DEFAULT_RX_FEATURE      FEATURE_RX_MSP
-#define DEFAULT_FEATURES        (FEATURE_GPS | FEATURE_TELEMETRY)
+#define DEFAULT_FEATURES (FEATURE_GPS | FEATURE_TELEMETRY | FEATURE_OSD)
 
 #define USE_PARAMETER_GROUPS
 
-#define USE_GYRO_DATA_ANALYSE
 
 #define USE_MAX7456
 
@@ -130,6 +133,7 @@
 //#undef USE_GPS_RESCUE
 #undef USE_SERIAL_4WAY_BLHELI_BOOTLOADER
 #undef USE_SERIAL_4WAY_SK_BOOTLOADER
+
 
 #undef USE_I2C
 #undef USE_SPI
@@ -248,3 +252,9 @@ FLASH_Status FLASH_ProgramWord(uintptr_t addr, uint32_t Data);
 
 
 int lockMainPID(void);
+
+void GPS_calculateDistanceFlownVerticalSpeed_Fake(bool init);
+#define GPS_D_true GPS_calculateDistanceFlownVerticalSpeed_Fake(true
+#define GPS_D_false GPS_calculateDistanceFlownVerticalSpeed_Fake(false
+#define GPS_D_bool test(bool
+#define GPS_calculateDistanceFlownVerticalSpeed(x) GPS_D_ ## x)

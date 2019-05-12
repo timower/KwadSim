@@ -20,5 +20,12 @@
         "prop": "GF5x46",
         "Vbat": 16.0,
         "weight": 0.6
-    }
+    },
+    "TWE190": {
+		"motor": "wei2207",
+		"frame": "QQ190",
+		"prop": "GF5x46",
+		"Vbat": 16.0,
+		"weight": 0.6
+	}
 }

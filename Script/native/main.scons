@@ -232,12 +232,12 @@ betaflight_sources = [
     "sensors/boardalignment.c",
     "sensors/compass.c",
     "sensors/gyro.c",
-    "sensors/gyroanalyse.c",
-    "sensors/rpm_filter.c",
+    "flight/gyroanalyse.c",
+    "flight/rpm_filter.c",
     "sensors/initialisation.c",
     "blackbox/blackbox.c",
     "blackbox/blackbox_encoding.c",
-    "blackbox/blackbox_io.c",
+#    "blackbox/blackbox_io.c",
     "cms/cms.c",
     "cms/cms_menu_blackbox.c",
     "cms/cms_menu_builtin.c",
@@ -305,7 +305,7 @@ betaflight_sources = ["betaflight/src/main/" + x for x in betaflight_sources]
 
 
 betaflight_sources.append("betaflight/lib/main/dyad/dyad.c")
-betaflight_sources.append("src/target.c")
+betaflight_sources += Glob("src/*.c")
 
 betaflight_sources += Glob("betaflight/src/main/pg/*.c")
 betaflight_sources += Glob("betaflight/src/main/common/*.c", exclude="betaflight/src/main/common/string_light.c")

@@ -3,9 +3,10 @@
 	"radius": 0.0635,
 	"chord": 0.018,
     "thrust": 12.99,
-    "a": 2.0e-8,
-    "rpm": 25000,
-    "torque_factor": 0.0195,
+    "a": 1.67e-8,
+    "rpm": 26000,
+    "torque_factor": 0.011,
+    "thrust_vel_params": [-2.40336140e-03, -1.11946546e-01,  1.09384441e+01],
 
 	"curve": [
 [0.000, [

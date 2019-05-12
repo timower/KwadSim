@@ -21,8 +21,9 @@ class Kwad : public RigidBody {
     std::array<uint16_t, 8> rcData;
 
     float batV;
-    float propF, propRpm, propA, propTorqueFac, propInertia;
+    float propRpm, propA, propTorqueFac, propInertia;
     float motorKv, motorR, motorI0, motorKq;
+    float propVela, propVelb, propVelc;
     std::array<Vector3, 4> motors;
 
     std::array<float, 4> motorRpm;
@@ -35,11 +36,13 @@ class Kwad : public RigidBody {
     void run_FC();
 
     float motor_torque(float volts, float rpm);
-    float prop_thrust(float rpm);
-    float prop_torque(float rpm);
-    void calc_motors(float delta);
+    float prop_thrust(float rpm, float vel);
+    float prop_torque(float rpm, float vel);
+    void calc_motors(float delta, Vector3 linVel, Vector3 rotVel);
 
    public:
+    bool crashed = false;
+
     static void _register_methods();
 
     Kwad();
@@ -55,8 +58,8 @@ class Kwad : public RigidBody {
     void integrate_forces(PhysicsDirectBodyState* state);
 
     void set_motor_params(float Kv, float R, float I0);
-    void set_prop_params(float T, float Rpm, float a, float torqueFactor,
-                         float inertia);
+    void set_prop_params(float Rpm, float a, float torqueFactor, float inertia,
+                         Array thrustVel);
     void set_frame_params(Vector3 dragArea, float dragC);
     void set_quad_params(float Vbat);
 };

@@ -17,11 +17,12 @@ func load_prop(prop_name):
 	var prop_radius = params["radius"]
 	var prop_chord = params["chord"]
 	var inertia = params["inertia"]
-	var prop_thrust = params["thrust"]
+	#var prop_thrust = params["thrust"]
 	var prop_rpm = params["rpm"]
 	var prop_a = params["a"]
 	var prop_torque_fac = params["torque_factor"]
-	$Kwad.set_prop_params(prop_thrust, prop_rpm, prop_a, prop_torque_fac, inertia)
+	var prop_t_params = params["thrust_vel_params"]
+	$Kwad.set_prop_params(prop_rpm, prop_a, prop_torque_fac, inertia, prop_t_params)
 
 const DEF_PROP_RAD = 0.062
 
@@ -71,6 +72,7 @@ func _on_reset():
 	var start = track.objects[0]
 	$Kwad.linear_velocity = Vector3()
 	$Kwad.angular_velocity = Vector3()
-	$Kwad.transform.origin = start.pos + Vector3(0, 0.5, 0)
+	$Kwad.transform.origin = start.pos + Vector3(0, 0.15 + $Kwad/CollisionShape.shape.extents.y, 0)
 	$Kwad.transform.basis = Basis(start.rot)
+	$Kwad.crashed = false
 
