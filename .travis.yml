@@ -1,0 +1,37 @@
+os:
+  - linux
+
+sudo: false
+
+dist: xenial
+
+addons:
+  apt:
+    packages:
+      - lcov
+      - build-essential
+      - git
+      - libc6-i386
+      - time
+      - mingw-w64
+      - scons
+
+git:
+  depth: 5
+
+language: cpp
+compiler: gcc
+
+before_install:
+  - |
+    echo "Target branch: $TRAVIS_BRANCH"
+    echo "Commit range: $TRAVIS_COMMIT_RANGE"
+
+    #install:
+
+before_script:
+  - gcc --version
+
+script: ./.travis.sh
+
+
