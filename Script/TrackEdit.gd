@@ -22,25 +22,8 @@ var close_action = null
 
 var gates_item = null
 
-class Action:
-	func do(track):
-		pass
-	func undo(track):
-		pass
-
-class PlaceGateAction extends Action:
-	var gate_dict
-	var gate_ref = null
-	
-	func _init(gdict):
-		gate_dict = gdict
-		
-	func do(track):
-		gate_ref = track.add_gate(gate_dict)
-
-	func undo(track):
-		track.remove_gate(gate_ref)
-		gate_ref = null
+var action_stack = []
+var redo_stack = []
 
 var tools = [
 	TrackTools.GateTool,
@@ -74,33 +57,45 @@ func _ready():
 	
 	$Track.connect("track_changed", self, "on_track_changed")
 
+func _process(delta):
+	if Input.is_action_just_pressed("undo"):
+		undo_action()
+	if Input.is_action_just_pressed("redo"):
+		redo_action()
+
 func set_track_name(new_name):
 	track_name = new_name
 	track_label.text = new_name
 
 	
-func on_track_changed():
-	track_tree.clear()
-	var root = track_tree.create_item()
-	gates_item = track_tree.create_item(root)
-	gates_item.set_text(0, "Gates")
-	var objects_item = track_tree.create_item(root)
-	objects_item.set_text(0, "Objects")
+func on_track_changed(objects_changed: bool):
+	if objects_changed:
+		track_tree.clear()
+		var root = track_tree.create_item()
+		gates_item = track_tree.create_item(root)
+		gates_item.set_text(0, "Gates")
+		var objects_item = track_tree.create_item(root)
+		objects_item.set_text(0, "Objects")
+		
+		for ref in $Track.objects.size():
+			var obj = $Track.objects[ref]
+			var name = Globals.OBJECTS[obj.id]["name"]
+			if not $Track.is_ref_gate(ref):
+				var obj_item = track_tree.create_item(objects_item)
+				obj_item.set_text(0, name)
+				obj_item.set_metadata(0, ref)
+		
+		for idx in $Track.gates.size():
+			var ref = $Track.get_gate_ref(idx)
+			var name = Globals.OBJECTS[$Track.objects[ref].id]["name"] + " id:" + str(ref)
+			var gate_item = track_tree.create_item(gates_item)
+			gate_item.set_text(0, name)
+			gate_item.set_metadata(0, idx)
 	
-	for ref in $Track.objects.size():
-		var obj = $Track.objects[ref]
-		var name = Globals.OBJECTS[obj.id]["name"]
-		if not $Track.is_ref_gate(ref):
-			var obj_item = track_tree.create_item(objects_item)
-			obj_item.set_text(0, name)
-			obj_item.set_metadata(0, ref)
-	
-	for idx in $Track.gates.size():
-		var ref = $Track.get_gate_ref(idx)
-		var name = Globals.OBJECTS[$Track.objects[ref].id]["name"] + " id:" + str(ref)
-		var gate_item = track_tree.create_item(gates_item)
-		gate_item.set_text(0, name)
-		gate_item.set_metadata(0, idx)
+	if selected_object != null and selected_object < $Track.objects.size():
+		select_object(selected_object)
+	else:
+		deselect_object()
 
 func select_object(ref: int):
 	if $Track.is_ref_gate(ref):
@@ -110,10 +105,40 @@ func select_object(ref: int):
 	selected_object = ref
 	tools[selected_tool].object_selected(ref)
 
+func deselect_object():
+	selected_object = null
+	tools[selected_tool].object_deselected()
+
 #func select_gate(idx):
 #	$Track.light_gate(idx)
 #	selected_object = $Track.get_gate_ref(idx)
 #	tools[selected_tool].gate_selected(idx)
+
+func do_action(action: Object):
+	action.do($Track)
+	if action_stack.empty() or not action.combine(action_stack.back()):
+		action_stack.append(action)
+	redo_stack.clear()
+	changed = true
+	
+	
+func undo_action():
+	if action_stack.empty():
+		return
+
+	var action = action_stack.pop_back()
+	action.undo($Track)
+	redo_stack.append(action)
+	changed = true
+	
+func redo_action():
+	if redo_stack.empty():
+		return
+		
+	var action = redo_stack.pop_back()
+	action.do($Track)
+	action_stack.append(action)
+	changed = true
 	
 func get_track_tree_selected_ref() -> int:
 	var item = track_tree.get_selected()
@@ -257,7 +282,6 @@ func _on_PopupMenu2_index_pressed(index):
 
 func _on_TrackName_text_changed(_new_text):
 	changed = true
-
 
 func _on_CancelButton_pressed():
 	$UI/ConfirmSaveDialog.hide()

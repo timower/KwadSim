@@ -26,14 +26,14 @@ func add_object(obj: Dictionary) -> int:
 	var ref = objects.size()
 	objects.append(obj)
 	
-	emit_signal("track_changed")
+	emit_signal("track_changed", true)
 	return ref
 
 func add_gate(obj: Dictionary) -> int:
 	assert(is_gate(obj))
 	var ref = add_object(obj)
 	gates.append(ref)
-	emit_signal("track_changed")
+	emit_signal("track_changed", true)
 	return ref
 
 func new_track():
@@ -74,7 +74,7 @@ func load_from(t_name: String):
 		add_object(obj)
 	
 	gates = conts["gates"]
-	emit_signal("track_changed")
+	emit_signal("track_changed", true)
 	
 	if conts.has("scene"):
 		load_scene(conts["scene"])
@@ -108,7 +108,7 @@ func swap_gate(idx1: int, idx2: int):
 	gates[idx1] = gates[idx2]
 	gates[idx2] = tmp
 	
-	emit_signal("track_changed")
+	emit_signal("track_changed", true)
 
 func remove_object(ref: int):
 	if ref == 0:
@@ -136,15 +136,17 @@ func remove_object(ref: int):
 	if last_light == ref:
 		last_light = null
 		
-	emit_signal("track_changed")
+	emit_signal("track_changed", true)
 
 func change_pos(ref: int, pos: Vector3):
 	objects[ref].pos = pos
 	get_object_node(ref).transform.origin = pos
+	emit_signal("track_changed", false)
 
 func change_rot(ref: int, rot: Vector3):
 	objects[ref].rot = rot
 	get_object_node(ref).transform.basis = Basis(rot)
+	emit_signal("track_changed", false)
 
 func get_gate_ref(idx: int) -> int:
 	return gates[idx]

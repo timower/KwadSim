@@ -48,7 +48,8 @@ func list_joys():
 		idx += 1
 	if not seen_selected:
 		selected_dev = 0
-		joyListOpt.select(0)
+		if joyListOpt.get_item_count() > 0:
+			joyListOpt.select(0)
 
 func _ready():
 	for i in range(JOY_AXIS_MAX):

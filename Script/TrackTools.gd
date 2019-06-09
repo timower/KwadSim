@@ -12,10 +12,16 @@ class Tool:
 		
 	func selected():
 		pass
+		
 	func deselected():
 		pass
+		
 	func object_selected(_idx):
 		pass
+		
+	func object_deselected():
+		pass
+		
 	func input(_event):
 		pass
 
@@ -41,14 +47,16 @@ class GateTool extends Tool:
 		gate_list.connect("item_activated", self, "place_gate")
 	
 	func place_gate(idx):
-		root.changed = true
 		var heading = camera.global_transform.basis.get_euler().y
-		var ref = track.add_gate({
+		var object_dict = {
 			pos = cam_pos.global_transform.origin, 
 			rot = Vector3(0, heading, 0), 
 			id = gate_list.get_item_metadata(idx)
-		})
-		root.select_object(ref)
+		}
+		
+		var action = TrackActions.PlaceGateAction.new(object_dict)
+		root.do_action(action)
+		root.select_object(action.gate_ref)
 
 class ObjectTool extends Tool:
 	var obj_list
@@ -70,12 +78,14 @@ class ObjectTool extends Tool:
 	
 	func place_object(idx):
 		root.changed = true
-		var ref = track.add_object({
+		var odict = {
 			pos = cam_pos.global_transform.origin, 
 			rot = Vector3(), 
 			id = obj_list.get_item_metadata(idx)
-		})
-		root.select_object(ref)
+		}
+		var action = TrackActions.PlaceObjectAction.new(odict)
+		root.do_action(action)
+		root.select_object(action.obj_ref)
 
 class MoveTool extends Tool:
 	var xpos
@@ -115,12 +125,16 @@ class MoveTool extends Tool:
 		move_gizmo.visible = true
 		move_gizmo.transform.origin = track.objects[ref].pos
 	
-	func gizmo_pos_changed(v):
+	func object_deselected():
+		move_gizmo.visible = false
+	
+	func gizmo_pos_changed(new_pos):
 		root.changed = true
-		track.change_pos(root.selected_object, v)
-		xpos.value = v.x
-		ypos.value = v.y
-		zpos.value = v.z
+		root.do_action(TrackActions.MoveAction.new(root.selected_object, new_pos))
+		#track.change_pos(root.selected_object, v)
+		xpos.value = new_pos.x
+		ypos.value = new_pos.y
+		zpos.value = new_pos.z
 	
 	var disabled = false
 	func pos_changed(_v):
@@ -128,7 +142,8 @@ class MoveTool extends Tool:
 			return
 		root.changed = true
 		var new_pos = Vector3(xpos.value, ypos.value, zpos.value)
-		track.change_pos(root.selected_object, new_pos)
+		#track.change_pos(root.selected_object, new_pos)
+		root.do_action(TrackActions.MoveAction.new(root.selected_object, new_pos))
 		move_gizmo.transform.origin = new_pos
 
 class RotateTool extends Tool:
@@ -171,6 +186,9 @@ class RotateTool extends Tool:
 		zpos.value = rad2deg(track.objects[ref].rot.z)
 		disabled = false
 	
+	func object_deselected():
+		rot_gizmo.visible = false
+	
 	var disabled = false
 	func rot_changed(_v):
 		if disabled:
@@ -179,13 +197,14 @@ class RotateTool extends Tool:
 		var new_rot = Vector3(
 			deg2rad(xpos.value), 
 			deg2rad(ypos.value), 
-			deg2rad(zpos.value)
-		)
-		track.change_rot(root.selected_object, new_rot)
+			deg2rad(zpos.value))
+		
+		root.do_action(TrackActions.RotateAction.new(root.selected_object, new_rot))
+		#track.change_rot(root.selected_object, new_rot)
 	
 	func gizmo_rot_changed(new_rot):
 		root.changed = true
-		track.change_rot(root.selected_object, new_rot)
+		root.do_action(TrackActions.RotateAction.new(root.selected_object, new_rot))
 		xpos.value = rad2deg(new_rot.x)
 		ypos.value = rad2deg(new_rot.y)
 		zpos.value = rad2deg(new_rot.z)
@@ -213,32 +232,47 @@ class ObjectPaintTool extends Tool:
 				obj_list.set_item_metadata(idx, id)
 				print(object)
 		obj_list.select(0)
+
 	
-	func place_object(pos):
+	func place_object(pos, rot):
 		root.changed = true
 		var selected = obj_list.get_selected_items()[0]
-		track.add_object({
+		var object_dict = {
 			pos = pos, 
-			rot = Vector3(), 
+			rot = rot, 
 			id = obj_list.get_item_metadata(selected)
-		})
+		}
+		var action = TrackActions.PlaceObjectAction.new(object_dict)
+		root.do_action(action)
 	
-	func proj_pos(p: Vector2) -> Vector3:
+	func proj_pos(p: Vector2) -> Array:
 		var n = camera.project_ray_normal(p)
 		var o = camera.global_transform.origin
+			
+		var space_state = camera.get_world().direct_space_state
+		var ray_info = space_state.intersect_ray(o, o + 1e6 * n)
+		if ray_info.size() > 0:
+			var pos = ray_info.position
+			var axis = Vector3(0, 1, 0).cross(ray_info.normal)
+			print(axis)
+			var angle = asin(axis.length())
+			var quat = Quat(axis.normalized(), angle)
+			var euler = quat.get_euler()
+			return [pos, euler]
+
 		var h = cam_pos.global_transform.origin.y
 		var t = (h - o.y) / n.y
-		return o + n * t
+		return [o + n * t, Vector3()]
 		
 	
 	func input(event):
 		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
 			var p = proj_pos(event.position)
-			last_pos = p
-			place_object(p)
+			last_pos = p[0]
+			place_object(p[0], p[1])
 		elif event is InputEventMouseMotion and event.button_mask & BUTTON_MASK_LEFT != 0:
 			var p = proj_pos(event.position)
-			if p.distance_to(last_pos) > distance.value:
-				place_object(p)
-				last_pos = p
+			if p[0].distance_to(last_pos) > distance.value:
+				place_object(p[0], p[1])
+				last_pos = p[0]
 			
