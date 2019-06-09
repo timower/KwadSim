@@ -145,6 +145,10 @@ class MoveTool extends Tool:
 		#track.change_pos(root.selected_object, new_pos)
 		root.do_action(TrackActions.MoveAction.new(root.selected_object, new_pos))
 		move_gizmo.transform.origin = new_pos
+	
+	func input(event):
+		if move_gizmo.visible:
+			move_gizmo.handle_input(event)
 
 class RotateTool extends Tool:
 	var xpos
@@ -188,6 +192,7 @@ class RotateTool extends Tool:
 	
 	func object_deselected():
 		rot_gizmo.visible = false
+		rot_gizmo.target = null
 	
 	var disabled = false
 	func rot_changed(_v):
@@ -208,6 +213,10 @@ class RotateTool extends Tool:
 		xpos.value = rad2deg(new_rot.x)
 		ypos.value = rad2deg(new_rot.y)
 		zpos.value = rad2deg(new_rot.z)
+		
+	func input(event):
+		if rot_gizmo.visible:
+			rot_gizmo.handle_input(event)
 
 class ObjectPaintTool extends Tool:
 	var last_pos = null

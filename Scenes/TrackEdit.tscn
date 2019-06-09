@@ -1,78 +1,87 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Script/TrackEdit.gd" type="Script" id=1]
 [ext_resource path="res://Script/MoveGizmo.gd" type="Script" id=2]
 [ext_resource path="res://Script/RotateGizmo.gd" type="Script" id=3]
-[ext_resource path="res://Nodes/Track.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Script/EditCamera.gd" type="Script" id=5]
+[ext_resource path="res://Models/RotationGizmo.mesh" type="ArrayMesh" id=4]
+[ext_resource path="res://Nodes/Track.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Script/EditCamera.gd" type="Script" id=6]
 
-[sub_resource type="CylinderMesh" id=1]
-
-top_radius = 0.1
-bottom_radius = 0.1
-radial_segments = 16
-rings = 1
-
-[sub_resource type="SpatialMaterial" id=2]
-
+[sub_resource type="SpatialMaterial" id=1]
 flags_transparent = true
 flags_unshaded = true
+flags_no_depth_test = true
+albedo_color = Color( 1, 1, 1, 0.501961 )
+
+[sub_resource type="ArrayMesh" id=2]
+resource_name = "Cylinder"
+surfaces/0 = {
+"aabb": AABB( -0.15, 0.000360996, -0.15, 0.3, 1, 0.3 ),
+"array_data": PoolByteArray( 0, 0, 0, 0, 168, 23, 64, 63, 205, 204, 76, 189, 0, 161, 173, 0, 69, 191, 156, 60, 0, 68, 189, 57, 229, 53, 61, 189, 36, 172, 169, 0, 0, 0, 0, 0, 0, 68, 189, 57, 205, 204, 76, 189, 0, 172, 162, 0, 69, 191, 156, 60, 168, 23, 64, 63, 229, 53, 61, 189, 31, 161, 179, 0, 195, 208, 16, 61, 0, 68, 189, 57, 195, 208, 16, 189, 67, 172, 189, 0, 195, 208, 16, 61, 168, 23, 64, 63, 195, 208, 16, 189, 59, 161, 197, 0, 229, 53, 61, 61, 0, 68, 189, 57, 68, 191, 156, 188, 87, 172, 220, 0, 229, 53, 61, 61, 168, 23, 64, 63, 68, 191, 156, 188, 77, 161, 225, 0, 205, 204, 76, 61, 0, 68, 189, 57, 242, 48, 22, 49, 94, 172, 0, 0, 205, 204, 76, 61, 168, 23, 64, 63, 242, 48, 22, 49, 83, 161, 0, 0, 229, 53, 61, 61, 0, 68, 189, 57, 71, 191, 156, 60, 87, 172, 36, 0, 229, 53, 61, 61, 168, 23, 64, 63, 71, 191, 156, 60, 77, 161, 31, 0, 195, 208, 16, 61, 0, 68, 189, 57, 195, 208, 16, 61, 67, 172, 67, 0, 195, 208, 16, 61, 168, 23, 64, 63, 195, 208, 16, 61, 59, 161, 59, 0, 70, 191, 156, 60, 0, 68, 189, 57, 229, 53, 61, 61, 36, 172, 87, 0, 70, 191, 156, 60, 168, 23, 64, 63, 229, 53, 61, 61, 31, 161, 77, 0, 84, 180, 1, 50, 0, 68, 189, 57, 205, 204, 76, 61, 0, 172, 94, 0, 84, 180, 1, 50, 168, 23, 64, 63, 205, 204, 76, 61, 0, 161, 83, 0, 63, 191, 156, 188, 0, 68, 189, 57, 231, 53, 61, 61, 220, 172, 87, 0, 63, 191, 156, 188, 168, 23, 64, 63, 231, 53, 61, 61, 225, 161, 77, 0, 192, 208, 16, 189, 0, 68, 189, 57, 198, 208, 16, 61, 189, 172, 67, 0, 192, 208, 16, 189, 168, 23, 64, 63, 198, 208, 16, 61, 197, 161, 59, 0, 229, 53, 61, 189, 0, 68, 189, 57, 72, 191, 156, 60, 169, 172, 36, 0, 229, 53, 61, 189, 168, 23, 64, 63, 72, 191, 156, 60, 179, 161, 31, 0, 205, 204, 76, 189, 0, 68, 189, 57, 242, 228, 35, 176, 162, 172, 0, 0, 205, 204, 76, 189, 168, 23, 64, 63, 242, 228, 35, 176, 173, 161, 0, 0, 228, 53, 61, 189, 0, 68, 189, 57, 73, 191, 156, 188, 169, 172, 220, 0, 228, 53, 61, 189, 168, 23, 64, 63, 73, 191, 156, 188, 179, 161, 225, 0, 191, 208, 16, 189, 0, 68, 189, 57, 198, 208, 16, 189, 189, 172, 189, 0, 191, 208, 16, 189, 168, 23, 64, 63, 198, 208, 16, 189, 197, 161, 197, 0, 228, 30, 107, 61, 202, 23, 64, 63, 108, 232, 13, 62, 43, 199, 104, 0, 246, 115, 52, 49, 202, 23, 64, 63, 154, 153, 25, 62, 0, 199, 113, 0, 56, 191, 156, 188, 0, 68, 189, 57, 232, 53, 61, 189, 220, 172, 169, 0, 56, 191, 156, 188, 168, 23, 64, 63, 232, 53, 61, 189, 225, 161, 179, 0, 108, 232, 13, 190, 202, 23, 64, 63, 238, 30, 107, 189, 152, 199, 213, 0, 155, 153, 25, 190, 202, 23, 64, 63, 186, 235, 58, 177, 143, 199, 0, 0, 0, 0, 0, 179, 229, 11, 128, 63, 0, 0, 0, 128, 0, 127, 0, 0, 226, 30, 107, 61, 202, 23, 64, 63, 108, 232, 13, 190, 43, 199, 152, 0, 255, 255, 171, 178, 202, 23, 64, 63, 154, 153, 25, 190, 0, 199, 143, 0, 106, 232, 13, 62, 202, 23, 64, 63, 234, 30, 107, 61, 104, 199, 43, 0, 34, 57, 217, 61, 202, 23, 64, 63, 36, 57, 217, 61, 80, 199, 80, 0, 109, 232, 13, 190, 202, 23, 64, 63, 236, 30, 107, 61, 152, 199, 43, 0, 35, 57, 217, 189, 202, 23, 64, 63, 41, 57, 217, 61, 176, 199, 80, 0, 216, 30, 107, 189, 202, 23, 64, 63, 110, 232, 13, 190, 213, 199, 152, 0, 152, 153, 25, 62, 202, 23, 64, 63, 106, 73, 193, 49, 113, 199, 0, 0, 106, 232, 13, 62, 202, 23, 64, 63, 230, 30, 107, 189, 104, 199, 213, 0, 228, 30, 107, 189, 202, 23, 64, 63, 109, 232, 13, 62, 213, 199, 104, 0, 34, 57, 217, 189, 202, 23, 64, 63, 41, 57, 217, 189, 176, 199, 176, 0, 34, 57, 217, 61, 202, 23, 64, 63, 36, 57, 217, 189, 80, 199, 176, 0 ),
+"array_index_data": PoolByteArray( 0, 0, 2, 0, 1, 0, 0, 0, 1, 0, 3, 0, 3, 0, 1, 0, 4, 0, 3, 0, 4, 0, 5, 0, 5, 0, 4, 0, 6, 0, 5, 0, 6, 0, 7, 0, 7, 0, 6, 0, 8, 0, 7, 0, 8, 0, 9, 0, 9, 0, 8, 0, 10, 0, 9, 0, 10, 0, 11, 0, 11, 0, 10, 0, 12, 0, 11, 0, 12, 0, 13, 0, 13, 0, 12, 0, 14, 0, 13, 0, 14, 0, 15, 0, 15, 0, 14, 0, 16, 0, 15, 0, 16, 0, 17, 0, 17, 0, 16, 0, 18, 0, 17, 0, 18, 0, 19, 0, 19, 0, 18, 0, 20, 0, 19, 0, 20, 0, 21, 0, 21, 0, 20, 0, 22, 0, 21, 0, 22, 0, 23, 0, 23, 0, 22, 0, 24, 0, 23, 0, 24, 0, 25, 0, 25, 0, 24, 0, 26, 0, 25, 0, 26, 0, 27, 0, 27, 0, 26, 0, 28, 0, 27, 0, 28, 0, 29, 0, 30, 0, 15, 0, 17, 0, 30, 0, 17, 0, 31, 0, 29, 0, 28, 0, 32, 0, 29, 0, 32, 0, 33, 0, 33, 0, 32, 0, 2, 0, 33, 0, 2, 0, 0, 0, 1, 0, 2, 0, 32, 0, 1, 0, 32, 0, 28, 0, 4, 0, 1, 0, 28, 0, 4, 0, 28, 0, 26, 0, 6, 0, 4, 0, 26, 0, 6, 0, 26, 0, 24, 0, 8, 0, 6, 0, 24, 0, 8, 0, 24, 0, 22, 0, 10, 0, 8, 0, 22, 0, 12, 0, 10, 0, 22, 0, 12, 0, 22, 0, 20, 0, 14, 0, 12, 0, 20, 0, 14, 0, 20, 0, 18, 0, 16, 0, 14, 0, 18, 0, 34, 0, 36, 0, 35, 0, 37, 0, 38, 0, 0, 0, 3, 0, 37, 0, 0, 0, 27, 0, 34, 0, 35, 0, 25, 0, 27, 0, 35, 0, 39, 0, 11, 0, 13, 0, 39, 0, 13, 0, 40, 0, 21, 0, 23, 0, 41, 0, 42, 0, 21, 0, 41, 0, 0, 0, 38, 0, 43, 0, 0, 0, 43, 0, 33, 0, 44, 0, 45, 0, 7, 0, 44, 0, 7, 0, 9, 0, 17, 0, 19, 0, 46, 0, 31, 0, 17, 0, 46, 0, 29, 0, 47, 0, 34, 0, 29, 0, 34, 0, 27, 0, 48, 0, 37, 0, 3, 0, 5, 0, 48, 0, 3, 0, 40, 0, 13, 0, 15, 0, 40, 0, 15, 0, 30, 0, 25, 0, 35, 0, 41, 0, 23, 0, 25, 0, 41, 0, 44, 0, 9, 0, 11, 0, 39, 0, 44, 0, 11, 0, 19, 0, 21, 0, 42, 0, 46, 0, 19, 0, 42, 0, 33, 0, 43, 0, 47, 0, 33, 0, 47, 0, 29, 0, 45, 0, 48, 0, 5, 0, 7, 0, 45, 0, 5, 0, 40, 0, 36, 0, 39, 0, 47, 0, 36, 0, 34, 0, 30, 0, 36, 0, 40, 0, 43, 0, 36, 0, 47, 0, 31, 0, 36, 0, 30, 0, 37, 0, 36, 0, 38, 0, 38, 0, 36, 0, 43, 0, 46, 0, 36, 0, 31, 0, 48, 0, 36, 0, 37, 0, 42, 0, 36, 0, 46, 0, 45, 0, 36, 0, 48, 0, 41, 0, 36, 0, 42, 0, 44, 0, 36, 0, 45, 0, 35, 0, 36, 0, 41, 0, 39, 0, 36, 0, 44, 0 ),
+"blend_shape_data": [  ],
+"format": 97539,
+"index_count": 282,
+"primitive": 4,
+"skeleton_aabb": [  ],
+"vertex_count": 49
+}
+
+[sub_resource type="SpatialMaterial" id=3]
+flags_transparent = true
+flags_unshaded = true
+flags_no_depth_test = true
 albedo_color = Color( 0, 1, 0, 0.501961 )
 
-[sub_resource type="CylinderShape" id=3]
-
-radius = 0.098813
-
 [sub_resource type="SpatialMaterial" id=4]
-
 flags_transparent = true
 flags_unshaded = true
+flags_no_depth_test = true
 albedo_color = Color( 1, 0, 0, 0.501961 )
 
 [sub_resource type="SpatialMaterial" id=5]
-
 flags_transparent = true
 flags_unshaded = true
+flags_no_depth_test = true
 albedo_color = Color( 0, 0, 1, 0.501961 )
 
-[sub_resource type="CylinderMesh" id=6]
-
-height = 0.05
-radial_segments = 32
-rings = 1
+[sub_resource type="CylinderShape" id=6]
+radius = 0.098813
 
 [sub_resource type="SpatialMaterial" id=7]
-
+flags_transparent = true
 flags_unshaded = true
+flags_no_depth_test = true
+albedo_color = Color( 1, 1, 1, 0.501961 )
+
+[sub_resource type="SpatialMaterial" id=8]
+flags_transparent = true
+flags_unshaded = true
+flags_no_depth_test = true
 albedo_color = Color( 1, 0, 0, 0.501961 )
 
-[sub_resource type="CylinderShape" id=8]
-
-height = 0.05
-
-[sub_resource type="SpatialMaterial" id=9]
-
+[sub_resource type="SpatialMaterial" id=12]
+flags_transparent = true
 flags_unshaded = true
+flags_no_depth_test = true
 albedo_color = Color( 0, 1, 0, 0.501961 )
 
-[sub_resource type="SpatialMaterial" id=10]
-
+[sub_resource type="SpatialMaterial" id=13]
+flags_transparent = true
 flags_unshaded = true
-albedo_color = Color( 0, 0, 1, 1 )
+flags_no_depth_test = true
+albedo_color = Color( 0, 0, 1, 0.501961 )
 
-[sub_resource type="CubeMesh" id=11]
+[sub_resource type="CylinderShape" id=9]
+height = 0.05
 
-size = Vector3( 1, 1, 1 )
-
-[sub_resource type="SphereMesh" id=12]
-
+[sub_resource type="SphereMesh" id=10]
 radius = 0.05
 height = 0.1
 radial_segments = 16
 rings = 16
 
-[sub_resource type="SpatialMaterial" id=13]
-
+[sub_resource type="SpatialMaterial" id=11]
 flags_unshaded = true
 albedo_color = Color( 0, 0, 0, 1 )
 
@@ -83,99 +92,106 @@ script = ExtResource( 1 )
 editor/display_folded = true
 visible = false
 script = ExtResource( 2 )
+highlight_mat = SubResource( 1 )
 
-[node name="YArea" type="Area" parent="MoveGizmo"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0 )
-input_ray_pickable = true
-input_capture_on_drag = true
+[node name="Yaxis" type="MeshInstance" parent="MoveGizmo"]
+mesh = SubResource( 2 )
+material/0 = SubResource( 3 )
 
-[node name="MeshInstance" type="MeshInstance" parent="MoveGizmo/YArea"]
-mesh = SubResource( 1 )
-material/0 = SubResource( 2 )
-
-[node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/YArea"]
-shape = SubResource( 3 )
-
-[node name="XArea" type="Area" parent="MoveGizmo"]
-transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 1.1, 0, 0 )
-input_ray_pickable = true
-input_capture_on_drag = true
-
-[node name="MeshInstance" type="MeshInstance" parent="MoveGizmo/XArea"]
-mesh = SubResource( 1 )
+[node name="Xaxis" type="MeshInstance" parent="MoveGizmo"]
+transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0 )
+mesh = SubResource( 2 )
 material/0 = SubResource( 4 )
 
-[node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/XArea"]
-shape = SubResource( 3 )
-
-[node name="ZArea" type="Area" parent="MoveGizmo"]
-transform = Transform( 1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 0, 1.1 )
-input_ray_pickable = true
-input_capture_on_drag = true
-
-[node name="MeshInstance" type="MeshInstance" parent="MoveGizmo/ZArea"]
-mesh = SubResource( 1 )
+[node name="Zaxis" type="MeshInstance" parent="MoveGizmo"]
+transform = Transform( 1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 0, 0 )
+mesh = SubResource( 2 )
 material/0 = SubResource( 5 )
 
+[node name="YArea" type="Area" parent="MoveGizmo"]
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0 )
+visible = false
+input_ray_pickable = false
+
+[node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/YArea"]
+shape = SubResource( 6 )
+
+[node name="XArea" type="Area" parent="MoveGizmo"]
+editor/display_folded = true
+transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 1.1, 0, 0 )
+visible = false
+input_ray_pickable = false
+
+[node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/XArea"]
+shape = SubResource( 6 )
+
+[node name="ZArea" type="Area" parent="MoveGizmo"]
+editor/display_folded = true
+transform = Transform( 1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 0, 1.1 )
+visible = false
+input_ray_pickable = false
+
 [node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/ZArea"]
-shape = SubResource( 3 )
+shape = SubResource( 6 )
 
 [node name="RotateGizmo" type="Spatial" parent="."]
 editor/display_folded = true
 visible = false
 script = ExtResource( 3 )
+highlight_mat = SubResource( 7 )
+
+[node name="Xaxis" type="MeshInstance" parent="RotateGizmo"]
+transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0 )
+mesh = ExtResource( 4 )
+material/0 = SubResource( 8 )
+
+[node name="Yaxis" type="MeshInstance" parent="RotateGizmo"]
+mesh = ExtResource( 4 )
+material/0 = SubResource( 12 )
+
+[node name="Zaxis" type="MeshInstance" parent="RotateGizmo"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+mesh = ExtResource( 4 )
+material/0 = SubResource( 13 )
 
 [node name="XArea" type="Area" parent="RotateGizmo"]
+editor/display_folded = true
 transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0 )
-input_ray_pickable = true
-input_capture_on_drag = true
-
-[node name="MeshInstance" type="MeshInstance" parent="RotateGizmo/XArea"]
-mesh = SubResource( 6 )
-material/0 = SubResource( 7 )
+visible = false
+input_ray_pickable = false
 
 [node name="CollisionShape" type="CollisionShape" parent="RotateGizmo/XArea"]
-shape = SubResource( 8 )
+shape = SubResource( 9 )
 
 [node name="YArea" type="Area" parent="RotateGizmo"]
-input_ray_pickable = true
-input_capture_on_drag = true
-
-[node name="MeshInstance" type="MeshInstance" parent="RotateGizmo/YArea"]
-mesh = SubResource( 6 )
-material/0 = SubResource( 9 )
+editor/display_folded = true
+visible = false
+input_ray_pickable = false
 
 [node name="CollisionShape" type="CollisionShape" parent="RotateGizmo/YArea"]
-shape = SubResource( 8 )
+shape = SubResource( 9 )
 
 [node name="ZArea" type="Area" parent="RotateGizmo"]
+editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
-input_ray_pickable = true
-input_capture_on_drag = true
-
-[node name="MeshInstance" type="MeshInstance" parent="RotateGizmo/ZArea"]
-mesh = SubResource( 6 )
-material/0 = SubResource( 10 )
+visible = false
+input_ray_pickable = false
 
 [node name="CollisionShape" type="CollisionShape" parent="RotateGizmo/ZArea"]
-shape = SubResource( 8 )
+shape = SubResource( 9 )
 
-[node name="MeshInstance" type="MeshInstance" parent="RotateGizmo"]
-visible = false
-mesh = SubResource( 11 )
-material/0 = null
-
-[node name="Track" parent="." instance=ExtResource( 4 )]
+[node name="Track" parent="." instance=ExtResource( 5 )]
 
 [node name="CamPos" type="Spatial" parent="."]
-script = ExtResource( 5 )
+script = ExtResource( 6 )
 
 [node name="Camera" type="Camera" parent="CamPos"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6 )
 
 [node name="MeshInstance" type="MeshInstance" parent="CamPos"]
-mesh = SubResource( 12 )
-material/0 = SubResource( 13 )
+mesh = SubResource( 10 )
+material/0 = SubResource( 11 )
 
 [node name="UI" type="Control" parent="."]
 anchor_right = 1.0
@@ -594,7 +610,6 @@ margin_top = -29.0
 margin_right = 69.0
 margin_bottom = 29.0
 dialog_text = "Invalid Track Name"
-
 [connection signal="input_event" from="MoveGizmo/YArea" to="MoveGizmo" method="_on_YArea_input_event"]
 [connection signal="input_event" from="MoveGizmo/XArea" to="MoveGizmo" method="_on_XArea_input_event"]
 [connection signal="input_event" from="MoveGizmo/ZArea" to="MoveGizmo" method="_on_ZArea_input_event"]
