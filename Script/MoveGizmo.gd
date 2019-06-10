@@ -26,7 +26,7 @@ func _ready():
 	for a in axis:
 		materials.append(a.get_surface_material(0))
 	
-func _process(delta):
+func _process(_delta):
 	if not visible:
 		return
 	# recalculate scale

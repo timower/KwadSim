@@ -2,7 +2,7 @@ extends Spatial
 
 signal rot_changed
 
-onready var target = $MeshInstance
+onready var target = null
 
 var gizmo_scale = 1.0
 
@@ -28,7 +28,7 @@ func _ready():
 	for a in axis:
 		materials.append(a.get_surface_material(0))
 	
-func _process(delta):
+func _process(_delta):
 	if not visible:
 		return
 	# recalculate scale

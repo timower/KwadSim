@@ -45,9 +45,13 @@ func select_tool(idx):
 	tools[idx].selected()
 
 func _ready():
+			
 	for i in range(tools.size()):
 		tools[i] = tools[i].new(self, tool_opt_cont.get_child(i + 1))
 		tool_option.add_item(tools[i].name)
+	
+	load_thumbs()
+	
 	select_tool(0)
 	$UI/LoadDialog.popup_exclusive = true
 	$UI/LoadDialog.popup()
@@ -57,7 +61,7 @@ func _ready():
 	
 	$Track.connect("track_changed", self, "on_track_changed")
 
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_pressed("undo"):
 		undo_action()
 	if Input.is_action_just_pressed("redo"):
@@ -159,6 +163,53 @@ func exit_fly():
 	Globals.selected_track = track_name
 	get_tree().change_scene("res://Scenes/fly.tscn")
 
+static func get_size(node: Node):
+	var nodes = [node]
+	var aabb = null
+	while not nodes.empty():
+		var n = nodes.pop_back()
+		if n is MeshInstance:
+			var global_aabb = n.get_transformed_aabb()
+			if aabb == null:
+				aabb = global_aabb
+			else:
+				aabb = aabb.merge(global_aabb)
+		for child in n.get_children():
+			nodes.append(child)
+	return aabb.size.length()
+		
+func load_thumbs():
+	for obj_id in range(Globals.OBJECTS.size()):
+		var object = Globals.OBJECTS[obj_id]
+		if object.thumb == null:
+			var instance = object.scene.instance()
+
+			$ThumbViewport/Position.add_child(instance)
+
+			var size = get_size(instance)
+			$ThumbViewport/Position/Camera.transform.origin = size * $ThumbViewport/Position/Camera.transform.origin.normalized()
+
+			$ThumbViewport.set_clear_mode(Viewport.CLEAR_MODE_ONLY_NEXT_FRAME)
+			$ThumbViewport.set_update_mode(Viewport.UPDATE_ONCE)
+			
+			yield(get_tree(), "idle_frame")
+			yield(get_tree(), "idle_frame")
+			# Retrieve the captured image
+			var img = $ThumbViewport.get_texture().get_data()
+			img.convert(Image.FORMAT_RGBA8)
+
+			# Flip it on the y-axis (because it's flipped)
+			img.flip_y()
+			img.save_png(Globals.THUMBS_PATH + str(obj_id) + ".png")
+
+			object.thumb = ImageTexture.new()
+			object.thumb.create_from_image(img)
+
+			instance.free()
+			
+			for track_tool in tools:
+				track_tool.thumb_update(obj_id)
+
 ###############
 # UI Signals: #
 ###############
@@ -172,7 +223,7 @@ func _on_LoadDialog_about_to_show():
 	tracks = Globals.get_tracks()
 
 	for track in tracks:
-		track_list.add_item(track)
+		track_list.add_item(track[0], track[1])
 		
 func _on_TrackList_item_activated(index):
 	changed = false
@@ -219,7 +270,29 @@ func _on_SaveButton_pressed():
 	set_track_name(track_label.text)
 	if track_name == "":
 		return
+	
 	$Track.save_to(track_name)
+	
+	
+	var backup_pos = $ThumbViewport/Position.transform.origin
+	var backup_cam = $ThumbViewport/Position/Camera.transform
+	
+	$ThumbViewport.set_clear_mode(Viewport.CLEAR_MODE_ONLY_NEXT_FRAME)
+	$ThumbViewport.set_update_mode(Viewport.UPDATE_ONCE)
+	
+	$ThumbViewport/Position.transform.origin = Vector3()
+	$ThumbViewport/Position/Camera.transform = $CamPos/Camera.global_transform
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	var img = $ThumbViewport.get_texture().get_data()
+	img.flip_y()
+	img.convert(Image.FORMAT_RGBA8)
+	
+	img.save_png(Globals.TRACK_THUMBS_PATH + track_name + ".png")
+	
+	$ThumbViewport/Position.transform.origin = backup_pos
+	$ThumbViewport/Position/Camera.transform = backup_cam
+	
 	changed = false
 
 func _on_FlyButton_pressed():

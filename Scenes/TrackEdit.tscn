@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Script/TrackEdit.gd" type="Script" id=1]
 [ext_resource path="res://Script/MoveGizmo.gd" type="Script" id=2]
@@ -45,9 +45,6 @@ flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 0, 0, 1, 0.501961 )
 
-[sub_resource type="CylinderShape" id=6]
-radius = 0.098813
-
 [sub_resource type="SpatialMaterial" id=7]
 flags_transparent = true
 flags_unshaded = true
@@ -60,30 +57,32 @@ flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 1, 0, 0, 0.501961 )
 
-[sub_resource type="SpatialMaterial" id=12]
+[sub_resource type="SpatialMaterial" id=9]
 flags_transparent = true
 flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 0, 1, 0, 0.501961 )
 
-[sub_resource type="SpatialMaterial" id=13]
+[sub_resource type="SpatialMaterial" id=10]
 flags_transparent = true
 flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 0, 0, 1, 0.501961 )
 
-[sub_resource type="CylinderShape" id=9]
-height = 0.05
-
-[sub_resource type="SphereMesh" id=10]
+[sub_resource type="SphereMesh" id=12]
 radius = 0.05
 height = 0.1
 radial_segments = 16
 rings = 16
 
-[sub_resource type="SpatialMaterial" id=11]
+[sub_resource type="SpatialMaterial" id=13]
 flags_unshaded = true
 albedo_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="Environment" id=14]
+background_mode = 1
+background_color = Color( 1, 1, 1, 0 )
+ambient_light_color = Color( 1, 1, 1, 1 )
 
 [node name="Root" type="Spatial"]
 script = ExtResource( 1 )
@@ -108,33 +107,6 @@ transform = Transform( 1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37
 mesh = SubResource( 2 )
 material/0 = SubResource( 5 )
 
-[node name="YArea" type="Area" parent="MoveGizmo"]
-editor/display_folded = true
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0 )
-visible = false
-input_ray_pickable = false
-
-[node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/YArea"]
-shape = SubResource( 6 )
-
-[node name="XArea" type="Area" parent="MoveGizmo"]
-editor/display_folded = true
-transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 1.1, 0, 0 )
-visible = false
-input_ray_pickable = false
-
-[node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/XArea"]
-shape = SubResource( 6 )
-
-[node name="ZArea" type="Area" parent="MoveGizmo"]
-editor/display_folded = true
-transform = Transform( 1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 0, 1.1 )
-visible = false
-input_ray_pickable = false
-
-[node name="CollisionShape" type="CollisionShape" parent="MoveGizmo/ZArea"]
-shape = SubResource( 6 )
-
 [node name="RotateGizmo" type="Spatial" parent="."]
 editor/display_folded = true
 visible = false
@@ -148,57 +120,34 @@ material/0 = SubResource( 8 )
 
 [node name="Yaxis" type="MeshInstance" parent="RotateGizmo"]
 mesh = ExtResource( 4 )
-material/0 = SubResource( 12 )
+material/0 = SubResource( 9 )
 
 [node name="Zaxis" type="MeshInstance" parent="RotateGizmo"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 mesh = ExtResource( 4 )
-material/0 = SubResource( 13 )
-
-[node name="XArea" type="Area" parent="RotateGizmo"]
-editor/display_folded = true
-transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0 )
-visible = false
-input_ray_pickable = false
-
-[node name="CollisionShape" type="CollisionShape" parent="RotateGizmo/XArea"]
-shape = SubResource( 9 )
-
-[node name="YArea" type="Area" parent="RotateGizmo"]
-editor/display_folded = true
-visible = false
-input_ray_pickable = false
-
-[node name="CollisionShape" type="CollisionShape" parent="RotateGizmo/YArea"]
-shape = SubResource( 9 )
-
-[node name="ZArea" type="Area" parent="RotateGizmo"]
-editor/display_folded = true
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
-visible = false
-input_ray_pickable = false
-
-[node name="CollisionShape" type="CollisionShape" parent="RotateGizmo/ZArea"]
-shape = SubResource( 9 )
+material/0 = SubResource( 10 )
 
 [node name="Track" parent="." instance=ExtResource( 5 )]
 
 [node name="CamPos" type="Spatial" parent="."]
+editor/display_folded = true
 script = ExtResource( 6 )
 
 [node name="Camera" type="Camera" parent="CamPos"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6 )
 
 [node name="MeshInstance" type="MeshInstance" parent="CamPos"]
-mesh = SubResource( 10 )
-material/0 = SubResource( 11 )
+mesh = SubResource( 12 )
+material/0 = SubResource( 13 )
 
 [node name="UI" type="Control" parent="."]
+editor/display_folded = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="LoadPanel" type="PanelContainer" parent="UI"]
+editor/display_folded = true
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 149.0
@@ -207,40 +156,49 @@ margin_bottom = 44.0
 [node name="LoadContainer" type="HBoxContainer" parent="UI/LoadPanel"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 312.0
+margin_right = 394.0
 margin_bottom = 31.0
+custom_constants/separation = 10
 
 [node name="TrackName" type="LineEdit" parent="UI/LoadPanel/LoadContainer"]
 margin_right = 58.0
 margin_bottom = 24.0
 
 [node name="LoadButton" type="Button" parent="UI/LoadPanel/LoadContainer"]
-margin_left = 62.0
-margin_right = 104.0
+margin_left = 68.0
+margin_right = 110.0
 margin_bottom = 24.0
 text = "Load"
 
 [node name="SaveButton" type="Button" parent="UI/LoadPanel/LoadContainer"]
-margin_left = 108.0
-margin_right = 149.0
+margin_left = 120.0
+margin_right = 161.0
 margin_bottom = 24.0
+custom_constants/hseparation = 10
 text = "Save"
 
 [node name="FlyButton" type="Button" parent="UI/LoadPanel/LoadContainer"]
-margin_left = 153.0
-margin_right = 183.0
+margin_left = 171.0
+margin_right = 201.0
 margin_bottom = 24.0
 text = "Fly"
 
 [node name="ExitButton" type="Button" parent="UI/LoadPanel/LoadContainer"]
-margin_left = 187.0
-margin_right = 222.0
+margin_left = 211.0
+margin_right = 246.0
 margin_bottom = 24.0
 text = "Exit"
 
+[node name="Label" type="Label" parent="UI/LoadPanel/LoadContainer"]
+margin_left = 256.0
+margin_top = 5.0
+margin_right = 298.0
+margin_bottom = 19.0
+text = "Scene:"
+
 [node name="SceneOption" type="OptionButton" parent="UI/LoadPanel/LoadContainer"]
-margin_left = 226.0
-margin_right = 305.0
+margin_left = 308.0
+margin_right = 387.0
 margin_bottom = 24.0
 text = "Scene"
 
@@ -251,7 +209,7 @@ margin_top = -165.0
 margin_right = 190.0
 margin_bottom = 165.0
 
-[node name="ToolContainer" type="VBoxContainer" parent="UI/ToolPanel"]
+[node name="ToolContainer" type="Control" parent="UI/ToolPanel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 
@@ -261,28 +219,37 @@ margin_bottom = 20.0
 text = "Tool"
 align = 1
 
-[node name="GateToolContainer" type="VBoxContainer" parent="UI/ToolPanel/ToolContainer"]
+[node name="GateToolContainer" type="Panel" parent="UI/ToolPanel/ToolContainer"]
 editor/display_folded = true
-margin_top = 24.0
-margin_right = 190.0
-margin_bottom = 51.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 27.0
 
 [node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/GateToolContainer"]
 margin_right = 190.0
 margin_bottom = 14.0
 text = "Choose Type:"
 
-[node name="ItemList" type="ItemList" parent="UI/ToolPanel/ToolContainer/GateToolContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/ToolPanel/ToolContainer/GateToolContainer"]
 margin_top = 18.0
 margin_right = 190.0
-margin_bottom = 27.0
+margin_bottom = 298.0
+scroll_horizontal_enabled = false
+
+[node name="ItemList" type="ItemList" parent="UI/ToolPanel/ToolContainer/GateToolContainer/ScrollContainer"]
+margin_right = 190.0
+margin_bottom = 280.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 auto_height = true
+fixed_icon_size = Vector2( 64, 64 )
 
 [node name="ObjectToolContainer" type="VBoxContainer" parent="UI/ToolPanel/ToolContainer"]
+editor/display_folded = true
 visible = false
-margin_top = 55.0
+margin_top = 27.0
 margin_right = 190.0
-margin_bottom = 82.0
+margin_bottom = 54.0
 
 [node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/ObjectToolContainer"]
 margin_right = 190.0
@@ -294,13 +261,14 @@ margin_top = 18.0
 margin_right = 190.0
 margin_bottom = 27.0
 auto_height = true
+fixed_icon_size = Vector2( 64, 64 )
 
 [node name="MoveToolContainer" type="VBoxContainer" parent="UI/ToolPanel/ToolContainer"]
 editor/display_folded = true
 visible = false
-margin_top = 37.0
+margin_top = 27.0
 margin_right = 190.0
-margin_bottom = 135.0
+margin_bottom = 125.0
 
 [node name="PosLabel" type="Label" parent="UI/ToolPanel/ToolContainer/MoveToolContainer"]
 margin_right = 190.0
@@ -369,9 +337,9 @@ allow_lesser = true
 [node name="RotateToolContainer" type="VBoxContainer" parent="UI/ToolPanel/ToolContainer"]
 editor/display_folded = true
 visible = false
-margin_top = 24.0
+margin_top = 25.0
 margin_right = 190.0
-margin_bottom = 38.0
+margin_bottom = 123.0
 
 [node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/RotateToolContainer"]
 margin_right = 190.0
@@ -379,9 +347,9 @@ margin_bottom = 14.0
 text = "rot:"
 
 [node name="XPos" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/RotateToolContainer"]
-margin_top = 31.0
+margin_top = 18.0
 margin_right = 190.0
-margin_bottom = 55.0
+margin_bottom = 42.0
 
 [node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/RotateToolContainer/XPos"]
 margin_top = 5.0
@@ -397,9 +365,9 @@ allow_greater = true
 allow_lesser = true
 
 [node name="YPos" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/RotateToolContainer"]
-margin_top = 59.0
+margin_top = 46.0
 margin_right = 190.0
-margin_bottom = 83.0
+margin_bottom = 70.0
 
 [node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/RotateToolContainer/YPos"]
 margin_top = 5.0
@@ -415,9 +383,9 @@ allow_greater = true
 allow_lesser = true
 
 [node name="ZPos" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/RotateToolContainer"]
-margin_top = 87.0
+margin_top = 74.0
 margin_right = 190.0
-margin_bottom = 111.0
+margin_bottom = 98.0
 
 [node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/RotateToolContainer/ZPos"]
 margin_top = 5.0
@@ -434,19 +402,20 @@ allow_lesser = true
 
 [node name="ObjectPaintContainer" type="VBoxContainer" parent="UI/ToolPanel/ToolContainer"]
 visible = false
-margin_top = 55.0
+margin_top = 27.0
 margin_right = 190.0
-margin_bottom = 92.0
+margin_bottom = 64.0
 
 [node name="ItemList" type="ItemList" parent="UI/ToolPanel/ToolContainer/ObjectPaintContainer"]
-margin_top = 28.0
 margin_right = 190.0
-margin_bottom = 37.0
+margin_bottom = 9.0
 auto_height = true
+fixed_icon_size = Vector2( 64, 64 )
 
 [node name="Distance" type="HBoxContainer" parent="UI/ToolPanel/ToolContainer/ObjectPaintContainer"]
+margin_top = 13.0
 margin_right = 190.0
-margin_bottom = 24.0
+margin_bottom = 37.0
 
 [node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/ObjectPaintContainer/Distance"]
 margin_top = 5.0
@@ -494,10 +463,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -150.0
-margin_top = -150.0
-margin_right = 90.0
-margin_bottom = 90.0
+margin_left = -200.0
+margin_top = -190.0
+margin_right = 200.0
+margin_bottom = 190.0
 window_title = "Load"
 
 [node name="Label" type="Label" parent="UI/LoadDialog"]
@@ -515,11 +484,12 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -110.0
-margin_top = -100.0
-margin_right = 110.0
-margin_bottom = 60.0
+margin_left = -190.0
+margin_top = -182.0
+margin_right = 190.0
+margin_bottom = 140.0
 allow_rmb_select = true
+fixed_icon_size = Vector2( 128, 128 )
 
 [node name="NewTrackName" type="LineEdit" parent="UI/LoadDialog"]
 anchor_top = 1.0
@@ -610,12 +580,25 @@ margin_top = -29.0
 margin_right = 69.0
 margin_bottom = 29.0
 dialog_text = "Invalid Track Name"
-[connection signal="input_event" from="MoveGizmo/YArea" to="MoveGizmo" method="_on_YArea_input_event"]
-[connection signal="input_event" from="MoveGizmo/XArea" to="MoveGizmo" method="_on_XArea_input_event"]
-[connection signal="input_event" from="MoveGizmo/ZArea" to="MoveGizmo" method="_on_ZArea_input_event"]
-[connection signal="input_event" from="RotateGizmo/XArea" to="RotateGizmo" method="_on_XArea_input_event"]
-[connection signal="input_event" from="RotateGizmo/YArea" to="RotateGizmo" method="_on_YArea_input_event"]
-[connection signal="input_event" from="RotateGizmo/ZArea" to="RotateGizmo" method="_on_ZArea_input_event"]
+
+[node name="ThumbViewport" type="Viewport" parent="."]
+size = Vector2( 128, 128 )
+transparent_bg = true
+render_target_clear_mode = 2
+render_target_update_mode = 1
+
+[node name="Position" type="Spatial" parent="ThumbViewport"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10, 20 )
+
+[node name="Camera" type="Camera" parent="ThumbViewport/Position"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 1, 1 )
+environment = SubResource( 14 )
+current = true
+fov = 90.0
+
+[node name="DirectionalLight" type="DirectionalLight" parent="ThumbViewport/Position"]
+transform = Transform( 1, 0, 0, 0, -0.0388243, 0.999246, 0, -0.999246, -0.0388243, 0, 3.90304, 0 )
+visible = false
 [connection signal="text_changed" from="UI/LoadPanel/LoadContainer/TrackName" to="." method="_on_TrackName_text_changed"]
 [connection signal="pressed" from="UI/LoadPanel/LoadContainer/LoadButton" to="." method="_on_LoadButton_pressed"]
 [connection signal="pressed" from="UI/LoadPanel/LoadContainer/SaveButton" to="." method="_on_SaveButton_pressed"]

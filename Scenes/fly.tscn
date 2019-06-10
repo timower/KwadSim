@@ -4,27 +4,22 @@
 [ext_resource path="res://Nodes/Track.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Nodes/NativeKwad.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Shaders/main.tres" type="Material" id=4]
-[ext_resource path="res://Script/StickView.gd" type="Script" id=5]
-[ext_resource path="res://Script/LapTimes.gd" type="Script" id=6]
-[ext_resource path="res://Fonts/arial.ttf" type="DynamicFontData" id=7]
-[ext_resource path="res://Nodes/KwadConfig.tscn" type="PackedScene" id=8]
-[ext_resource path="res://Nodes/JoyConf.tscn" type="PackedScene" id=9]
-[ext_resource path="res://Nodes/PauseMenu.tscn" type="PackedScene" id=10]
-[ext_resource path="res://Nodes/Settings.tscn" type="PackedScene" id=11]
-[ext_resource path="res://Textures/betaflight_font.png" type="Texture" id=12]
-[ext_resource path="res://Script/TileMap.gd" type="Script" id=13]
-
+[ext_resource path="res://Textures/betaflight_font.png" type="Texture" id=5]
+[ext_resource path="res://Script/TileMap.gd" type="Script" id=6]
+[ext_resource path="res://Script/StickView.gd" type="Script" id=7]
+[ext_resource path="res://Script/LapTimes.gd" type="Script" id=8]
+[ext_resource path="res://Fonts/arial.ttf" type="DynamicFontData" id=9]
+[ext_resource path="res://Nodes/KwadConfig.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Nodes/JoyConf.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Nodes/PauseMenu.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Nodes/Settings.tscn" type="PackedScene" id=13]
 
 [sub_resource type="ViewportTexture" id=1]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="DynamicFont" id=2]
-size = 42
-font_data = ExtResource( 7 )
-
-[sub_resource type="TileSet" id=3]
+[sub_resource type="TileSet" id=2]
 0/name = "betaflight_font.png 0"
-0/texture = ExtResource( 12 )
+0/texture = ExtResource( 5 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )
 0/region = Rect2( 2, 2, 502, 158 )
@@ -39,6 +34,10 @@ font_data = ExtResource( 7 )
 0/navigation_offset = Vector2( 0, 0 )
 0/shapes = [  ]
 0/z_index = 0
+
+[sub_resource type="DynamicFont" id=3]
+size = 42
+font_data = ExtResource( 9 )
 
 [node name="Root" type="Spatial"]
 
@@ -61,8 +60,16 @@ texture = SubResource( 1 )
 expand = true
 stretch_mode = 1
 
+[node name="TileOSD" type="TileMap" parent="."]
+tile_set = SubResource( 2 )
+cell_size = Vector2( 12, 18 )
+format = 1
+tile_data = PoolIntArray( 0, 0, 0, 1, 0, 0, 65537, 0, 0, 65538, 0, 0, 65539, 0, 0, 131076, 0, 0, 131077, 0, 0, 196613, 0, 0, 262150, 0, 0, 262151, 0, 0, 327688, 0, 0, 327697, 0, 0, 393224, 0, 0, 393225, 0, 0, 393229, 0, 0, 393230, 0, 0, 458761, 0, 0, 458762, 0, 0, 458766, 0, 0 )
+script = ExtResource( 6 )
+
 [node name="Sticks" type="Control" parent="."]
 pause_mode = 2
+editor/display_folded = true
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -75,7 +82,7 @@ margin_bottom = -10.0
 [node name="LeftStick" type="Control" parent="Sticks"]
 anchor_bottom = 1.0
 margin_right = 100.0
-script = ExtResource( 5 )
+script = ExtResource( 7 )
 axis2 = 2
 
 [node name="RightStick" type="Control" parent="Sticks"]
@@ -83,16 +90,17 @@ anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = -100.0
-script = ExtResource( 5 )
+script = ExtResource( 7 )
 axis1 = 1
 axis2 = 3
 
 [node name="LapTimes" type="Control" parent="."]
+editor/display_folded = true
 margin_left = 10.0
 margin_top = 170.0
 margin_right = 150.0
 margin_bottom = 270.0
-script = ExtResource( 6 )
+script = ExtResource( 8 )
 
 [node name="PopupLabel" type="Label" parent="LapTimes"]
 anchor_left = 0.5
@@ -101,7 +109,7 @@ margin_left = 345.0
 margin_top = -70.0
 margin_right = 775.0
 margin_bottom = 60.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 3 )
 text = "
 "
 align = 1
@@ -111,27 +119,20 @@ valign = 1
 margin_right = 40.0
 margin_bottom = 14.0
 
-[node name="KwadConfig" parent="." instance=ExtResource( 8 )]
+[node name="KwadConfig" parent="." instance=ExtResource( 10 )]
 visible = false
 
-[node name="JoyConf" parent="." instance=ExtResource( 9 )]
+[node name="JoyConf" parent="." instance=ExtResource( 11 )]
 visible = false
 
-[node name="PauseMenu" parent="." instance=ExtResource( 10 )]
+[node name="PauseMenu" parent="." instance=ExtResource( 12 )]
 visible = false
 
-[node name="Settings" parent="." instance=ExtResource( 11 )]
+[node name="Settings" parent="." instance=ExtResource( 13 )]
 visible = false
 
 [node name="Button" type="Button" parent="."]
 margin_right = 50.0
 margin_bottom = 20.0
 text = "Pause"
-
-[node name="TileOSD" type="TileMap" parent="."]
-tile_set = SubResource( 3 )
-cell_size = Vector2( 12, 18 )
-format = 1
-tile_data = PoolIntArray( 0, 0, 0, 1, 0, 0, 65537, 0, 0, 65538, 0, 0, 65539, 0, 0, 131076, 0, 0, 131077, 0, 0, 196613, 0, 0, 262150, 0, 0, 262151, 0, 0, 327688, 0, 0, 327697, 0, 0, 393224, 0, 0, 393225, 0, 0, 393229, 0, 0, 393230, 0, 0, 458761, 0, 0, 458762, 0, 0, 458766, 0, 0 )
-script = ExtResource( 13 )
 [connection signal="pressed" from="Button" to="Viewport" method="_on_Button_pressed"]

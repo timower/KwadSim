@@ -9,14 +9,22 @@ onready var allAxis = $AllAxis
 
 var selected_dev = -1
 
+#warning-ignore:unused_class_variable
 onready var throttle = $Throttle
+#warning-ignore:unused_class_variable
 onready var yaw = $Yaw
+#warning-ignore:unused_class_variable
 onready var pitch = $Pitch
+#warning-ignore:unused_class_variable
 onready var roll = $Roll
 
+#warning-ignore:unused_class_variable
 onready var aux1 = $Aux1
+#warning-ignore:unused_class_variable
 onready var aux2 = $Aux2
+#warning-ignore:unused_class_variable
 onready var aux3 = $Aux3
+#warning-ignore:unused_class_variable
 onready var aux4 = $Aux4
 
 #warning-ignore:unused_class_variable

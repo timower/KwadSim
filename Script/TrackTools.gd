@@ -24,6 +24,9 @@ class Tool:
 		
 	func input(_event):
 		pass
+		
+	func thumb_update(obj_id):
+		pass
 
 
 class GateTool extends Tool:
@@ -34,15 +37,20 @@ class GateTool extends Tool:
 	
 	func _init(root, container).("Place Gates", root):
 		track = root.get_node("Track")
-		gate_list = container.get_node("ItemList")
+		gate_list = container.get_node("ScrollContainer/ItemList")
 		cam_pos = root.get_node("CamPos")
 		camera = root.get_node("CamPos/Camera")
 		
+		var thumb_viewport = root.get_node("ThumbViewport")
+		var pos_node = thumb_viewport.get_node("Position")
+		var camera_node = pos_node.get_node("Camera")
+		
 		for id in range(Globals.OBJECTS.size()):
 			var object = Globals.OBJECTS[id]
+
 			if object.is_gate:
 				var idx = gate_list.get_item_count()
-				gate_list.add_item(object.name)
+				gate_list.add_item(object.name, object.thumb)
 				gate_list.set_item_metadata(idx, id)
 		gate_list.connect("item_activated", self, "place_gate")
 	
@@ -57,6 +65,12 @@ class GateTool extends Tool:
 		var action = TrackActions.PlaceGateAction.new(object_dict)
 		root.do_action(action)
 		root.select_object(action.gate_ref)
+	
+	func thumb_update(obj_id):
+		for idx in range(gate_list.get_item_count()):
+			if gate_list.get_item_metadata(idx) == obj_id:
+				gate_list.set_item_icon(idx, Globals.OBJECTS[obj_id].thumb)
+				break
 
 class ObjectTool extends Tool:
 	var obj_list
@@ -72,7 +86,7 @@ class ObjectTool extends Tool:
 			var object = Globals.OBJECTS[id]
 			if not object.is_gate:
 				var idx = obj_list.get_item_count()
-				obj_list.add_item(object.name)
+				obj_list.add_item(object.name, object.thumb)
 				obj_list.set_item_metadata(idx, id)
 		obj_list.connect("item_activated", self, "place_object")
 	
@@ -86,6 +100,12 @@ class ObjectTool extends Tool:
 		var action = TrackActions.PlaceObjectAction.new(odict)
 		root.do_action(action)
 		root.select_object(action.obj_ref)
+	
+	
+	func thumb_update(obj_id):
+		for idx in range(obj_list.get_item_count()):
+			if obj_list.get_item_metadata(idx) == obj_id:
+				obj_list.set_item_icon(idx, Globals.OBJECTS[obj_id].thumb)
 
 class MoveTool extends Tool:
 	var xpos
@@ -237,7 +257,7 @@ class ObjectPaintTool extends Tool:
 			var object = Globals.OBJECTS[id]
 			if not object.is_gate:
 				var idx = obj_list.get_item_count()
-				obj_list.add_item(object.name)
+				obj_list.add_item(object.name, object.thumb)
 				obj_list.set_item_metadata(idx, id)
 				print(object)
 		obj_list.select(0)
@@ -263,7 +283,6 @@ class ObjectPaintTool extends Tool:
 		if ray_info.size() > 0:
 			var pos = ray_info.position
 			var axis = Vector3(0, 1, 0).cross(ray_info.normal)
-			print(axis)
 			var angle = asin(axis.length())
 			var quat = Quat(axis.normalized(), angle)
 			var euler = quat.get_euler()
@@ -284,4 +303,8 @@ class ObjectPaintTool extends Tool:
 			if p[0].distance_to(last_pos) > distance.value:
 				place_object(p[0], p[1])
 				last_pos = p[0]
-			
+	
+	func thumb_update(obj_id):
+		for idx in range(obj_list.get_item_count()):
+			if obj_list.get_item_metadata(idx) == obj_id:
+				obj_list.set_item_icon(idx, Globals.OBJECTS[obj_id].thumb)

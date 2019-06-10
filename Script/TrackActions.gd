@@ -3,11 +3,11 @@ extends Object
 class_name TrackActions
 
 class Action:
-	func do(track):
+	func do(_track):
 		pass
-	func undo(track):
+	func undo(_track):
 		pass
-	func combine(action):
+	func combine(_action):
 		return false
 
 class PlaceGateAction extends Action:

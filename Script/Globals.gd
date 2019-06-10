@@ -16,7 +16,9 @@ var selected_quad = "QQ190"
 var selected_track = null
 
 const TRACK_PATH = "user://Tracks/"
+const TRACK_THUMBS_PATH = "user://Tracks/thumb/"
 const BUILTIN_TRACKS_PATH = "res://Data/Tracks/"
+const THUMBS_PATH = "user://thumbs/"
 
 const OBJECTS = [
 	{"name": "Start Box", "scene": preload("res://Models/startbox/startbox.gltf"), "is_gate": false},
@@ -60,6 +62,23 @@ func _notification(what):
 
 func _ready():
 	reload_quads()
+	load_object_thumbs()
+	
+
+func load_object_thumbs():
+	var file = File.new()
+	var dir = Directory.new()
+	
+	if not dir.dir_exists(THUMBS_PATH):
+		dir.make_dir(THUMBS_PATH)
+	
+	for obj_id in OBJECTS.size():
+		var thumb_name = THUMBS_PATH + str(obj_id) + ".png"
+		if file.file_exists(thumb_name):
+			OBJECTS[obj_id].thumb = ImageTexture.new()
+			OBJECTS[obj_id].thumb.load(thumb_name)
+		else:
+			OBJECTS[obj_id].thumb = null
 	
 func reset():
 	emit_signal("reset")
@@ -81,7 +100,7 @@ func read_json(name):
 	file.close()
 	return conts
 
-func list_dir(name):
+func list_dir(name: String):
 	var dir = Directory.new()
 	if dir.open(name) != OK:
 		return null
@@ -91,7 +110,8 @@ func list_dir(name):
 	
 	var file = dir.get_next()
 	while (file != ""):
-		list.append(file.get_basename())
+		if not dir.current_is_dir():
+			list.append(file.get_basename())
 		file = dir.get_next()
 		
 	return list
@@ -99,11 +119,27 @@ func list_dir(name):
 func get_tracks():
 	var builtins = Globals.list_dir(BUILTIN_TRACKS_PATH)
 	var tracks = Globals.list_dir(TRACK_PATH)
+	var dir = Directory.new()
+		
 	if tracks == null:
-		var dir = Directory.new()
 		dir.make_dir(TRACK_PATH)
-		return builtins
-	return tracks + builtins
+		tracks = builtins
+	else:
+		# TODO: duplicates?
+		tracks += builtins
+	
+	if not dir.dir_exists(TRACK_THUMBS_PATH):
+		dir.make_dir(TRACK_THUMBS_PATH)
+		
+	var file = File.new()
+	for i in range(tracks.size()):
+		var thumb = null
+		var thumb_path = TRACK_THUMBS_PATH + tracks[i] + ".png"
+		if file.file_exists(thumb_path):
+			thumb = ImageTexture.new()
+			thumb.load(thumb_path)
+		tracks[i] = [tracks[i], thumb]
+	return tracks
 
 func new_rc_input(inputs):
 	emit_signal("rc_input", inputs)

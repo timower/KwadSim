@@ -9,7 +9,7 @@ func _ready():
 	
 	var tracks = Globals.get_tracks()
 	for track in tracks:
-		$QuadSelectDialog/TrackList.add_item(track)
+		$QuadSelectDialog/TrackList.add_item(track[0], track[1])
 	$QuadSelectDialog/TrackList.select(0)
 
 func _on_FlyButton_pressed():
