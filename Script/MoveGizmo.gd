@@ -55,9 +55,9 @@ func get_proj_point(camera: Camera, p: Vector2) -> Vector3:
 func round_m(m: float, x: float) -> float:
 	return round(x / m) * m
 
-func handle_input(event):
+func handle_input(event) -> bool:
 	if (not event is InputEventMouseButton) and (not event is InputEventMouseMotion):
-		return
+		return false
 		
 	var mult = 0.1
 	if event.control:
@@ -87,6 +87,7 @@ func handle_input(event):
 			current_axis = selected_axis
 			var start_pos = get_proj_point(camera, event.position)[current_axis]
 			old_pos = round_m(mult, start_pos)
+			return true
 		else:
 			current_axis = null
 			old_pos = null
@@ -101,3 +102,5 @@ func handle_input(event):
 		old_pos = new_pos
 		
 		emit_signal("pos_changed", global_transform.origin)
+		return true
+	return false

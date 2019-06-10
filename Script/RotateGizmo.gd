@@ -75,9 +75,9 @@ func get_y_angle(camera: Camera, p1: Vector2, plane: int) -> float:
 func round_angle(m: float, x: float) -> float:
 	return deg2rad(round(rad2deg(x) / m)) * m
 
-func handle_input(event):
+func handle_input(event) -> bool:
 	if (not event is InputEventMouseButton) and (not event is InputEventMouseMotion):
-		return
+		return false
 		
 	var mult = 1
 	if event.control:
@@ -118,12 +118,13 @@ func handle_input(event):
 			current_axis = selected_axis
 			var start_angle = get_y_angle(camera, event.position, current_axis)
 			old_rot = round_angle(mult, start_angle)
+			return true
 		else:
 			current_axis = null
 			old_rot = null
 	elif event is InputEventMouseMotion and current_axis != null:
 		if old_rot == null:
-			return
+			return false
 			
 		var angle = get_y_angle(camera, event.position, current_axis)
 		#var new_rot = angle
@@ -134,3 +135,5 @@ func handle_input(event):
 		target.global_rotate(normal, new_rot - old_rot)
 		old_rot = new_rot
 		emit_signal("rot_changed", target.global_transform.basis.get_euler())
+		return true
+	return false

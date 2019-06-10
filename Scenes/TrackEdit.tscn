@@ -45,41 +45,41 @@ flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 0, 0, 1, 0.501961 )
 
-[sub_resource type="SpatialMaterial" id=7]
+[sub_resource type="SpatialMaterial" id=6]
 flags_transparent = true
 flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 1, 1, 1, 0.501961 )
 
-[sub_resource type="SpatialMaterial" id=8]
+[sub_resource type="SpatialMaterial" id=7]
 flags_transparent = true
 flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 1, 0, 0, 0.501961 )
 
-[sub_resource type="SpatialMaterial" id=9]
+[sub_resource type="SpatialMaterial" id=8]
 flags_transparent = true
 flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 0, 1, 0, 0.501961 )
 
-[sub_resource type="SpatialMaterial" id=10]
+[sub_resource type="SpatialMaterial" id=9]
 flags_transparent = true
 flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 0, 0, 1, 0.501961 )
 
-[sub_resource type="SphereMesh" id=12]
+[sub_resource type="SphereMesh" id=10]
 radius = 0.05
 height = 0.1
 radial_segments = 16
 rings = 16
 
-[sub_resource type="SpatialMaterial" id=13]
+[sub_resource type="SpatialMaterial" id=11]
 flags_unshaded = true
 albedo_color = Color( 0, 0, 0, 1 )
 
-[sub_resource type="Environment" id=14]
+[sub_resource type="Environment" id=12]
 background_mode = 1
 background_color = Color( 1, 1, 1, 0 )
 ambient_light_color = Color( 1, 1, 1, 1 )
@@ -111,21 +111,21 @@ material/0 = SubResource( 5 )
 editor/display_folded = true
 visible = false
 script = ExtResource( 3 )
-highlight_mat = SubResource( 7 )
+highlight_mat = SubResource( 6 )
 
 [node name="Xaxis" type="MeshInstance" parent="RotateGizmo"]
 transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0 )
 mesh = ExtResource( 4 )
-material/0 = SubResource( 8 )
+material/0 = SubResource( 7 )
 
 [node name="Yaxis" type="MeshInstance" parent="RotateGizmo"]
 mesh = ExtResource( 4 )
-material/0 = SubResource( 9 )
+material/0 = SubResource( 8 )
 
 [node name="Zaxis" type="MeshInstance" parent="RotateGizmo"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 mesh = ExtResource( 4 )
-material/0 = SubResource( 10 )
+material/0 = SubResource( 9 )
 
 [node name="Track" parent="." instance=ExtResource( 5 )]
 
@@ -137,11 +137,10 @@ script = ExtResource( 6 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6 )
 
 [node name="MeshInstance" type="MeshInstance" parent="CamPos"]
-mesh = SubResource( 12 )
-material/0 = SubResource( 13 )
+mesh = SubResource( 10 )
+material/0 = SubResource( 11 )
 
 [node name="UI" type="Control" parent="."]
-editor/display_folded = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -203,6 +202,7 @@ margin_bottom = 24.0
 text = "Scene"
 
 [node name="ToolPanel" type="Panel" parent="UI"]
+editor/display_folded = true
 anchor_top = 0.5
 anchor_bottom = 0.5
 margin_top = -165.0
@@ -433,7 +433,6 @@ allow_greater = true
 allow_lesser = true
 
 [node name="TreePanel" type="Panel" parent="UI"]
-editor/display_folded = true
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -582,6 +581,7 @@ margin_bottom = 29.0
 dialog_text = "Invalid Track Name"
 
 [node name="ThumbViewport" type="Viewport" parent="."]
+editor/display_folded = true
 size = Vector2( 128, 128 )
 transparent_bg = true
 render_target_clear_mode = 2
@@ -592,7 +592,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10, 20 )
 
 [node name="Camera" type="Camera" parent="ThumbViewport/Position"]
 transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 1, 1 )
-environment = SubResource( 14 )
+environment = SubResource( 12 )
 current = true
 fov = 90.0
 

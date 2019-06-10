@@ -21,6 +21,7 @@ var changed = false
 var close_action = null
 
 var gates_item = null
+var objects_item = null
 
 var action_stack = []
 var redo_stack = []
@@ -78,7 +79,7 @@ func on_track_changed(objects_changed: bool):
 		var root = track_tree.create_item()
 		gates_item = track_tree.create_item(root)
 		gates_item.set_text(0, "Gates")
-		var objects_item = track_tree.create_item(root)
+		objects_item = track_tree.create_item(root)
 		objects_item.set_text(0, "Objects")
 		
 		for ref in $Track.objects.size():
@@ -102,10 +103,8 @@ func on_track_changed(objects_changed: bool):
 		deselect_object()
 
 func select_object(ref: int):
-	if $Track.is_ref_gate(ref):
-		$Track.light_object(ref)
-	else:
-		pass # TODO: move light 
+	$Track.light_object(ref)
+
 	selected_object = ref
 	tools[selected_tool].object_selected(ref)
 
@@ -369,8 +368,47 @@ func _on_CloseSaveButton_pressed():
 	$UI/ConfirmSaveDialog.hide()
 	
 func _unhandled_input(event):
-	tools[selected_tool].input(event)
-
+	if tools[selected_tool].input(event):
+		return
+	
+	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+		# ray pick:
+		var n = $CamPos/Camera.project_ray_normal(event.position)
+		var o = $CamPos/Camera.global_transform.origin
+			
+		var space_state = get_world().direct_space_state
+		var ray_info = space_state.intersect_ray(o, o + 1e6 * n)
+		if ray_info.size() == 0:
+			return
+		
+		var closest_obj_ref = 0
+		var closest_dist = 1e100
+		
+		for obj_ref in range($Track.objects.size()):
+			var dist = $Track.objects[obj_ref].pos.distance_to(ray_info.position)
+			if dist < closest_dist:
+				closest_obj_ref = obj_ref
+				closest_dist = dist
+		
+		if closest_dist < 3:
+			select_object(closest_obj_ref)
+			
+			if $Track.is_ref_gate(closest_obj_ref):
+				var item = gates_item.get_children()
+				while item:
+					if $Track.get_gate_ref(item.get_metadata(0)) == closest_obj_ref:
+						item.select(0)
+						break
+					item = item.get_next()
+			else:
+				var item = objects_item.get_children()
+				while item:
+					if item.get_metadata(0) == closest_obj_ref:
+						item.select(0)
+						break
+					item = item.get_next()
+			
+			track_tree.ensure_cursor_is_visible()
 
 func _on_SceneOption_item_selected(ID):
 	$Track.load_scene(ID)

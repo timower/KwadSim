@@ -6,9 +6,7 @@
 
 [sub_resource type="CubeMesh" id=1]
 
-
 [sub_resource type="SpatialMaterial" id=2]
-
 albedo_texture = ExtResource( 3 )
 
 [node name="Root" type="Control"]
@@ -162,7 +160,6 @@ material/0 = SubResource( 2 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="View"]
 transform = Transform( 1, 0, 0, 0, 0.828497, 0.559993, 0, -0.559993, 0.828497, 0, 0.456337, 0.77016 )
-
 [connection signal="item_selected" from="InfoPanel/OptionButton" to="." method="_on_OptionButton_item_selected"]
 [connection signal="pressed" from="InfoPanel/NewButton" to="." method="_on_NewButton_pressed"]
 [connection signal="pressed" from="InfoPanel/ExitButton" to="." method="_on_ExitButton_pressed"]

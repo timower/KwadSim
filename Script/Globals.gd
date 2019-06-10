@@ -126,6 +126,8 @@ func get_tracks():
 		tracks = builtins
 	else:
 		# TODO: duplicates?
+		for track in tracks:
+			builtins.erase(track)
 		tracks += builtins
 	
 	if not dir.dir_exists(TRACK_THUMBS_PATH):

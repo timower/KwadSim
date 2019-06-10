@@ -97,8 +97,10 @@ func save_to(track_name: String):
 func light_object(ref: int):
 	if last_light != null:
 		get_object_node(last_light).get_node("Light").visible = false
-	get_object_node(ref).get_node("Light").visible = true
-	last_light = ref
+	var light = get_object_node(ref).get_node("Light")
+	if light:
+		light.visible = true
+		last_light = ref
 
 func light_gate(idx):
 	light_object(gates[idx])

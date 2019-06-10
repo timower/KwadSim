@@ -22,8 +22,8 @@ class Tool:
 	func object_deselected():
 		pass
 		
-	func input(_event):
-		pass
+	func input(_event) -> bool:
+		return false
 		
 	func thumb_update(obj_id):
 		pass
@@ -166,9 +166,10 @@ class MoveTool extends Tool:
 		root.do_action(TrackActions.MoveAction.new(root.selected_object, new_pos))
 		move_gizmo.transform.origin = new_pos
 	
-	func input(event):
+	func input(event) -> bool:
 		if move_gizmo.visible:
-			move_gizmo.handle_input(event)
+			return move_gizmo.handle_input(event)
+		return false
 
 class RotateTool extends Tool:
 	var xpos
@@ -234,9 +235,10 @@ class RotateTool extends Tool:
 		ypos.value = rad2deg(new_rot.y)
 		zpos.value = rad2deg(new_rot.z)
 		
-	func input(event):
+	func input(event) -> bool:
 		if rot_gizmo.visible:
-			rot_gizmo.handle_input(event)
+			return rot_gizmo.handle_input(event)
+		return false
 
 class ObjectPaintTool extends Tool:
 	var last_pos = null
@@ -293,16 +295,19 @@ class ObjectPaintTool extends Tool:
 		return [o + n * t, Vector3()]
 		
 	
-	func input(event):
+	func input(event) -> bool:
 		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
 			var p = proj_pos(event.position)
 			last_pos = p[0]
 			place_object(p[0], p[1])
+			return true
 		elif event is InputEventMouseMotion and event.button_mask & BUTTON_MASK_LEFT != 0:
 			var p = proj_pos(event.position)
 			if p[0].distance_to(last_pos) > distance.value:
 				place_object(p[0], p[1])
 				last_pos = p[0]
+			return true
+		return false
 	
 	func thumb_update(obj_id):
 		for idx in range(obj_list.get_item_count()):
