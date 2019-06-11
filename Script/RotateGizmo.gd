@@ -120,8 +120,10 @@ func handle_input(event) -> bool:
 			old_rot = round_angle(mult, start_angle)
 			return true
 		else:
+			var was_selected = current_axis != null
 			current_axis = null
 			old_rot = null
+			return was_selected
 	elif event is InputEventMouseMotion and current_axis != null:
 		if old_rot == null:
 			return false

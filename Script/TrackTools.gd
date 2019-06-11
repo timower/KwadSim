@@ -62,9 +62,9 @@ class GateTool extends Tool:
 			id = gate_list.get_item_metadata(idx)
 		}
 		
-		var action = TrackActions.PlaceGateAction.new(object_dict)
+		var action = TrackActions.PlaceObjectAction.new(object_dict)
 		root.do_action(action)
-		root.select_object(action.gate_ref)
+		root.select_object(action.obj_ref)
 	
 	func thumb_update(obj_id):
 		for idx in range(gate_list.get_item_count()):
@@ -91,7 +91,6 @@ class ObjectTool extends Tool:
 		obj_list.connect("item_activated", self, "place_object")
 	
 	func place_object(idx):
-		root.changed = true
 		var odict = {
 			pos = cam_pos.global_transform.origin, 
 			rot = Vector3(), 
@@ -149,7 +148,6 @@ class MoveTool extends Tool:
 		move_gizmo.visible = false
 	
 	func gizmo_pos_changed(new_pos):
-		root.changed = true
 		root.do_action(TrackActions.MoveAction.new(root.selected_object, new_pos))
 		#track.change_pos(root.selected_object, v)
 		xpos.value = new_pos.x
@@ -160,7 +158,6 @@ class MoveTool extends Tool:
 	func pos_changed(_v):
 		if disabled:
 			return
-		root.changed = true
 		var new_pos = Vector3(xpos.value, ypos.value, zpos.value)
 		#track.change_pos(root.selected_object, new_pos)
 		root.do_action(TrackActions.MoveAction.new(root.selected_object, new_pos))
@@ -219,7 +216,6 @@ class RotateTool extends Tool:
 	func rot_changed(_v):
 		if disabled:
 			return
-		root.changed = true
 		var new_rot = Vector3(
 			deg2rad(xpos.value), 
 			deg2rad(ypos.value), 
@@ -229,7 +225,6 @@ class RotateTool extends Tool:
 		#track.change_rot(root.selected_object, new_rot)
 	
 	func gizmo_rot_changed(new_rot):
-		root.changed = true
 		root.do_action(TrackActions.RotateAction.new(root.selected_object, new_rot))
 		xpos.value = rad2deg(new_rot.x)
 		ypos.value = rad2deg(new_rot.y)
@@ -266,7 +261,6 @@ class ObjectPaintTool extends Tool:
 
 	
 	func place_object(pos, rot):
-		root.changed = true
 		var selected = obj_list.get_selected_items()[0]
 		var object_dict = {
 			pos = pos, 
@@ -275,6 +269,12 @@ class ObjectPaintTool extends Tool:
 		}
 		var action = TrackActions.PlaceObjectAction.new(object_dict)
 		root.do_action(action)
+	
+	func remove_object(pos: Vector3):
+		var obj_ref = root.get_closest_object(pos, distance.value)
+		if obj_ref == 0 or obj_ref == null:
+			return
+		root.do_action(TrackActions.RemoveObjectAction.new(obj_ref))
 	
 	func proj_pos(p: Vector2) -> Array:
 		var n = camera.project_ray_normal(p)
@@ -296,16 +296,22 @@ class ObjectPaintTool extends Tool:
 		
 	
 	func input(event) -> bool:
+		var place = not event.shift
 		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
 			var p = proj_pos(event.position)
 			last_pos = p[0]
-			place_object(p[0], p[1])
+			if place:
+				place_object(p[0], p[1])
+			else:
+				remove_object(p[0])
 			return true
 		elif event is InputEventMouseMotion and event.button_mask & BUTTON_MASK_LEFT != 0:
 			var p = proj_pos(event.position)
-			if p[0].distance_to(last_pos) > distance.value:
+			if place and p[0].distance_to(last_pos) > distance.value:
 				place_object(p[0], p[1])
 				last_pos = p[0]
+			elif not place:
+				remove_object(p[0])
 			return true
 		return false
 	

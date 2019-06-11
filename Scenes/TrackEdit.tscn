@@ -449,12 +449,12 @@ allow_rmb_select = true
 hide_root = true
 select_mode = 1
 
-[node name="PopupMenu2" type="PopupMenu" parent="UI/TreePanel/TrackTree"]
+[node name="EditMenu" type="PopupMenu" parent="UI/TreePanel/TrackTree"]
 margin_left = 165.0
 margin_top = -150.0
 margin_right = 228.0
 margin_bottom = -116.0
-items = [ "Up", null, 0, false, false, -1, 0, null, "", false, "Down", null, 0, false, false, -1, 0, null, "", false, "Delete", null, 0, false, false, -1, 0, null, "", false ]
+items = [ "Move Up", null, 0, false, false, -1, 0, null, "", false, "Move Down", null, 0, false, false, -1, 0, null, "", false, "Delete", null, 0, false, false, -1, 0, null, "", false ]
 
 [node name="LoadDialog" type="WindowDialog" parent="UI"]
 editor/display_folded = true
@@ -609,7 +609,7 @@ visible = false
 [connection signal="item_activated" from="UI/TreePanel/TrackTree" to="." method="_on_TrackTree_item_activated"]
 [connection signal="item_rmb_selected" from="UI/TreePanel/TrackTree" to="." method="_on_TrackTree_item_rmb_selected"]
 [connection signal="item_selected" from="UI/TreePanel/TrackTree" to="." method="_on_TrackTree_item_selected"]
-[connection signal="index_pressed" from="UI/TreePanel/TrackTree/PopupMenu2" to="." method="_on_PopupMenu2_index_pressed"]
+[connection signal="index_pressed" from="UI/TreePanel/TrackTree/EditMenu" to="." method="_on_PopupMenu2_index_pressed"]
 [connection signal="about_to_show" from="UI/LoadDialog" to="." method="_on_LoadDialog_about_to_show"]
 [connection signal="item_activated" from="UI/LoadDialog/TrackList" to="." method="_on_TrackList_item_activated"]
 [connection signal="item_rmb_selected" from="UI/LoadDialog/TrackList" to="." method="_on_TrackList_item_rmb_selected"]

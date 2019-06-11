@@ -89,8 +89,10 @@ func handle_input(event) -> bool:
 			old_pos = round_m(mult, start_pos)
 			return true
 		else:
+			var was_selected = current_axis != null
 			current_axis = null
 			old_pos = null
+			return was_selected
 	elif event is InputEventMouseMotion and current_axis != null:
 		var pos = get_proj_point(camera, event.position)
 		var new_pos = round_m(mult, pos[current_axis])

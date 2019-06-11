@@ -9,20 +9,6 @@ class Action:
 		pass
 	func combine(_action):
 		return false
-
-class PlaceGateAction extends Action:
-	var gate_dict
-	var gate_ref = null
-	
-	func _init(gdict):
-		gate_dict = gdict
-		
-	func do(track):
-		gate_ref = track.add_gate(gate_dict)
-
-	func undo(track):
-		track.remove_object(gate_ref)
-		gate_ref = null
 		
 class PlaceObjectAction extends Action:
 	var obj_dict
@@ -37,6 +23,21 @@ class PlaceObjectAction extends Action:
 	func undo(track):
 		track.remove_object(obj_ref)
 		obj_ref = null
+
+class RemoveObjectAction extends Action:
+	var obj_dict = null
+	var obj_ref = null
+	
+	func _init(ref):
+		obj_ref = ref
+		
+	func do(track):
+		obj_dict = track.objects[obj_ref]
+		track.remove_object(obj_ref)
+		obj_ref = null
+
+	func undo(track):
+		obj_ref = track.add_object(obj_dict)
 		
 class MoveAction extends Action:
 	var object

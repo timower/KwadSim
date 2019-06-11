@@ -1,5 +1,6 @@
 extends Spatial
 
+
 onready var track_label = $UI/LoadPanel/LoadContainer/TrackName
 onready var tool_option = $UI/ToolPanel/ToolContainer/OptionButton
 onready var tool_opt_cont = $UI/ToolPanel/ToolContainer
@@ -9,6 +10,7 @@ onready var scene_opt = $UI/LoadPanel/LoadContainer/SceneOption
 onready var track_list = $UI/LoadDialog/TrackList
 
 onready var track_tree = $UI/TreePanel/TrackTree
+onready var edit_menu = $UI/TreePanel/TrackTree/EditMenu
 
 var selected_tool = 0
 var selected_object = null
@@ -102,11 +104,32 @@ func on_track_changed(objects_changed: bool):
 	else:
 		deselect_object()
 
-func select_object(ref: int):
+func select_object(ref: int, update_tree = false):
 	$Track.light_object(ref)
 
 	selected_object = ref
 	tools[selected_tool].object_selected(ref)
+	
+	if not update_tree:
+		return
+		
+	var closest_obj_ref = ref
+	if $Track.is_ref_gate(closest_obj_ref):
+		var item = gates_item.get_children()
+		while item:
+			if $Track.get_gate_ref(item.get_metadata(0)) == closest_obj_ref:
+				item.select(0)
+				break
+			item = item.get_next()
+	else:
+		var item = objects_item.get_children()
+		while item:
+			if item.get_metadata(0) == closest_obj_ref:
+				item.select(0)
+				break
+			item = item.get_next()
+	
+	track_tree.ensure_cursor_is_visible()
 
 func deselect_object():
 	selected_object = null
@@ -208,6 +231,20 @@ func load_thumbs():
 			
 			for track_tool in tools:
 				track_tool.thumb_update(obj_id)
+
+func get_closest_object(pos: Vector3, max_dist: int):
+	var closest_obj_ref = 0
+	var closest_dist = 1e100
+	
+	for obj_ref in range($Track.objects.size()):
+		var dist = $Track.objects[obj_ref].pos.distance_to(pos)
+		if dist < closest_dist:
+			closest_obj_ref = obj_ref
+			closest_dist = dist
+	
+	if closest_dist <= max_dist:
+		return closest_obj_ref
+	return null
 
 ###############
 # UI Signals: #
@@ -324,32 +361,49 @@ func _on_TrackTree_item_activated():
 func _on_TrackTree_item_rmb_selected(position):
 	if track_tree.get_selected().get_parent() == track_tree.get_root():
 		return
-	# TODO: hide up/down when non gate is selected
+	
+	var not_gate = not track_tree.get_selected().get_parent() == gates_item
+	var first = gates_item.get_children() == track_tree.get_selected()
+	var last = track_tree.get_selected().get_next() == null
+	
+	edit_menu.set_item_disabled(0, not_gate or first)
+	edit_menu.set_item_disabled(1, not_gate or last)
+	
+	# Can't delete start box:
+	if not_gate and track_tree.get_selected().get_metadata(0) == 0:
+		edit_menu.set_item_disabled(2, true)
+	else:
+		edit_menu.set_item_disabled(2, false)
+	
 	var pop_rect = Rect2(track_tree.rect_global_position + position, Vector2(10, 10))
-	$UI/TreePanel/TrackTree/PopupMenu2.popup(pop_rect)
+	edit_menu.popup(pop_rect)
 
 
 func _on_PopupMenu2_index_pressed(index):
 	var item = track_tree.get_selected()
-	var idx = null
+	
+	var gate_idx = null
 	var ref = 0
+	
 	if item.get_parent() == gates_item:
-		idx = item.get_metadata(0)
-		ref = $Track.get_gate_ref(idx)
+		gate_idx = item.get_metadata(0)
+		ref = $Track.get_gate_ref(gate_idx)
 	else:
 		ref = item.get_metadata(0)
+	
 	changed = true
-	if index == 0 and idx != null and idx > 0:
+	if index == 0 and gate_idx != null and gate_idx > 0:
 		# up
-		$Track.swap_gate(idx, idx - 1)
-		select_object($Track.get_gate_ref(idx-1))
-	elif index == 1 and idx != null and idx < $Track.gates.size() - 1:
+		$Track.swap_gate(gate_idx, gate_idx - 1)
+		select_object($Track.get_gate_ref(gate_idx - 1), true)
+	elif index == 1 and gate_idx != null and gate_idx < $Track.gates.size() - 1:
 		# down
-		$Track.swap_gate(idx, idx + 1)
-		select_object($Track.get_gate_ref(idx+1))
-	elif index == 2:
+		$Track.swap_gate(gate_idx, gate_idx + 1)
+		select_object($Track.get_gate_ref(gate_idx + 1), true)
+	elif index == 2 and ref != 0:
 		# Delete
-		$Track.remove_object(ref)
+		#$Track.remove_object(ref)
+		do_action(TrackActions.RemoveObjectAction.new(ref))
 
 
 func _on_TrackName_text_changed(_new_text):
@@ -381,34 +435,10 @@ func _unhandled_input(event):
 		if ray_info.size() == 0:
 			return
 		
-		var closest_obj_ref = 0
-		var closest_dist = 1e100
+		var closest_obj_ref = get_closest_object(ray_info.position, 3)
 		
-		for obj_ref in range($Track.objects.size()):
-			var dist = $Track.objects[obj_ref].pos.distance_to(ray_info.position)
-			if dist < closest_dist:
-				closest_obj_ref = obj_ref
-				closest_dist = dist
-		
-		if closest_dist < 3:
-			select_object(closest_obj_ref)
-			
-			if $Track.is_ref_gate(closest_obj_ref):
-				var item = gates_item.get_children()
-				while item:
-					if $Track.get_gate_ref(item.get_metadata(0)) == closest_obj_ref:
-						item.select(0)
-						break
-					item = item.get_next()
-			else:
-				var item = objects_item.get_children()
-				while item:
-					if item.get_metadata(0) == closest_obj_ref:
-						item.select(0)
-						break
-					item = item.get_next()
-			
-			track_tree.ensure_cursor_is_visible()
+		if closest_obj_ref != null:
+			select_object(closest_obj_ref, true)
 
 func _on_SceneOption_item_selected(ID):
 	$Track.load_scene(ID)

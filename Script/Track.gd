@@ -15,7 +15,7 @@ var last_light = null
 static func is_gate(obj: Dictionary) -> bool:
 	return Globals.OBJECTS[obj.id].is_gate
 
-func add_object(obj: Dictionary) -> int:
+func _add_object(obj: Dictionary) -> int:
 	var type = Globals.OBJECTS[obj.id]
 	var inst = type.scene.instance()
 	add_child(inst)
@@ -25,14 +25,13 @@ func add_object(obj: Dictionary) -> int:
 	
 	var ref = objects.size()
 	objects.append(obj)
-	
-	emit_signal("track_changed", true)
+
 	return ref
 
-func add_gate(obj: Dictionary) -> int:
-	assert(is_gate(obj))
-	var ref = add_object(obj)
-	gates.append(ref)
+func add_object(obj: Dictionary) -> int:
+	var ref = _add_object(obj)
+	if is_gate(obj):
+		gates.append(ref)
 	emit_signal("track_changed", true)
 	return ref
 
@@ -62,7 +61,6 @@ func load_from(t_name: String):
 		f_name = Globals.BUILTIN_TRACKS_PATH + t_name + ".track"
 		if not file.file_exists(f_name):
 			return false
-		
 	
 	file.open(f_name, file.READ)
 	var conts = file.get_var()
@@ -71,7 +69,7 @@ func load_from(t_name: String):
 	clear_track()
 	
 	for obj in conts["objects"]:
-		add_object(obj)
+		_add_object(obj)
 	
 	gates = conts["gates"]
 	emit_signal("track_changed", true)
@@ -97,9 +95,9 @@ func save_to(track_name: String):
 func light_object(ref: int):
 	if last_light != null:
 		get_object_node(last_light).get_node("Light").visible = false
-	var light = get_object_node(ref).get_node("Light")
-	if light:
-		light.visible = true
+	var node = get_object_node(ref)
+	if node.has_node("Light"):
+		node.get_node("Light").visible = true
 		last_light = ref
 
 func light_gate(idx):
@@ -113,9 +111,13 @@ func swap_gate(idx1: int, idx2: int):
 	emit_signal("track_changed", true)
 
 func remove_object(ref: int):
+	# don't remove startbox:
 	if ref == 0:
 		return
-
+	
+	if last_light == ref:
+		last_light = null
+	
 	objects.remove(ref)
 	get_object_node(ref).queue_free()
 
