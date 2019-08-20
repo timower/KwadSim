@@ -27,17 +27,20 @@ class PlaceObjectAction extends Action:
 class RemoveObjectAction extends Action:
 	var obj_dict = null
 	var obj_ref = null
+	var gate_idx = null
 	
 	func _init(ref):
 		obj_ref = ref
 		
 	func do(track):
 		obj_dict = track.objects[obj_ref]
+		if track.is_ref_gate(obj_ref) and gate_idx == null:
+			gate_idx = track.get_gate_idx(obj_ref)
 		track.remove_object(obj_ref)
 		obj_ref = null
 
 	func undo(track):
-		obj_ref = track.add_object(obj_dict)
+		obj_ref = track.add_object(obj_dict, gate_idx)
 		
 class MoveAction extends Action:
 	var object

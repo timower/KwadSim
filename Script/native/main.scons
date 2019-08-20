@@ -88,8 +88,8 @@ elif env['platform'] == "windows":
         env['CXX'] = 'x86_64-w64-mingw32-g++'
         
         env.Append(CXXFLAGS='-std=c++14')
-        env.Append(LIBS=['wsock32', 'ws2_32'])
-        env.Append(CCFLAGS = ['-mno-ms-bitfields'])
+        env.Append(LIBS=['wsock32', 'ws2_32', 'ucrt'])
+        env.Append(CCFLAGS = ['-mno-ms-bitfields', '-g'])
         env.Append(LINKFLAGS = ['--static', '-Wl,--no-undefined', '-static-libgcc', '-static-libstdc++'])
         env.Append(LINKFLAGS=['-Tbetaflight/src/main/target/SITL/pg.ld'])
 

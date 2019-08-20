@@ -1,6 +1,7 @@
 extends Spatial
 
 signal track_changed
+signal gate_passed
 
 var scene_id = 0
 
@@ -12,6 +13,8 @@ var gates = []
 
 var last_light = null
 
+var _show_arrows = false
+
 static func is_gate(obj: Dictionary) -> bool:
 	return Globals.OBJECTS[obj.id].is_gate
 
@@ -19,6 +22,9 @@ func _add_object(obj: Dictionary) -> int:
 	var type = Globals.OBJECTS[obj.id]
 	var inst = type.scene.instance()
 	add_child(inst)
+	
+	if is_gate(obj) and  _show_arrows:
+			inst.get_node("Arrow").visible = true
 	
 	inst.transform.origin = obj.pos
 	inst.transform.basis = Basis(obj.rot)
@@ -28,10 +34,13 @@ func _add_object(obj: Dictionary) -> int:
 
 	return ref
 
-func add_object(obj: Dictionary) -> int:
+func add_object(obj: Dictionary, gate_idx = null) -> int:
 	var ref = _add_object(obj)
 	if is_gate(obj):
-		gates.append(ref)
+		if gate_idx == null:
+			gates.append(ref)
+		else:
+			gates.insert(gate_idx, ref)
 	emit_signal("track_changed", true)
 	return ref
 
@@ -163,6 +172,12 @@ func get_object_node(ref: int):
 
 func get_gate_node(idx: int):
 	return get_object_node(gates[idx])
+	
+func get_gate_idx(ref: int):
+	for idx in range(gates.size()):
+		if gates[idx] == ref:
+			return idx
+	return null
 
 func load_scene(id: int):
 	scene_id = id
@@ -171,6 +186,24 @@ func load_scene(id: int):
 	var scene_inst = Globals.SCENES[id].scene.instance()
 	$Scene.add_child(scene_inst)
 
+func show_arrows():
+	_show_arrows = true
+	for i in range(objects.size()):
+		if is_ref_gate(i):
+			var node = get_object_node(i)
+			node.get_node("Arrow").visible = true
+
+func area_entered(obj, gate_id):
+	if Globals.kwad == null or obj != Globals.kwad:
+		return
+	
+	var node = get_gate_node(gate_id)
+	if Globals.kwad.linear_velocity.dot(node.global_transform.basis.xform(Vector3(0, 0, -1))) > 0:
+		emit_signal("gate_passed", gate_id)
+
 func _ready():
 	if Globals.selected_track != null:
 		load_from(Globals.selected_track)
+		
+		for i in range(gates.size()):
+			get_gate_node(i).get_node("Area").connect("body_entered", self, "area_entered", [i])

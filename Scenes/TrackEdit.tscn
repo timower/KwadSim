@@ -202,7 +202,6 @@ margin_bottom = 24.0
 text = "Scene"
 
 [node name="ToolPanel" type="Panel" parent="UI"]
-editor/display_folded = true
 anchor_top = 0.5
 anchor_bottom = 0.5
 margin_top = -165.0
@@ -220,7 +219,6 @@ text = "Tool"
 align = 1
 
 [node name="GateToolContainer" type="Panel" parent="UI/ToolPanel/ToolContainer"]
-editor/display_folded = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 27.0
@@ -244,22 +242,28 @@ size_flags_vertical = 3
 auto_height = true
 fixed_icon_size = Vector2( 64, 64 )
 
-[node name="ObjectToolContainer" type="VBoxContainer" parent="UI/ToolPanel/ToolContainer"]
+[node name="ObjectToolContainer" type="Control" parent="UI/ToolPanel/ToolContainer"]
 editor/display_folded = true
 visible = false
 margin_top = 27.0
 margin_right = 190.0
-margin_bottom = 54.0
+margin_bottom = 330.0
 
 [node name="Label" type="Label" parent="UI/ToolPanel/ToolContainer/ObjectToolContainer"]
 margin_right = 190.0
 margin_bottom = 14.0
 text = "Choose Type:"
 
-[node name="ItemList" type="ItemList" parent="UI/ToolPanel/ToolContainer/ObjectToolContainer"]
-margin_top = 18.0
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/ToolPanel/ToolContainer/ObjectToolContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 21.0
+
+[node name="ItemList" type="ItemList" parent="UI/ToolPanel/ToolContainer/ObjectToolContainer/ScrollContainer"]
 margin_right = 190.0
-margin_bottom = 27.0
+margin_bottom = 282.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 auto_height = true
 fixed_icon_size = Vector2( 64, 64 )
 
@@ -401,6 +405,7 @@ allow_greater = true
 allow_lesser = true
 
 [node name="ObjectPaintContainer" type="VBoxContainer" parent="UI/ToolPanel/ToolContainer"]
+editor/display_folded = true
 visible = false
 margin_top = 27.0
 margin_right = 190.0
@@ -433,6 +438,7 @@ allow_greater = true
 allow_lesser = true
 
 [node name="TreePanel" type="Panel" parent="UI"]
+editor/display_folded = true
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5

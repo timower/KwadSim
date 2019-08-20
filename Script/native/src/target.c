@@ -80,7 +80,7 @@ char *strcasestr(const char *haystack, const char *needle)
 
 
 // system
-
+//int __imp___acrt_iob_func() {}
 
 void timerInit(void) {
     printf("[timer]Init...\n");

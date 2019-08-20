@@ -2,8 +2,6 @@ extends Node
 
 #warning-ignore-all:unused_class_variable
 
-var serialTcpThread = SerialTcpThread.new()
-
 var joyConf = null
 var kwad = null setget ,get_kwad
 
@@ -52,13 +50,6 @@ func reload_quads():
 #
 #	for quad in user_quads:
 #		quads[quad] = user_quads[quad]
-
-func _init():
-	serialTcpThread.start_tcp()
-	
-func _notification(what):
-	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
-        serialTcpThread.stop_tcp()
 
 func _ready():
 	reload_quads()
@@ -147,4 +138,7 @@ func new_rc_input(inputs):
 	emit_signal("rc_input", inputs)
 
 func get_kwad():
-	return get_tree().get_nodes_in_group("Kwad")[0]
+	var nodes = get_tree().get_nodes_in_group("Kwad")
+	if nodes == null or nodes.size() == 0:
+		return null
+	return nodes[0]

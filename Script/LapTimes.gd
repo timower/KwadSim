@@ -18,9 +18,8 @@ func _ready():
 		return
 
 	gate_count = track.gates.size()
-	for i in range(gate_count):
-		var gate = track.get_gate_node(i)
-		gate.get_node("Area").connect("body_entered", self, "gate_entered", [i])
+	
+	track.connect("gate_passed", self, "gate_entered")
 	
 	if gate_count > 0:
 		track.light_gate(current_gate)
@@ -54,12 +53,9 @@ func _on_reset():
 		track.light_gate(current_gate)
 
 
-func gate_entered(obj, idx):
-	if obj != Globals.kwad:
-		return
+func gate_entered(idx):
 	if idx != current_gate:
 		return
-	
 	
 	if current_gate == 0:
 		if started:

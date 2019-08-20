@@ -9,15 +9,10 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "RigidBody",
+"base": "",
 "class": "Kwad",
 "language": "NativeScript",
 "path": "res://Script/native/kwad.gdns"
-}, {
-"base": "Reference",
-"class": "SerialTcpThread",
-"language": "NativeScript",
-"path": "res://Script/native/SerialTcpThread.gdns"
 }, {
 "base": "Object",
 "class": "TrackActions",
@@ -31,7 +26,6 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "Kwad": "",
-"SerialTcpThread": "",
 "TrackActions": "",
 "TrackTools": ""
 }

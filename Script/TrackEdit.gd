@@ -63,6 +63,7 @@ func _ready():
 		scene_opt.add_item(Globals.SCENES[i].name)
 	
 	$Track.connect("track_changed", self, "on_track_changed")
+	$Track.show_arrows()
 
 func _process(_delta):
 	if Input.is_action_just_pressed("undo"):
