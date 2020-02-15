@@ -5,23 +5,15 @@ The open source racing/freestyle drone simulator
 
 ## Building
 
-Install Godot 3.1
+Install Godot 3.2
 
-clone the repo:
+Clone the repo:
 ```
-    git clone --recurse-submodules git@github.com:timower/KwadSim.git
-```
-build the native betaflight plugin:
-```
-    cd Script/native
-    cd godot-cpp
-    scons bits=64 platform=linux generate_bindings=yes
-    cd ..
-    scons platform=linux
+    git clone git@github.com:timower/KwadSim.git
 ```
 
-If you're not on linux replace platform=linux with platform=windows or platform=osx.
-I've only tested on linux.
+The latest 'server' release can be found at [KwadSimServer](https://github.com/timower/KwadSimServer).
+The server hosts the betaflight process independent from the game so it can be restarted.
 
 ## Running
 

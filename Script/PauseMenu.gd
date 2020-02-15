@@ -12,7 +12,7 @@ func _process(_delta):
 		get_tree().paused = pause_menu.visible
 		
 func _on_ResumeButton_pressed():
-	visible = false
+	pause_menu.visible = false
 	get_tree().paused = false
 
 

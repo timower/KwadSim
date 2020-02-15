@@ -30,14 +30,14 @@ var settings = {
 	},
 	gamepad = [
 		# name    gamepad  axis min max
-	 	["roll",     0,     0,  -1,  1],
-	 	["pitch",    0,     0,  -1,  1],
-	 	["throttle", 0,     0,  -1,  1],
-	 	["yaw",      0,     0,  -1,  1],
-	 	["axis 5",   0,     0,  -1,  1],
-	 	["axis 6",   0,     0,  -1,  1],
-	 	["axis 7",   0,     0,  -1,  1],
-	 	["axis 8",   0,     0,  -1,  1],
+		["roll",     0,     0,  -1,  1],
+		["pitch",    0,     0,  -1,  1],
+		["throttle", 0,     0,  -1,  1],
+		["yaw",      0,     0,  -1,  1],
+		["axis 5",   0,     0,  -1,  1],
+		["axis 6",   0,     0,  -1,  1],
+		["axis 7",   0,     0,  -1,  1],
+		["axis 8",   0,     0,  -1,  1],
 	],
 	keys= [
 		# Description        id          scancode
