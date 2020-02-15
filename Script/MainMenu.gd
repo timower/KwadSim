@@ -1,7 +1,5 @@
 extends Control
 
-onready var settings = $"/root/Root/Settings"
-
 func _ready():
 	for quad in Globals.quads:
 		$QuadSelectDialog/KwadList.add_item(quad)
@@ -20,15 +18,11 @@ func _on_OkFlyButton_pressed():
 	Globals.selected_quad = $QuadSelectDialog/KwadList.get_item_text(selected)
 	selected = $QuadSelectDialog/TrackList.get_selected_items()[0]
 	Globals.selected_track = $QuadSelectDialog/TrackList.get_item_text(selected)
-	get_tree().change_scene("res://Scenes/fly.tscn")
+	get_tree().change_scene("res://Scenes/Fly.tscn")
 
 
 func _on_QuitButton_pressed():
 	get_tree().quit()
-
-
-func _on_InputButton_pressed():
-	Globals.joyConf.visible = true
 
 
 func _on_TrackButton_pressed():
@@ -37,7 +31,7 @@ func _on_TrackButton_pressed():
 
 
 func _on_TextureButton_pressed():
-	settings.visible = true
+	Settings.show()
 
 # TODO: kwad editor
 func _on_KwadButton_pressed():

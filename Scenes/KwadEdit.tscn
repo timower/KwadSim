@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://Script/KwadEdit.gd" type="Script" id=1]
-[ext_resource path="res://Nodes/Kwad.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Script/Kwad/KwadEdit.gd" type="Script" id=1]
+[ext_resource path="res://Nodes/Kwad/Kwad.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Textures/mossy-ground1-albedo.png" type="Texture" id=3]
 
 [sub_resource type="CubeMesh" id=1]
@@ -147,7 +147,7 @@ editor/display_folded = true
 
 [node name="Kwad" parent="View" instance=ExtResource( 2 )]
 pause_mode = 1
-transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.0434563, 0 )
+transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, 0, 0.0434563, 0 )
 
 [node name="Camera" type="Camera" parent="View"]
 transform = Transform( 1, 0, 0, 0, 0.757766, 0.652527, 0, -0.652527, 0.757766, 0, 0.154379, 0.279217 )

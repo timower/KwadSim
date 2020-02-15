@@ -1,7 +1,7 @@
 extends Control
 
 onready var lapLabel = $Label
-onready var track = $"/root/Root/Viewport/Track"
+onready var track = Globals.get_track()
 
 var last_gate = 0
 var current_gate = 0
@@ -29,6 +29,7 @@ func _ready():
 func _process(delta):
 	if track == null:
 		return
+
 	if started:
 		lap_time += delta
 
@@ -39,7 +40,7 @@ func _process(delta):
 					"last: " + str(last_lap_time) + " s\n" + \
 					"cur:  " + str(lap_time) + " s"
 	
-	if Globals.get_kwad().crashed:
+	if Globals.get_kwad().has_crashed():
 		$PopupLabel.text = "Crashed!"
 	else:
 		$PopupLabel.text = ""

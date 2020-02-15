@@ -9,23 +9,23 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "",
-"class": "Kwad",
-"language": "NativeScript",
-"path": "res://Script/native/kwad.gdns"
+"base": "Control",
+"class": "StickView",
+"language": "GDScript",
+"path": "res://Script/StickView.gd"
 }, {
 "base": "Object",
 "class": "TrackActions",
 "language": "GDScript",
-"path": "res://Script/TrackActions.gd"
+"path": "res://Script/Track/TrackActions.gd"
 }, {
 "base": "Object",
 "class": "TrackTools",
 "language": "GDScript",
-"path": "res://Script/TrackTools.gd"
+"path": "res://Script/Track/TrackTools.gd"
 } ]
 _global_script_class_icons={
-"Kwad": "",
+"StickView": "",
 "TrackActions": "",
 "TrackTools": ""
 }
@@ -33,12 +33,14 @@ _global_script_class_icons={
 [application]
 
 config/name="KwadSim"
-run/main_scene="res://Scenes/menu.tscn"
+run/main_scene="res://Scenes/Menu.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
+Log="*res://Script/Util/Log.gd"
 Globals="*res://Script/Globals.gd"
+Settings="*res://Script/Settings/SettingsModel.gd"
 
 [debug]
 
@@ -52,6 +54,10 @@ window/stretch/mode="2d"
 window/stretch/aspect="keep"
 window/size/width.mobile=711
 window/size/height.mobile=400
+
+[editor_plugins]
+
+enabled=PoolStringArray( "gut" )
 
 [input]
 
@@ -75,6 +81,15 @@ redo={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":true,"meta":false,"command":true,"pressed":false,"scancode":89,"unicode":0,"echo":false,"script":null)
  ]
 }
+TestJoy={
+"deadzone": 0.5,
+"events": [ Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":0,"axis":0,"axis_value":-1.0,"script":null)
+ ]
+}
+
+[logging]
+
+file_logging/enable_file_logging=true
 
 [physics]
 

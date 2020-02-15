@@ -12,3 +12,7 @@ export_presets.cfg
 
 # Blender models
 Models/blender
+
+# Temp eeprom and blackblox logs
+eeprom.bin
+blackbox.bbl

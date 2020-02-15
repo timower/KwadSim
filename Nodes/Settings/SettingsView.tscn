@@ -1,0 +1,377 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Script/Settings/SettingsView.gd" type="Script" id=1]
+[ext_resource path="res://Script/StickView.gd" type="Script" id=2]
+
+[node name="SettingsView" type="Control"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+
+[node name="Panel" type="Panel" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -274.0
+margin_top = -200.5
+margin_right = 274.0
+margin_bottom = 200.5
+
+[node name="TabContainer" type="TabContainer" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 10.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="graphics" type="Control" parent="Panel/TabContainer"]
+editor/display_folded = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="resolution_3D" type="Panel" parent="Panel/TabContainer/graphics"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -90.0
+margin_top = -149.0
+margin_right = 91.0
+margin_bottom = -68.0
+
+[node name="width" type="SpinBox" parent="Panel/TabContainer/graphics/resolution_3D"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -65.0
+margin_top = -32.0
+margin_right = 65.0
+margin_bottom = -8.0
+rect_pivot_offset = Vector2( 29.2435, 1.6315 )
+max_value = 4096.0
+rounded = true
+
+[node name="height" type="SpinBox" parent="Panel/TabContainer/graphics/resolution_3D"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -65.0
+margin_top = 8.0
+margin_right = 65.0
+margin_bottom = 32.0
+rect_pivot_offset = Vector2( 29.2435, 1.6315 )
+max_value = 4096.0
+rounded = true
+
+[node name="resolution_2D" type="Panel" parent="Panel/TabContainer/graphics"]
+margin_left = 180.0
+margin_top = 139.0
+margin_right = 360.0
+margin_bottom = 249.0
+
+[node name="width" type="SpinBox" parent="Panel/TabContainer/graphics/resolution_2D"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -65.0
+margin_top = -29.5
+margin_right = 65.0
+margin_bottom = -5.5
+rect_pivot_offset = Vector2( 29.2435, 1.6315 )
+max_value = 4096.0
+rounded = true
+
+[node name="height" type="SpinBox" parent="Panel/TabContainer/graphics/resolution_2D"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -65.0
+margin_top = 9.5
+margin_right = 65.0
+margin_bottom = 33.5
+rect_pivot_offset = Vector2( 29.2435, 1.6315 )
+max_value = 4096.0
+rounded = true
+
+[node name="enabled" type="CheckBox" parent="Panel/TabContainer/graphics/resolution_2D"]
+margin_left = 40.0
+margin_right = 118.0
+margin_bottom = 24.0
+text = "Enabled"
+
+[node name="fullscreen" type="CheckBox" parent="Panel/TabContainer/graphics"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -50.0
+margin_top = 80.0
+margin_right = 44.0
+margin_bottom = 104.0
+text = "Fullscreen"
+
+[node name="v_sync" type="CheckBox" parent="Panel/TabContainer/graphics"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -50.0
+margin_top = 110.0
+margin_right = 44.0
+margin_bottom = 134.0
+text = "V-sync"
+
+[node name="shadows" type="CheckBox" parent="Panel/TabContainer/graphics"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -50.0
+margin_top = 140.0
+margin_right = 44.0
+margin_bottom = 164.0
+text = "Shadows"
+
+[node name="sound" type="Control" parent="Panel/TabContainer"]
+editor/display_folded = true
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="volume" type="HSlider" parent="Panel/TabContainer/sound"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -115.0
+margin_top = -8.0
+margin_right = 115.0
+margin_bottom = 8.0
+ticks_on_borders = true
+
+[node name="_vol_label" type="Label" parent="Panel/TabContainer/sound"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -26.5
+margin_top = -24.0
+margin_right = 26.5
+margin_bottom = -10.0
+text = "Volume:"
+
+[node name="gamepad" type="Control" parent="Panel/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="tree" type="Tree" parent="Panel/TabContainer/gamepad"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -227.0
+margin_top = 8.5
+margin_right = 228.0
+margin_bottom = 153.5
+columns = 2
+select_mode = 1
+
+[node name="StickView" type="Control" parent="Panel/TabContainer/gamepad"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -152.5
+margin_top = -157.0
+margin_right = 152.5
+margin_bottom = -2.0
+script = ExtResource( 2 )
+show_aux = true
+
+[node name="CalibrateButton" type="Button" parent="Panel/TabContainer/gamepad"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -76.0
+margin_top = -199.5
+margin_right = -8.0
+margin_bottom = -179.5
+text = "Calibrate"
+
+[node name="keys" type="Control" parent="Panel/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="tree" type="Tree" parent="Panel/TabContainer/keys"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -227.5
+margin_top = -153.0
+margin_right = 227.5
+margin_bottom = 153.0
+columns = 2
+select_mode = 1
+
+[node name="ApplyButton" type="Button" parent="Panel"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -124.0
+margin_top = -26.5
+margin_right = -76.0
+margin_bottom = -6.5
+text = "Apply"
+
+[node name="CloseButton" type="Button" parent="Panel"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -22.0
+margin_top = 2.0
+margin_right = -2.0
+margin_bottom = 22.0
+text = "X"
+
+[node name="RevertButton" type="Button" parent="Panel"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -64.0
+margin_top = -26.5
+margin_right = -10.0
+margin_bottom = -6.5
+text = "Revert"
+
+[node name="KeyPopup" type="PopupDialog" parent="Panel"]
+editor/display_folded = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -145.0
+margin_top = -50.0
+margin_right = 145.0
+margin_bottom = 50.0
+popup_exclusive = true
+
+[node name="TitleLabel" type="Label" parent="Panel/KeyPopup"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -36.0
+margin_top = 14.0
+margin_right = 36.0
+margin_bottom = 28.0
+text = "Press a key"
+
+[node name="ValueLabel" type="Label" parent="Panel/KeyPopup"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -132.5
+margin_top = -10.0
+margin_right = 132.5
+margin_bottom = 5.0
+text = "..."
+align = 1
+
+[node name="KeyPopupCancel" type="Button" parent="Panel/KeyPopup"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 10.0
+margin_top = 15.0
+margin_right = 64.0
+margin_bottom = 35.0
+text = "Cancel"
+
+[node name="KeyPopupOk" type="Button" parent="Panel/KeyPopup"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -60.0
+margin_top = 15.0
+margin_right = -6.0
+margin_bottom = 35.0
+text = "OK"
+
+[node name="CalibratePopup" type="PopupDialog" parent="Panel"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -220.5
+margin_top = -155.5
+margin_right = 220.5
+margin_bottom = 155.5
+
+[node name="Label" type="Label" parent="Panel/CalibratePopup"]
+margin_left = 88.0
+margin_top = 20.0
+margin_right = 364.0
+margin_bottom = 54.0
+text = "Do sticks ...."
+align = 1
+
+[node name="StickView" type="Control" parent="Panel/CalibratePopup"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -179.5
+margin_top = -101.5
+margin_right = 180.5
+margin_bottom = 88.5
+script = ExtResource( 2 )
+
+[node name="NextCalibrateButton" type="Button" parent="Panel/CalibratePopup"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -50.5
+margin_top = -30.5
+margin_right = -8.5
+margin_bottom = -10.5
+text = "Next"
+[connection signal="item_activated" from="Panel/TabContainer/gamepad/tree" to="." method="_on_gamepad_item_activated"]
+[connection signal="pressed" from="Panel/TabContainer/gamepad/CalibrateButton" to="." method="_on_CalibrateButton_pressed"]
+[connection signal="item_activated" from="Panel/TabContainer/keys/tree" to="." method="_on_keys_item_activated"]
+[connection signal="pressed" from="Panel/ApplyButton" to="." method="_on_ApplyButton_pressed"]
+[connection signal="pressed" from="Panel/CloseButton" to="." method="_on_CloseButton_pressed"]
+[connection signal="pressed" from="Panel/RevertButton" to="." method="_on_RevertButton_pressed"]
+[connection signal="popup_hide" from="Panel/KeyPopup" to="." method="_on_KeyPopup_popup_hide"]
+[connection signal="pressed" from="Panel/KeyPopup/KeyPopupCancel" to="." method="_on_KeyPopupCancel_pressed"]
+[connection signal="pressed" from="Panel/KeyPopup/KeyPopupOk" to="." method="_on_KeyPopupOk_pressed"]
+[connection signal="pressed" from="Panel/CalibratePopup/NextCalibrateButton" to="." method="_on_NextCalibrateButton_pressed"]

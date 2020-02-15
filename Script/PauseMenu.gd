@@ -1,14 +1,15 @@
-extends Panel
+extends Control
 
-onready var kwadConf = $"/root/Root/KwadConfig"
+onready var kwad_conf = $KwadConfig
+onready var pause_menu = $PauseMenu
 
 func _ready():
-	get_tree().paused = self.visible
+	get_tree().paused = pause_menu.visible
 
 func _process(_delta):
 	if Input.is_action_just_pressed("ui_cancel"):
-		self.visible = not self.visible
-		get_tree().paused = self.visible
+		pause_menu.visible = not pause_menu.visible
+		get_tree().paused = pause_menu.visible
 		
 func _on_ResumeButton_pressed():
 	visible = false
@@ -16,17 +17,12 @@ func _on_ResumeButton_pressed():
 
 
 func _on_KConfigButton_pressed():
-	kwadConf.visible = true
-	self.visible = false
-
-func _on_IConfigButton_pressed():
-	Globals.joyConf.visible = true
-	self.visible = false
+	kwad_conf.visible = true
+	pause_menu.visible = false
 
 
 func _on_SettingsButton_pressed():
-	$"/root/Root/Settings".visible = true
-	self.visible = false
+	Settings.show()
 
 
 func _on_QuitButton_pressed():
@@ -34,4 +30,5 @@ func _on_QuitButton_pressed():
 
 
 func _on_MenuButton_pressed():
-	get_tree().change_scene("res://Scenes/menu.tscn")
+	get_tree().paused = false
+	get_tree().change_scene("res://Scenes/Menu.tscn")

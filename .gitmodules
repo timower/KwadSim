@@ -1,6 +1,0 @@
-[submodule "Script/native/godot-cpp"]
-	path = Script/native/godot-cpp
-	url = https://github.com/GodotNativeTools/godot-cpp
-[submodule "Script/native/betaflight"]
-	path = Script/native/betaflight
-	url = https://github.com/betaflight/betaflight

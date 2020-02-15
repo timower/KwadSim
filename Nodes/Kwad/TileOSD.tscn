@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Textures/betaflight_font.png" type="Texture" id=1]
+[ext_resource path="res://Script/Kwad/OSDMap.gd" type="Script" id=2]
+
+[sub_resource type="TileSet" id=1]
+0/name = "betaflight_font.png 0"
+0/texture = ExtResource( 1 )
+0/tex_offset = Vector2( 0, 0 )
+0/modulate = Color( 1, 1, 1, 1 )
+0/region = Rect2( 2, 2, 502, 158 )
+0/tile_mode = 2
+0/autotile/icon_coordinate = Vector2( 0, 0 )
+0/autotile/tile_size = Vector2( 12, 18 )
+0/autotile/spacing = 2
+0/autotile/occluder_map = [  ]
+0/autotile/navpoly_map = [  ]
+0/autotile/z_index_map = [  ]
+0/occluder_offset = Vector2( 0, 0 )
+0/navigation_offset = Vector2( 0, 0 )
+0/shapes = [  ]
+0/z_index = 0
+
+[node name="TileOSD" type="TileMap"]
+tile_set = SubResource( 1 )
+cell_size = Vector2( 12, 18 )
+format = 1
+tile_data = PoolIntArray( 0, 0, 0, 1, 0, 0, 65537, 0, 0, 65538, 0, 0, 65539, 0, 0, 131076, 0, 0, 131077, 0, 0, 196613, 0, 0, 262150, 0, 0, 262151, 0, 0, 327688, 0, 0, 327697, 0, 0, 393224, 0, 0, 393225, 0, 0, 393229, 0, 0, 393230, 0, 0, 458761, 0, 0, 458762, 0, 0, 458766, 0, 0 )
+script = ExtResource( 2 )

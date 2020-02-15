@@ -9,13 +9,7 @@ dist: xenial
 addons:
   apt:
     packages:
-      - lcov
-      - build-essential
       - git
-      - libc6-i386
-      - time
-      - mingw-w64
-      - scons
 
 git:
   depth: 5
@@ -25,10 +19,6 @@ compiler: gcc
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update       ; fi
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install scons; fi
-
-before_script:
-  - gcc --version
 
 script: ./.travis.sh
 
