@@ -2,6 +2,10 @@ extends Spatial
 
 onready var motors = [$Kwad/motor1, $Kwad/motor2, $Kwad/motor3, $Kwad/motor4]
 
+onready var kwad = $Kwad
+onready var kwad_cam = $Kwad/Camera
+onready var kwad_col = $Kwad/CollisionShape
+
 var rc_inputs = [0.0, 0.0, 0.0, 0.0,
 				 0.0, 0.0, 0.0, 0.0]
 
@@ -10,7 +14,7 @@ func load_motor(motor_name):
 	var motor_I0 = params["I0"]
 	var motor_Kv = params["Kv"]
 	var motor_R = params["R"]
-	$Kwad.set_motor_params(motor_Kv, motor_R, motor_I0)
+	kwad.set_motor_params(motor_Kv, motor_R, motor_I0)
 
 func load_prop(prop_name):
 	var params = Globals.read_json("res://Data/Props/" + prop_name + ".json")
@@ -22,7 +26,7 @@ func load_prop(prop_name):
 	var prop_a = params["a"]
 	var prop_torque_fac = params["torque_factor"]
 	var prop_t_params = params["thrust_vel_params"]
-	$Kwad.set_prop_params(prop_rpm, prop_a, prop_torque_fac, inertia, prop_t_params)
+	kwad.set_prop_params(prop_rpm, prop_a, prop_torque_fac, inertia, prop_t_params)
 
 const DEF_PROP_RAD = 0.062
 
@@ -47,14 +51,14 @@ func load_frame(frame_name):
 		#motors[i].get_node("Prop").scale = prop_scale_vec
 		
 	var size = params["size"]
-	$Kwad/CollisionShape.shape.extents = Vector3(size[0], size[1], size[2])
+	kwad_col.shape.extents = Vector3(size[0], size[1], size[2])
 	
 #	$Area.transform.origin.y = size[1]
 #	$Area/CollisionShape.shape.radius = sqrt(size[0]*size[0] + size[2]*size[2])
 	
 	var cam = params["cam"]
-	$Kwad/Camera.transform.origin = Vector3(cam[0], cam[1], cam[2]) 
-	$Kwad.set_frame_params(drag_area, drag_c)
+	kwad_cam.transform.origin = Vector3(cam[0], cam[1], cam[2]) 
+	kwad.set_frame_params(drag_area, drag_c)
 	
 
 func load_params():
@@ -62,21 +66,19 @@ func load_params():
 	load_motor(quad["motor"])
 	load_prop(quad["prop"])
 	load_frame(quad["frame"])
-	var Vin = quad["Vbat"]
-	$Kwad.mass = quad["weight"]
 	
-	$Kwad.set_quad_params(Vin)
-	
+	kwad.mass = quad["weight"]
+	kwad.set_quad_params(quad["Vbat"])
+
 func _ready():
 	load_params()
 	Globals.connect("reset", self, "_on_reset")
 	_on_reset()
 
-
 func _process(_delta):
 	for i in range(8):
 		rc_inputs[i] = Settings.get_axis(i)
-	$Kwad.new_rc_input(rc_inputs)
+	kwad.new_rc_input(rc_inputs)
 
 func _on_reset():
 	var track = Globals.get_track()
@@ -86,8 +88,8 @@ func _on_reset():
 	else:
 		start = track.objects[0]
 		
-	$Kwad.linear_velocity = Vector3()
-	$Kwad.angular_velocity = Vector3()
-	$Kwad.transform.origin = start.pos + Vector3(0, 0.5 + $Kwad/CollisionShape.shape.extents.y, 0)
-	$Kwad.transform.basis = Basis(start.rot)
-	$Kwad.set_crashed(false)
+	kwad.linear_velocity = Vector3()
+	kwad.angular_velocity = Vector3()
+	kwad.transform.origin = start.pos + Vector3(0, 0.5 + kwad/CollisionShape.shape.extents.y, 0)
+	kwad.transform.basis = Basis(start.rot)
+	kwad.set_crashed(false)

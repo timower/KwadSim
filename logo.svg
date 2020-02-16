@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100mm"
+   height="100mm"
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="D:\Projects\KwadSim\icon.png"
+   inkscape:export-xdpi="130.048"
+   inkscape:export-ydpi="130.048">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="-91.163657"
+     inkscape:cy="212.49139"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:pagecheckerboard="false"
+     inkscape:window-width="1084"
+     inkscape:window-height="1048"
+     inkscape:window-x="-7"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-197)">
+    <ellipse
+       id="path3721"
+       cx="-108.03796"
+       cy="207.90111"
+       rx="12.660067"
+       ry="17.386347"
+       style="fill:#ffffff;stroke-width:0.39721087"
+       transform="matrix(0.84977884,-0.52713938,0.5635188,0.82610324,0,0)" />
+    <ellipse
+       transform="matrix(0.84977884,-0.52713938,0.5635188,0.82610324,0,0)"
+       style="fill:#ffffff;stroke-width:0.39721087"
+       ry="17.386347"
+       rx="12.660067"
+       cy="224.13979"
+       cx="-80.090141"
+       id="ellipse3723" />
+    <ellipse
+       id="ellipse3725"
+       cx="-115.867"
+       cy="248.80748"
+       rx="12.660067"
+       ry="17.386347"
+       style="fill:#ffffff;stroke-width:0.39721087"
+       transform="matrix(0.84977884,-0.52713938,0.5635188,0.82610324,0,0)" />
+    <ellipse
+       transform="matrix(0.84977884,-0.52713938,0.5635188,0.82610324,0,0)"
+       style="fill:#ffffff;stroke-width:0.39721087"
+       ry="17.386347"
+       rx="12.660067"
+       cy="262.82651"
+       cx="-86.440712"
+       id="ellipse3727" />
+    <path
+       style="fill:#ffffff;stroke-width:0.23965995"
+       d="m 39.854976,259.53683 c -1.014095,-0.67917 -1.606898,-2.36004 -0.604532,-3.05642 8.190345,-5.69009 11.325287,-13.32371 14.122747,-21.08709 0.413762,-1.14825 2.042312,-1.28371 3.056409,-0.60454 1.014082,0.67917 1.210249,1.99677 0.604544,3.05641 -4.008458,7.01228 -5.673579,13.96845 -14.122748,21.0871 -0.933397,0.78638 -2.042338,1.28371 -3.05642,0.60454 z"
+       id="rect3731"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="sssssss" />
+    <path
+       style="fill:#ffffff;stroke-width:0.46516848"
+       d="m 34.882417,238.66016 2.596423,-3.33814 c 12.604338,3.4251 20.007393,11.76501 26.70514,20.77137 l -2.596425,3.33815 C 54.669484,250.35356 46.85982,242.24381 34.882417,238.66016 Z"
+       id="rect3736"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+  </g>
+</svg>

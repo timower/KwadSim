@@ -1,92 +1,123 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Script/MainMenu.gd" type="Script" id=1]
-[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://logo.svg" type="Texture" id=2]
+[ext_resource path="res://Textures/Quit.svg" type="Texture" id=3]
+[ext_resource path="res://Fonts/arial.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://Fonts/MenuLabels.tres" type="DynamicFont" id=5]
+[ext_resource path="res://Textures/Fly.svg" type="Texture" id=6]
+[ext_resource path="res://Textures/TrackEdit.svg" type="Texture" id=7]
+[ext_resource path="res://Textures/Settings.svg" type="Texture" id=8]
+
+[sub_resource type="DynamicFont" id=1]
+size = 72
+font_data = ExtResource( 4 )
 
 [node name="Root" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="MainMenu" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="ButtonContainer" type="HBoxContainer" parent="MainMenu"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -260.0
-margin_top = -57.0
-margin_right = 260.0
-margin_bottom = 57.0
+margin_left = -271.0
+margin_top = -47.0
+margin_right = 271.0
+margin_bottom = 104.0
 custom_constants/separation = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="FlyButtonContainer" type="VBoxContainer" parent="MainMenu/ButtonContainer"]
-margin_right = 96.0
-margin_bottom = 114.0
+margin_right = 128.0
+margin_bottom = 151.0
 
 [node name="FlyButton" type="TextureButton" parent="MainMenu/ButtonContainer/FlyButtonContainer"]
-margin_right = 96.0
-margin_bottom = 96.0
-texture_normal = ExtResource( 2 )
+margin_right = 128.0
+margin_bottom = 128.0
+rect_min_size = Vector2( 128, 128 )
+texture_normal = ExtResource( 6 )
+expand = true
 
 [node name="Label" type="Label" parent="MainMenu/ButtonContainer/FlyButtonContainer"]
-margin_top = 100.0
-margin_right = 96.0
-margin_bottom = 114.0
+margin_top = 132.0
+margin_right = 128.0
+margin_bottom = 151.0
+custom_fonts/font = ExtResource( 5 )
 text = "FLY"
 align = 1
 
 [node name="TrackButtonContainer" type="VBoxContainer" parent="MainMenu/ButtonContainer"]
-margin_left = 106.0
-margin_right = 202.0
-margin_bottom = 114.0
+margin_left = 138.0
+margin_right = 266.0
+margin_bottom = 151.0
 
 [node name="TrackButton" type="TextureButton" parent="MainMenu/ButtonContainer/TrackButtonContainer"]
-margin_right = 96.0
-margin_bottom = 96.0
-texture_normal = ExtResource( 2 )
+margin_right = 128.0
+margin_bottom = 128.0
+rect_min_size = Vector2( 128, 128 )
+texture_normal = ExtResource( 7 )
+expand = true
 
 [node name="Label" type="Label" parent="MainMenu/ButtonContainer/TrackButtonContainer"]
-margin_top = 100.0
-margin_right = 96.0
-margin_bottom = 114.0
+margin_top = 132.0
+margin_right = 128.0
+margin_bottom = 151.0
+custom_fonts/font = ExtResource( 5 )
 text = "TRACK EDIT"
 align = 1
 
 [node name="SettingsButtonContainer" type="VBoxContainer" parent="MainMenu/ButtonContainer"]
-margin_left = 212.0
-margin_right = 308.0
-margin_bottom = 114.0
+margin_left = 276.0
+margin_right = 404.0
+margin_bottom = 151.0
 
 [node name="TextureButton" type="TextureButton" parent="MainMenu/ButtonContainer/SettingsButtonContainer"]
-margin_right = 96.0
-margin_bottom = 96.0
-texture_normal = ExtResource( 2 )
+margin_right = 128.0
+margin_bottom = 128.0
+rect_min_size = Vector2( 128, 128 )
+texture_normal = ExtResource( 8 )
+expand = true
 
 [node name="Label" type="Label" parent="MainMenu/ButtonContainer/SettingsButtonContainer"]
-margin_top = 100.0
-margin_right = 96.0
-margin_bottom = 114.0
+margin_top = 132.0
+margin_right = 128.0
+margin_bottom = 151.0
+custom_fonts/font = ExtResource( 5 )
 text = "SETTINGS"
 align = 1
 
 [node name="QuitButtonContainer" type="VBoxContainer" parent="MainMenu/ButtonContainer"]
-margin_left = 318.0
-margin_right = 414.0
-margin_bottom = 114.0
+margin_left = 414.0
+margin_right = 542.0
+margin_bottom = 151.0
 
 [node name="QuitButton" type="TextureButton" parent="MainMenu/ButtonContainer/QuitButtonContainer"]
-margin_right = 96.0
-margin_bottom = 96.0
-texture_normal = ExtResource( 2 )
+margin_right = 128.0
+margin_bottom = 128.0
+rect_min_size = Vector2( 128, 128 )
+texture_normal = ExtResource( 3 )
+expand = true
 
 [node name="Label" type="Label" parent="MainMenu/ButtonContainer/QuitButtonContainer"]
-margin_top = 100.0
-margin_right = 96.0
-margin_bottom = 114.0
+margin_top = 132.0
+margin_right = 128.0
+margin_bottom = 151.0
+custom_fonts/font = ExtResource( 5 )
 text = "QUIT"
 align = 1
 
@@ -149,6 +180,46 @@ margin_right = 56.0
 margin_bottom = 29.0
 window_title = "TODO"
 dialog_text = "Comming Soon"
+
+[node name="Control" type="Control" parent="MainMenu"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -236.64
+margin_top = 90.0
+margin_right = 239.36
+margin_bottom = 237.785
+rect_min_size = Vector2( 450, 148 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="MainMenu/Control"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_left = -10.0
+margin_top = -91.0
+margin_right = 182.0
+margin_bottom = 91.0
+rect_min_size = Vector2( 192, 192 )
+texture = ExtResource( 2 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="MainMenu/Control"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -304.0
+margin_top = -41.0
+margin_bottom = 41.0
+custom_fonts/font = SubResource( 1 )
+text = "KwadSim"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="pressed" from="MainMenu/ButtonContainer/FlyButtonContainer/FlyButton" to="MainMenu" method="_on_FlyButton_pressed"]
 [connection signal="pressed" from="MainMenu/ButtonContainer/TrackButtonContainer/TrackButton" to="MainMenu" method="_on_TrackButton_pressed"]
 [connection signal="pressed" from="MainMenu/ButtonContainer/SettingsButtonContainer/TextureButton" to="MainMenu" method="_on_TextureButton_pressed"]

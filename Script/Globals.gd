@@ -19,12 +19,14 @@ const BUILTIN_QUADS_PATH = "res://Data/quads.json"
 
 const OBJECTS = [
 	{"name": "Start Box", "scene": preload("res://Models/startbox/startbox.gltf"), "is_gate": false},
-	{"name": "Square Gate", "scene": preload("res://Models/SquareGate.tscn"), "is_gate": true},
-	{"name": "Full Gate", "scene": preload("res://Models/SquareGateFull.tscn"), "is_gate": true},
-	{"name": "Round Gate", "scene": preload("res://Models/GateTest.tscn"), "is_gate": true},
-	{"name": "Flag Gate", "scene": preload("res://Models/FlagTest.tscn"), "is_gate": true},
-	{"name": "Cone", "scene": preload("res://Models/ConeTest.tscn"), "is_gate": false},
-	{"name": "Flag", "scene": preload("res://Models/FlagTest.tscn"), "is_gate": false},
+	# Gates:
+	{"name": "Square Gate", "scene": preload("res://Nodes/Gates/SquareGate.tscn"), "is_gate": true},
+	{"name": "Full Gate", "scene": preload("res://Nodes/Gates/SquareGateFull.tscn"), "is_gate": true},
+	{"name": "Round Gate", "scene": preload("res://Nodes/Gates/GateTest.tscn"), "is_gate": true},
+	{"name": "Flag Gate", "scene": preload("res://Nodes/Gates/FlagTest.tscn"), "is_gate": true},
+	# Objects:
+	{"name": "Cone", "scene": preload("res://Models/discCone/discCone.gltf"), "is_gate": false},
+	{"name": "Flag", "scene": preload("res://Nodes/Gates/FlagTest.tscn"), "is_gate": false},
 ]
 
 const SCENES = [

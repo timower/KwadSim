@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100mm"
+   height="100mm"
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="Quit.svg"
+   inkscape:export-filename="D:\Projects\KwadSim\Textures\Quit.png"
+   inkscape:export-xdpi="32.512001"
+   inkscape:export-ydpi="32.512001">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="-33.231845"
+     inkscape:cy="212.11563"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:window-width="1185"
+     inkscape:window-height="1048"
+     inkscape:window-x="-7"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-197)">
+    <rect
+       style="fill:#ffffff;stroke-width:0.44057366"
+       id="rect3751"
+       width="20"
+       height="55.230846"
+       x="-284.55139"
+       y="19.491594"
+       transform="rotate(-90)" />
+    <rect
+       y="19.491594"
+       x="-229.44862"
+       height="55.230846"
+       width="20"
+       id="rect3753"
+       style="fill:#ffffff;stroke-width:0.44057366"
+       transform="rotate(-90)" />
+    <rect
+       style="fill:#ffffff;stroke-width:0.51375443"
+       id="rect3755"
+       width="20"
+       height="75.102737"
+       x="8.7068491"
+       y="209.44862" />
+    <rect
+       transform="rotate(-90)"
+       style="fill:#ffffff;stroke-width:0.42612559"
+       id="rect5724"
+       width="22.704687"
+       height="45.512882"
+       x="-258.35236"
+       y="34.860474" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:20.87896156;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 79.983987,221.87666 99.815664,247 79.983983,272.12333 Z"
+       id="rect5732"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+  </g>
+</svg>

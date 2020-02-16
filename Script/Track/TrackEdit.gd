@@ -7,7 +7,7 @@ onready var tool_opt_cont = $UI/ToolPanel/ToolContainer
 
 onready var scene_opt = $UI/LoadPanel/LoadContainer/SceneOption
 
-onready var track_list = $UI/LoadDialog/TrackList
+onready var track_list = $UI/LoadDialog/VBoxContainer/TrackList
 
 onready var track_tree = $UI/TreePanel/TrackTree
 onready var edit_menu = $UI/TreePanel/TrackTree/EditMenu
@@ -443,3 +443,8 @@ func _unhandled_input(event):
 
 func _on_SceneOption_item_selected(ID):
 	$Track.load_scene(ID)
+
+
+func _on_LoadDialog_popup_hide():
+	if track_name == null:
+		exit()

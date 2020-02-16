@@ -34,6 +34,7 @@ _global_script_class_icons={
 
 config/name="KwadSim"
 run/main_scene="res://Scenes/Menu.tscn"
+boot_splash/bg_color=Color( 0, 0, 0, 1 )
 config/icon="res://icon.png"
 
 [autoload]
