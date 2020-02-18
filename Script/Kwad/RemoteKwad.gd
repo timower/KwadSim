@@ -16,6 +16,13 @@ var pid = null
 var osd_scene = preload("res://Nodes/Kwad/TileOSD.tscn")
 
 var osd_tile = null
+
+var init_packet = Packets.InitPacket.new()
+
+var update_packet = Packets.StateUpdatePacket.new()
+var osd_update_packet = Packets.StateOsdUpdatePacket.new()
+
+var state_packet = Packets.StatePacket.new()
 	
 var rcData = [0.0, 0.0, 0.0, 0.0,
 			  0.0, 0.0, 0.0, 0.0]
@@ -63,29 +70,28 @@ func wait_for_packet():
 	return true
 
 func connect_socket(state):
-	var motors_pos = [
+	# We can't do this in _ready as the position is set by the loader whos 
+	# ready will be called after ours.
+	init_packet.quad_motor_pos = [
 		$motor1.translation, 
 		$motor2.translation, 
 		$motor3.translation, 
 		$motor4.translation
 	]
 	
-	var init_packet = [
-		motor_kv, motor_R, motor_I0, 
-		prop_max_rpm, prop_a_factor, prop_torque_factor, prop_inertia, prop_thrust_params, 
-		frame_drag_area, frame_drag_constant, 
-		self.mass, state.inverse_inertia, quad_vbat, motors_pos
-	]
+	init_packet.quad_mass = self.mass
+	init_packet.quad_inv_inertia = state.inverse_inertia
 	
 	var retries = 0
 	while retries < MAX_CON_ATTEMPTS:
 		Log.d("Sending init packet, attempt {}", retries)
-		udp_peer.put_var(init_packet)
+		udp_peer.put_var(init_packet.to_list())
 		
 		if wait_for_packet():
 			break
 		
 		retries += 1
+
 	
 	if retries >= MAX_CON_ATTEMPTS:
 		Log.d("Max attempts reached, stopping server")
@@ -127,17 +133,15 @@ func _integrate_forces(state):
 		connect_socket(state)
 		return
 
-	var packet = [
-		state.step,
-		transform.origin, 
-		transform.basis, 
-		state.angular_velocity, 
-		state.linear_velocity, 
-		rcData,
-		crashed
-	]
+	state_packet.delta = state.step
+	state_packet.position = transform.origin
+	state_packet.rotation = transform.basis 
+	state_packet.angularVelocity = state.angular_velocity
+	state_packet.linearVelocity = state.linear_velocity 
+	state_packet.rcData = rcData
+	state_packet.crashed = crashed
 	
-	udp_peer.put_var(packet)
+	udp_peer.put_var(state_packet.to_list())
 	
 	if not wait_for_packet():
 		Log.d("state update timed out, restarting server...")
@@ -145,12 +149,17 @@ func _integrate_forces(state):
 		start_server()
 		return
 	
-	var update_packet = udp_peer.get_var()
-	state.angular_velocity = update_packet[0]
-	state.linear_velocity  = update_packet[1]
-	if len(update_packet) == 3:
-		osd_update = update_packet[2]
-		
+	var update = udp_peer.get_var()
+	if len(update) == 3:
+		osd_update_packet.from_list(update)
+		update = osd_update_packet
+		osd_update = osd_update_packet.osd
+	else:
+		update_packet.from_list(update)
+		update = update_packet
+
+	state.angular_velocity = update.angularVelocity
+	state.linear_velocity  = update.linearVelocity
 
 func _enter_tree():
 	start_server()
@@ -158,6 +167,11 @@ func _enter_tree():
 func _exit_tree():
 	osd_tile.queue_free()
 	stop_server()
+	
+	init_packet.free()
+	update_packet.free()
+	osd_update_packet.free()
+	state_packet.free()
 
 # quad configuration, set by KwadLoader:
 var motor_kv
@@ -176,23 +190,23 @@ var frame_drag_constant
 var quad_vbat
 
 func set_motor_params(Kv, R, I0):
-	self.motor_kv = Kv
-	self.motor_R = R
-	self.motor_I0 = I0
+	init_packet.motor_kv = Kv
+	init_packet.motor_R = R
+	init_packet.motor_I0 = I0
 	
 func set_prop_params(rpm, a, torque_fac, inertia, t_params):
-	self.prop_max_rpm = rpm
-	self.prop_a_factor = a
-	self.prop_torque_factor = torque_fac
-	self.prop_inertia = inertia
-	self.prop_thrust_params = t_params
+	init_packet.prop_max_rpm = rpm
+	init_packet.prop_a_factor = a
+	init_packet.prop_torque_factor = torque_fac
+	init_packet.prop_inertia = inertia
+	init_packet.prop_thrust_factors = t_params
 	
 func set_frame_params(drag_area, drag_c):
-	self.frame_drag_area = drag_area
-	self.frame_drag_constant = drag_c
+	init_packet.frame_drag_area = drag_area
+	init_packet.frame_drag_constant = drag_c
 	
 func set_quad_params(Vin):
-	self.quad_vbat = Vin
+	init_packet.quad_vbat = Vin
 
 func set_crashed(value):
 	self.crashed = value

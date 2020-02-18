@@ -2,9 +2,7 @@ extends Node
 
 #warning-ignore-all:unused_class_variable
 
-var joyConf = null
 var kwad = null setget ,get_kwad
-
 
 var quads = {}
 var selected_quad = "QQ190"

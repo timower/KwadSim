@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Object",
+"class": "Packets",
+"language": "GDScript",
+"path": "res://Script/Kwad/Packets.gd"
+}, {
 "base": "Control",
 "class": "StickView",
 "language": "GDScript",
@@ -25,6 +30,7 @@ _global_script_classes=[ {
 "path": "res://Script/Track/TrackTools.gd"
 } ]
 _global_script_class_icons={
+"Packets": "",
 "StickView": "",
 "TrackActions": "",
 "TrackTools": ""

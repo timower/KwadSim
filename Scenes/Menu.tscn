@@ -169,18 +169,6 @@ margin_right = 17.0
 margin_bottom = -10.0
 text = "Fly!"
 
-[node name="TrackDialog" type="AcceptDialog" parent="MainMenu"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -56.0
-margin_top = -29.0
-margin_right = 56.0
-margin_bottom = 29.0
-window_title = "TODO"
-dialog_text = "Comming Soon"
-
 [node name="Control" type="Control" parent="MainMenu"]
 anchor_left = 0.5
 anchor_right = 0.5

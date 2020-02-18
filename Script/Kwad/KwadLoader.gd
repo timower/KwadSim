@@ -26,7 +26,11 @@ func load_prop(prop_name):
 	var prop_a = params["a"]
 	var prop_torque_fac = params["torque_factor"]
 	var prop_t_params = params["thrust_vel_params"]
-	kwad.set_prop_params(prop_rpm, prop_a, prop_torque_fac, inertia, prop_t_params)
+	kwad.set_prop_params(prop_rpm, 
+						 prop_a, 
+						 prop_torque_fac, 
+						 inertia, 
+						 prop_t_params)
 
 const DEF_PROP_RAD = 0.062
 
@@ -90,6 +94,7 @@ func _on_reset():
 		
 	kwad.linear_velocity = Vector3()
 	kwad.angular_velocity = Vector3()
-	kwad.transform.origin = start.pos + Vector3(0, 0.5 + kwad/CollisionShape.shape.extents.y, 0)
+	kwad.transform.origin = start.pos 
+	kwad.transform.origin += Vector3(0, 0.5 + kwad_col.shape.extents.y, 0)
 	kwad.transform.basis = Basis(start.rot)
 	kwad.set_crashed(false)
